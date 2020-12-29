@@ -29,7 +29,6 @@ namespace Meetings
             services.AddController();
             services.AddServicesImplementations();
             services.AddPersistencesImplementations();
-            services.AddSwaggerOpenAPI();
             services.AddVersion();
             services.AddFeatureManagement();
         }
@@ -48,7 +47,6 @@ namespace Meetings
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.ConfigureSwagger();
 
             app.UseEndpoints(endpoints =>
             {
