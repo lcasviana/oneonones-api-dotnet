@@ -8,7 +8,7 @@ namespace Meetings.Infrastructure.Mapping
     {
         public CustomerProfile()
         {
-            CreateMap<CustomerModel, Customer>()
+            CreateMap<MeetingModel, Customer>()
                 .ForMember(dest => dest.Id,
                         opt => opt.MapFrom(src => src.CustomerId))
                 .ReverseMap();

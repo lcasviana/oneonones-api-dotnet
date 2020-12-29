@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -16,12 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Meetings\Meetings.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controller\" />
-    <Folder Include="Data\" />
-    <Folder Include="Service\" />
   </ItemGroup>
 
 </Project>

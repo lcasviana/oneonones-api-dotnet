@@ -1,6 +1,4 @@
-﻿//using HealthChecks.UI.Client;
-using Meetings.Infrastructure.Middleware;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging;
 using Serilog;
 
@@ -8,11 +6,6 @@ namespace Meetings.Infrastructure.Extension
 {
     public static class ConfigureContainer
     {
-        public static void ConfigureCustomExceptionMiddleware(this IApplicationBuilder app)
-        {
-            app.UseMiddleware<CustomExceptionMiddleware>();
-        }
-
         public static void ConfigureSwagger(this IApplicationBuilder app)
         {
             app.UseSwagger();
@@ -28,32 +21,5 @@ namespace Meetings.Infrastructure.Extension
         {
             loggerFactory.AddSerilog();
         }
-
-        //public static void ConfigureHealthCheck(this IApplicationBuilder app)
-        //{
-        //    app.UseHealthChecks("/healthz", new HealthCheckOptions
-        //    {
-        //        Predicate = _ => true,
-        //        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
-        //        ResultStatusCodes =
-        //        {
-        //            [HealthStatus.Healthy] = StatusCodes.Status200OK,
-        //            [HealthStatus.Degraded] = StatusCodes.Status500InternalServerError,
-        //            [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable,
-        //        },
-        //    })
-        //   .UseHealthChecksUI(setup =>
-        //   {
-        //       setup.ApiPath = "/healthcheck";
-        //       setup.UIPath = "/healthcheck-ui";
-        //       setup.AddCustomStylesheet("./Customization/custom.css");
-        //   });
-        //}
-
-
-
-
-
-
     }
 }
