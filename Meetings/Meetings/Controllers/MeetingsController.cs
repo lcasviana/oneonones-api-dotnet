@@ -1,5 +1,6 @@
 ﻿using Meetings.Service.Contract;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Meetings.Controllers
 {
@@ -13,6 +14,31 @@ namespace Meetings.Controllers
         public MeetingsController(IMeetingsService meetingsService)
         {
             this.meetingsService = meetingsService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtainMeeting(string email)
+        {
+            var meetingEntity = await meetingsService.Obtain(email);
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> InsertMeeting(string email)
+        {
+            return Ok(await meetingsService.Obtain(email));
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateMeeting(string email)
+        {
+            return Ok(await meetingsService.Obtain(email));
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteMeeting(string email)
+        {
+            return Ok(await meetingsService.Obtain(email));
         }
     }
 }

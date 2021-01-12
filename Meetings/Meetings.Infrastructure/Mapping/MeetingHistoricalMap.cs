@@ -3,16 +3,16 @@ using Meetings.Infrastructure.ViewModel;
 
 namespace Meetings.Infrastructure.Mapping
 {
-    public static class MeetingMap
+    public static class MeetingHistoricalMap
     {
-        public static MeetingModel ToModel(this MeetingEntity entity)
+        public static MeetingHistoricalModel ToModel(this MeetingHistoricalEntity entity)
         {
-            var model = new MeetingModel
+            var model = new MeetingHistoricalModel
             {
                 Leader = entity.Leader.ToModel(),
                 Led = entity.Led.ToModel(),
-                Frequency = entity.Frequency,
-                LastMeeting = entity.LastMeeting,
+                Occurrence = entity.Occurrence,
+                Commentary = entity.Commentary,
             };
             return model;
         }

@@ -1,12 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using Meetings.Domain.Entities;
+using System.Threading.Tasks;
 
 namespace Meetings.Service.Contract
 {
     public interface IMeetingsService
     {
-        Task Obtain();
-        Task Insert();
-        Task Update();
-        Task Delete();
+        Task<MeetingEntity> Obtain(string email);
+        Task Insert(MeetingEntity meeting);
+        Task Update(MeetingEntity meeting);
+        Task Delete(MeetingEntity meeting);
     }
 }
