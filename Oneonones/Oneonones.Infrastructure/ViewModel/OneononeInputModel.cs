@@ -2,10 +2,10 @@
 
 namespace Oneonones.Infrastructure.ViewModel
 {
-    public class OneononeUpdateModel
+    public class OneononeInputModel
     {
-        public string Leader { get; set; }
-        public string Led { get; set; }
+        public string LeaderEmail { get; set; }
+        public string LedEmail { get; set; }
         public OneononeFrequencyEnum Frequency { get; set; }
     }
 }

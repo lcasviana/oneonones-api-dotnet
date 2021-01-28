@@ -1,7 +1,8 @@
 ﻿using Oneonones.Service.Contract;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
+using Oneonones.Infrastructure.ViewModel;
+using Oneonones.Infrastructure.Mapping;
 
 namespace Oneonones.Controllers
 {
@@ -17,27 +18,34 @@ namespace Oneonones.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ObtainOneonone(string email)
+        public async Task<IActionResult> ObtainOneonone([FromQuery] string leaderEmail, [FromQuery] string ledEmail)
         {
-            return Ok(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+            var oneononeEntity = await oneononesService.Obtain(leaderEmail, ledEmail);
+            var oneononeModel = oneononeEntity.ToModel();
+            return Ok(oneononeModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> InsertOneonone(string email)
+        public async Task<IActionResult> InsertOneonone([FromBody] OneononeInputModel oneononeInputModel)
         {
-            return Ok(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+            var oneononeInputEntity = oneononeInputModel.ToEntity();
+            await oneononesService.Update(oneononeInputEntity);
+            return NoContent();
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateOneonone(string email)
+        public async Task<IActionResult> UpdateOneonone([FromBody] OneononeInputModel oneononeInputModel)
         {
-            return Ok(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+            var oneononeInputEntity = oneononeInputModel.ToEntity();
+            await oneononesService.Insert(oneononeInputEntity);
+            return NoContent();
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteOneonone(string email)
+        public async Task<IActionResult> DeleteOneonone([FromQuery] string leaderEmail, [FromQuery] string ledEmail)
         {
-            return Ok(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+            await oneononesService.Delete(leaderEmail, ledEmail);
+            return NoContent();
         }
     }
 }

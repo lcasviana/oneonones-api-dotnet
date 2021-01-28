@@ -9,5 +9,6 @@
         Trimonthly = 90,
         Semiyearly = 180,
         Yearly = 365,
+        Occasionally = 999,
     }
 }
