@@ -1,12 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using Oneonones.Persistence.Models;
+using System.Threading.Tasks;
 
 namespace Oneonones.Persistence.Contract
 {
     public interface IOneononesDatabase
     {
-        Task<OneononeEntity> Obtain(string leaderEmail, string ledEmail);
-        Task<bool> Insert(OneononeInputEntity oneonone);
-        Task<bool> Update(OneononeInputEntity oneonone);
-        Task<bool> Delete(string leaderEmail, string ledEmail);
+        Task<OneononeModel> Obtain(string leaderEmail, string ledEmail);
+        Task Insert(OneononeModel oneonone);
+        Task Update(OneononeModel oneonone);
+        Task Delete(string leaderEmail, string ledEmail);
     }
 }

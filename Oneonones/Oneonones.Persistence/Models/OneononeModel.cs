@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Oneonones.Persistence.Models
+﻿namespace Oneonones.Persistence.Models
 {
-    class OneononeModel
+    public class OneononeModel
     {
+        public string LeaderEmail { get; set; }
+        public string LedEmail { get; set; }
+        public int FrequencyType { get; set; }
     }
 }

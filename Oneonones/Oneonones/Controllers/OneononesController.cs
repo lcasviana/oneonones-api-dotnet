@@ -21,7 +21,7 @@ namespace Oneonones.Controllers
         public async Task<IActionResult> ObtainOneonone([FromQuery] string leaderEmail, [FromQuery] string ledEmail)
         {
             var oneononeEntity = await oneononesService.Obtain(leaderEmail, ledEmail);
-            var oneononeModel = oneononeEntity.ToModel();
+            var oneononeModel = oneononeEntity.ToViewModel();
             return Ok(oneononeModel);
         }
 

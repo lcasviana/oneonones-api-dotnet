@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Oneonones.Persistence.Models
+﻿namespace Oneonones.Persistence.Models
 {
-    class EmployeeModel
+    public class EmployeeModel
     {
+        public string Email { get; set; }
+        public string Name { get; set; }
     }
 }

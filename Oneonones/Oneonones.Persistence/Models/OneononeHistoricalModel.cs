@@ -1,10 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Oneonones.Persistence.Models
 {
-    class OneononeHistoricalModel
+    public class OneononeHistoricalModel
     {
+        public string LeaderEmail { get; set; }
+        public string LedEmail { get; set; }
+        public DateTime Occurrence { get; set; }
+        public string Commentary { get; set; }
     }
 }
