@@ -2,10 +2,10 @@
 
 namespace Oneonones.Infrastructure.ViewModel
 {
-    public class OneononeHistoricalModel
+    public class OneononeHistoricalViewModel
     {
-        public EmployeeModel Leader { get; set; }
-        public EmployeeModel Led { get; set; }
+        public EmployeeViewModel Leader { get; set; }
+        public EmployeeViewModel Led { get; set; }
         public DateTime Occurrence { get; set; }
         public string Commentary { get; set; }
     }

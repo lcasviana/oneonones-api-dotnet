@@ -3,10 +3,10 @@ using System;
 
 namespace Oneonones.Infrastructure.ViewModel
 {
-    public class OneononeModel
+    public class OneononeViewModel
     {
-        public EmployeeModel Leader { get; set; }
-        public EmployeeModel Led { get; set; }
+        public EmployeeViewModel Leader { get; set; }
+        public EmployeeViewModel Led { get; set; }
         public OneononeFrequencyEnum Frequency { get; set; }
         public DateTime? LastOneonone { get; set; }
     }

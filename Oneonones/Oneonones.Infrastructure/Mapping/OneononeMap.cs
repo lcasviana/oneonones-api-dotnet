@@ -5,12 +5,12 @@ namespace Oneonones.Infrastructure.Mapping
 {
     public static class OneononeMap
     {
-        public static OneononeModel ToModel(this OneononeEntity entity)
+        public static OneononeViewModel ToViewModel(this OneononeEntity entity)
         {
-            var model = new OneononeModel
+            var model = new OneononeViewModel
             {
-                Leader = entity.Leader.ToModel(),
-                Led = entity.Led.ToModel(),
+                Leader = entity.Leader.ToViewModel(),
+                Led = entity.Led.ToViewModel(),
                 Frequency = entity.Frequency,
                 LastOneonone = entity.LastOneonone,
             };

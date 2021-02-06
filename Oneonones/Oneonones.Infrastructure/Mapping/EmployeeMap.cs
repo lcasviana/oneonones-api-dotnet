@@ -5,9 +5,9 @@ namespace Oneonones.Infrastructure.Mapping
 {
     public static class EmployeeMap
     {
-        public static EmployeeModel ToModel(this EmployeeEntity entity)
+        public static EmployeeViewModel ToViewModel(this EmployeeEntity entity)
         {
-            var model = new EmployeeModel
+            var model = new EmployeeViewModel
             {
                 Name = entity.Name,
                 Email = entity.Email,

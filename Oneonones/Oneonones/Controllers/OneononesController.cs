@@ -26,7 +26,7 @@ namespace Oneonones.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> InsertOneonone([FromBody] OneononeInputModel oneononeInputModel)
+        public async Task<IActionResult> InsertOneonone([FromBody] OneononeInputViewModel oneononeInputModel)
         {
             var oneononeInputEntity = oneononeInputModel.ToEntity();
             await oneononesService.Update(oneononeInputEntity);
@@ -34,7 +34,7 @@ namespace Oneonones.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateOneonone([FromBody] OneononeInputModel oneononeInputModel)
+        public async Task<IActionResult> UpdateOneonone([FromBody] OneononeInputViewModel oneononeInputModel)
         {
             var oneononeInputEntity = oneononeInputModel.ToEntity();
             await oneononesService.Insert(oneononeInputEntity);

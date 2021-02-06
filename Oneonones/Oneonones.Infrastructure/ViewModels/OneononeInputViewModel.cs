@@ -2,7 +2,7 @@
 
 namespace Oneonones.Infrastructure.ViewModel
 {
-    public class OneononeInputModel
+    public class OneononeInputViewModel
     {
         public string LeaderEmail { get; set; }
         public string LedEmail { get; set; }

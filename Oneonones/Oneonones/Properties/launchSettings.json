@@ -14,7 +14,8 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "Environment": "Development",
+        "DatabaseConnectionString": "SSL Mode=Require;Trust Server Certificate=true;Host=ec2-75-101-232-85.compute-1.amazonaws.com;Port=5432;Username=fmqglbnyernrbk;Password=73c112a14597b135924b60f89f4b682353d5e01b08e2278c678be4b6df24bd2e;Database=db8au375ri5kdt"
       }
     },
     "Oneonones": {
@@ -23,7 +24,8 @@
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "Environment": "Development",
+        "DatabaseConnectionString": "SSL Mode=Require;Trust Server Certificate=true;Host=ec2-75-101-232-85.compute-1.amazonaws.com;Port=5432;Username=fmqglbnyernrbk;Password=73c112a14597b135924b60f89f4b682353d5e01b08e2278c678be4b6df24bd2e;Database=db8au375ri5kdt"
       }
     }
   }

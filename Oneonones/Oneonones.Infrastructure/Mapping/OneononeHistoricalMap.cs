@@ -5,12 +5,12 @@ namespace Oneonones.Infrastructure.Mapping
 {
     public static class OneononeHistoricalMap
     {
-        public static OneononeHistoricalModel ToModel(this OneononeHistoricalEntity entity)
+        public static OneononeHistoricalViewModel ToViewModel(this OneononeHistoricalEntity entity)
         {
-            var model = new OneononeHistoricalModel
+            var model = new OneononeHistoricalViewModel
             {
-                Leader = entity.Leader.ToModel(),
-                Led = entity.Led.ToModel(),
+                Leader = entity.Leader.ToViewModel(),
+                Led = entity.Led.ToViewModel(),
                 Occurrence = entity.Occurrence,
                 Commentary = entity.Commentary,
             };
