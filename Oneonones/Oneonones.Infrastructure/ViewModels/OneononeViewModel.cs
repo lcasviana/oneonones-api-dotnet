@@ -8,6 +8,5 @@ namespace Oneonones.Infrastructure.ViewModel
         public EmployeeViewModel Leader { get; set; }
         public EmployeeViewModel Led { get; set; }
         public OneononeFrequencyEnum Frequency { get; set; }
-        public DateTime? LastOneonone { get; set; }
     }
 }

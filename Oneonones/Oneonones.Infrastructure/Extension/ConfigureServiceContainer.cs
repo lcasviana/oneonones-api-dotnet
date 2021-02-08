@@ -1,9 +1,9 @@
-﻿using Oneonones.Persistence.Contract;
-using Oneonones.Persistence.Databases;
+﻿using Oneonones.Persistence.Databases;
 using Oneonones.Service.Contract;
 using Oneonones.Service.Implementation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Oneonones.Persistence.Contracts.Databases;
 
 namespace Oneonones.Infrastructure.Extension
 {

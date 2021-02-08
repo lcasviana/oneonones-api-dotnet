@@ -1,7 +1,7 @@
 ﻿using Oneonones.Persistence.Models;
 using System.Threading.Tasks;
 
-namespace Oneonones.Persistence.Contract
+namespace Oneonones.Persistence.Contracts.Databases
 {
     public interface IOneononesDatabase
     {

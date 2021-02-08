@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using Oneonones.Persistence.Base;
-using Oneonones.Persistence.Contract;
+using Oneonones.Persistence.Contracts.Databases;
 using Oneonones.Persistence.Models;
 using System.Data;
 using System.Threading.Tasks;

@@ -12,7 +12,6 @@ namespace Oneonones.Infrastructure.Mapping
                 Leader = entity.Leader.ToViewModel(),
                 Led = entity.Led.ToViewModel(),
                 Frequency = entity.Frequency,
-                LastOneonone = entity.LastOneonone,
             };
             return model;
         }

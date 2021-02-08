@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Oneonones.Persistence.Contracts
+namespace Oneonones.Persistence.Contracts.Databases
 {
     public interface IOneononesHistoricalDatabase
     {
