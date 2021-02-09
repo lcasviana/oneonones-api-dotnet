@@ -1,17 +1,27 @@
 ﻿using System;
 using System.Globalization;
+using System.Net;
 
 namespace Oneonones.Service.Exceptions
 {
     public class ApiException : Exception
     {
-        public ApiException() : base() { }
+        public HttpStatusCode StatusCode { get; private set; }
 
-        public ApiException(string message) : base(message) { }
-
-        public ApiException(string message, params object[] args)
-            : base(String.Format(CultureInfo.CurrentCulture, message, args))
+        public ApiException(HttpStatusCode statusCode) : base()
         {
+            StatusCode = statusCode;
+        }
+
+        public ApiException(HttpStatusCode statusCode, string message) : base(message)
+        {
+            StatusCode = statusCode;
+        }
+
+        public ApiException(HttpStatusCode statusCode, string message, params object[] args)
+            : base(string.Format(CultureInfo.CurrentCulture, message, args))
+        {
+            StatusCode = statusCode;
         }
     }
 }
