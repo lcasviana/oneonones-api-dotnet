@@ -4,24 +4,24 @@ using System.Threading.Tasks;
 
 namespace Oneonones.Service.Implementations
 {
-    public class OneononesHistoricalService : IOneononesHistoricalService
+    public class EmployeesService : IEmployeesService
     {
-        public Task<OneononeHistoricalEntity> Obtain(string leaderEmail, string ledEmail)
+        public async Task<EmployeeEntity> Obtain(string email)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task Insert(OneononeHistoricalInputEntity oneononeHistoricalInput)
+        public async Task Insert(EmployeeEntity employee)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task Update(OneononeHistoricalInputEntity oneononeHistoricalInput)
+        public async Task Update(EmployeeEntity employee)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task Delete(string leaderEmail, string ledEmail)
+        public async Task Delete(string email)
         {
             throw new System.NotImplementedException();
         }

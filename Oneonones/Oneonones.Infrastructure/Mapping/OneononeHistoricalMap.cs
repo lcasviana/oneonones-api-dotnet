@@ -7,14 +7,14 @@ namespace Oneonones.Infrastructure.Mapping
     {
         public static OneononeHistoricalViewModel ToViewModel(this OneononeHistoricalEntity entity)
         {
-            var model = new OneononeHistoricalViewModel
+            var viewModel = new OneononeHistoricalViewModel
             {
                 Leader = entity.Leader.ToViewModel(),
                 Led = entity.Led.ToViewModel(),
                 Occurrence = entity.Occurrence,
                 Commentary = entity.Commentary,
             };
-            return model;
+            return viewModel;
         }
     }
 }

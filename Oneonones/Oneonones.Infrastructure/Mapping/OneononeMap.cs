@@ -7,13 +7,13 @@ namespace Oneonones.Infrastructure.Mapping
     {
         public static OneononeViewModel ToViewModel(this OneononeEntity entity)
         {
-            var model = new OneononeViewModel
+            var viewModel = new OneononeViewModel
             {
                 Leader = entity.Leader.ToViewModel(),
                 Led = entity.Led.ToViewModel(),
                 Frequency = entity.Frequency,
             };
-            return model;
+            return viewModel;
         }
     }
 }

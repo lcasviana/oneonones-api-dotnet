@@ -1,11 +1,11 @@
 ﻿using Oneonones.Domain.Entities;
 using Oneonones.Persistence.Contracts.Repositories;
-using Oneonones.Service.Contract;
+using Oneonones.Service.Contracts;
 using Oneonones.Service.Exceptions;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Oneonones.Service.Implementation
+namespace Oneonones.Service.Implementations
 {
     public class OneononesService : IOneononesService
     {
@@ -24,7 +24,7 @@ namespace Oneonones.Service.Implementation
         {
             var (leader, led) = await ObtainEmployees(leaderEmail, ledEmail);
 
-            var oneonone = (await oneononesRepository.Obtain(leaderEmail, ledEmail))
+            var oneonone = await oneononesRepository.Obtain(leaderEmail, ledEmail)
                 ?? throw new ApiException(HttpStatusCode.NotFound);
 
             oneonone.Leader = leader;
@@ -55,7 +55,7 @@ namespace Oneonones.Service.Implementation
         {
             var (leader, led) = await ObtainEmployees(oneononeInput?.LeaderEmail, oneononeInput?.LedEmail);
 
-            var oneonone = (await oneononesRepository.Obtain(oneononeInput.LeaderEmail, oneononeInput.LedEmail))
+            var oneonone = await oneononesRepository.Obtain(oneononeInput.LeaderEmail, oneononeInput.LedEmail)
                 ?? throw new ApiException(HttpStatusCode.NotFound);
 
             oneonone.Leader = leader;
@@ -79,8 +79,8 @@ namespace Oneonones.Service.Implementation
             var leaderTask = employeesRepository.Obtain(leaderEmail);
             var ledTask = employeesRepository.Obtain(ledEmail);
 
-            var leader = (await leaderTask) ?? throw new ApiException(HttpStatusCode.NotFound);
-            var led = (await ledTask) ?? throw new ApiException(HttpStatusCode.NotFound);
+            var leader = await leaderTask ?? throw new ApiException(HttpStatusCode.NotFound);
+            var led = await ledTask ?? throw new ApiException(HttpStatusCode.NotFound);
 
             return (leader, led);
         }

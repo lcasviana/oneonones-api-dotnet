@@ -1,8 +1,8 @@
-﻿using Oneonones.Service.Contract;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Oneonones.Infrastructure.ViewModel;
 using Oneonones.Infrastructure.Mapping;
+using Oneonones.Service.Contracts;
 
 namespace Oneonones.Controllers
 {
@@ -18,7 +18,7 @@ namespace Oneonones.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ObtainOneonone([FromQuery] string leaderEmail, [FromQuery] string ledEmail)
+        public async Task<IActionResult> Obtain([FromQuery] string leaderEmail, [FromQuery] string ledEmail)
         {
             var oneononeEntity = await oneononesService.Obtain(leaderEmail, ledEmail);
             var oneononeModel = oneononeEntity.ToViewModel();
@@ -26,23 +26,23 @@ namespace Oneonones.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> InsertOneonone([FromBody] OneononeInputViewModel oneononeInputModel)
+        public async Task<IActionResult> Insert([FromBody] OneononeInputViewModel oneononeInputViewModel)
         {
-            var oneononeInputEntity = oneononeInputModel.ToEntity();
+            var oneononeInputEntity = oneononeInputViewModel.ToEntity();
             await oneononesService.Update(oneononeInputEntity);
             return NoContent();
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateOneonone([FromBody] OneononeInputViewModel oneononeInputModel)
+        public async Task<IActionResult> Update([FromBody] OneononeInputViewModel oneononeInputViewModel)
         {
-            var oneononeInputEntity = oneononeInputModel.ToEntity();
+            var oneononeInputEntity = oneononeInputViewModel.ToEntity();
             await oneononesService.Insert(oneononeInputEntity);
             return NoContent();
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteOneonone([FromQuery] string leaderEmail, [FromQuery] string ledEmail)
+        public async Task<IActionResult> Delete([FromQuery] string leaderEmail, [FromQuery] string ledEmail)
         {
             await oneononesService.Delete(leaderEmail, ledEmail);
             return NoContent();

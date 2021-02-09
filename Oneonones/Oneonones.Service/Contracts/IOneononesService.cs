@@ -1,7 +1,7 @@
 ﻿using Oneonones.Domain.Entities;
 using System.Threading.Tasks;
 
-namespace Oneonones.Service.Contract
+namespace Oneonones.Service.Contracts
 {
     public interface IOneononesService
     {

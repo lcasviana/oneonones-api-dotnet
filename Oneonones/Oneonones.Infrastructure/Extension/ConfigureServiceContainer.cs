@@ -1,9 +1,11 @@
 ﻿using Oneonones.Persistence.Databases;
-using Oneonones.Service.Contract;
-using Oneonones.Service.Implementation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Oneonones.Persistence.Contracts.Databases;
+using Oneonones.Persistence.Repositories;
+using Oneonones.Persistence.Contracts.Repositories;
+using Oneonones.Service.Contracts;
+using Oneonones.Service.Implementations;
 
 namespace Oneonones.Infrastructure.Extension
 {
@@ -11,12 +13,19 @@ namespace Oneonones.Infrastructure.Extension
     {
         public static void AddServicesImplementations(this IServiceCollection serviceCollection)
         {
+            serviceCollection.AddSingleton<IEmployeesService, EmployeesService>();
             serviceCollection.AddSingleton<IOneononesService, OneononesService>();
         }
 
         public static void AddPersistencesImplementations(this IServiceCollection serviceCollection)
         {
-            serviceCollection.AddTransient<IOneononesDatabase, OneononesDatabase>();
+            serviceCollection.AddSingleton<IEmployeesDatabase, EmployeesDatabase>();
+            serviceCollection.AddSingleton<IOneononesDatabase, OneononesDatabase>();
+            serviceCollection.AddSingleton<IOneononesHistoricalDatabase, OneononesHistoricalDatabase>();
+
+            serviceCollection.AddSingleton<IEmployeesRepository, EmployeesRepository>();
+            serviceCollection.AddSingleton<IOneononesRepository, OneononesRepository>();
+            serviceCollection.AddSingleton<IOneononesHistoricalRepository, OneononesHistoricalRepository>();
         }
 
         public static void AddController(this IServiceCollection serviceCollection)
