@@ -2,6 +2,8 @@
 using Oneonones.Infrastructure.Mapping;
 using Oneonones.Infrastructure.ViewModels;
 using Oneonones.Service.Contracts;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Oneonones.Controllers
@@ -18,10 +20,18 @@ namespace Oneonones.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Obtain([FromQuery] string leaderEmail, [FromQuery] string ledEmail)
+        public async Task<IActionResult> ObtainAll([FromQuery] string leaderEmail, [FromQuery] string ledEmail)
         {
-            var oneononeEntity = await oneononesHistoricalService.Obtain(leaderEmail, ledEmail);
-            var oneononeHistoricalViewModel = oneononeEntity.ToViewModel();
+            var oneononeHistoricalEntityList = await oneononesHistoricalService.ObtainAll(leaderEmail, ledEmail);
+            var oneononeHistoricalViewModel = oneononeHistoricalEntityList.Select(h => h.ToViewModel());
+            return Ok(oneononeHistoricalViewModel);
+        }
+
+        [HttpGet("{occurrence}")]
+        public async Task<IActionResult> ObtainOccurrence([FromQuery] string leaderEmail, [FromQuery] string ledEmail, [FromRoute] DateTime occurrence)
+        {
+            var oneononeHistoricalEntity = await oneononesHistoricalService.ObtainOccurrence(leaderEmail, ledEmail, occurrence);
+            var oneononeHistoricalViewModel = oneononeHistoricalEntity.ToViewModel();
             return Ok(oneononeHistoricalViewModel);
         }
 
@@ -42,9 +52,9 @@ namespace Oneonones.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] string leaderEmail, [FromQuery] string ledEmail)
+        public async Task<IActionResult> Delete([FromQuery] string leaderEmail, [FromQuery] string ledEmail, [FromQuery] DateTime occurrence)
         {
-            await oneononesHistoricalService.Delete(leaderEmail, ledEmail);
+            await oneononesHistoricalService.Delete(leaderEmail, ledEmail, occurrence);
             return NoContent();
         }
     }
