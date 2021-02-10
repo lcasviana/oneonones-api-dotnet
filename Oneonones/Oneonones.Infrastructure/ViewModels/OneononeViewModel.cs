@@ -1,5 +1,4 @@
 ﻿using Oneonones.Domain.Enums;
-using System;
 
 namespace Oneonones.Infrastructure.ViewModel
 {

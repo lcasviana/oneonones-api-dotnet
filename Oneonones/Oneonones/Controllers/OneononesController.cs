@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using Oneonones.Infrastructure.ViewModel;
 using Oneonones.Infrastructure.Mapping;
+using Oneonones.Infrastructure.ViewModel;
 using Oneonones.Service.Contracts;
+using System.Threading.Tasks;
 
 namespace Oneonones.Controllers
 {

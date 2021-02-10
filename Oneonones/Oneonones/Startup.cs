@@ -1,4 +1,3 @@
-using Oneonones.Infrastructure.Extension;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Microsoft.OpenApi.Models;
+using Oneonones.Infrastructure.Extension;
 using Serilog;
 using System;
 using System.IO;
