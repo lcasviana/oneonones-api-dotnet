@@ -12,7 +12,7 @@ namespace Oneonones.Persistence.Databases
 {
     public class OneononesHistoricalDatabase : SqlBase, IOneononesHistoricalDatabase
     {
-        private const string obtainQuery = @"
+        private const string obtainAllQuery = @"
             SELECT
                 leader_email AS LeaderEmail,
                 led_email AS LedEmail,
@@ -23,6 +23,20 @@ namespace Oneonones.Persistence.Databases
             WHERE
                 leader_email = @leaderEmail
                 AND led_email = @ledEmail
+        ";
+
+        private const string obtainOccurrenceQuery = @"
+            SELECT
+                leader_email AS LeaderEmail,
+                led_email AS LedEmail,
+                occurrence AS Occurrence,
+                commentary AS Commentary
+            FROM
+                oneonones_historical
+            WHERE
+                leader_email = @leaderEmail
+                AND led_email = @ledEmail
+                AND occurrence = @occurrence
         ";
 
         private const string insertQuery = @"
@@ -56,14 +70,25 @@ namespace Oneonones.Persistence.Databases
                 AND occurrence = @occurrence
         ";
 
-        public async Task<IList<OneononeHistoricalModel>> Obtain(string leaderEmail, string ledEmail)
+        public async Task<IList<OneononeHistoricalModel>> ObtainAll(string leaderEmail, string ledEmail)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@leaderEmail", leaderEmail, DbType.AnsiString);
             parameters.Add("@ledEmail", ledEmail, DbType.AnsiString);
 
-            var oneononeHistoricalModel = await Query<OneononeHistoricalModel>(obtainQuery, parameters);
+            var oneononeHistoricalModel = await Query<OneononeHistoricalModel>(obtainAllQuery, parameters);
             return oneononeHistoricalModel.ToList();
+        }
+
+        public async Task<OneononeHistoricalModel> ObtainOccurrence(string leaderEmail, string ledEmail, DateTime occurrence)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@leaderEmail", leaderEmail, DbType.AnsiString);
+            parameters.Add("@ledEmail", ledEmail, DbType.AnsiString);
+            parameters.Add("@occurrence", occurrence, DbType.DateTime);
+
+            var oneononeHistoricalModel = await QueryFirst<OneononeHistoricalModel>(obtainOccurrenceQuery, parameters);
+            return oneononeHistoricalModel;
         }
 
         public async Task Insert(OneononeHistoricalModel oneonone)

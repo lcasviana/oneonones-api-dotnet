@@ -1,7 +1,9 @@
 ﻿using Oneonones.Domain.Entities;
+using Oneonones.Domain.Enums;
 using Oneonones.Persistence.Contracts.Repositories;
 using Oneonones.Service.Contracts;
 using Oneonones.Service.Exceptions;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -9,22 +11,22 @@ namespace Oneonones.Service.Implementations
 {
     public class OneononesService : IOneononesService
     {
-        private readonly IEmployeesRepository employeesRepository;
         private readonly IOneononesRepository oneononesRepository;
+        private readonly IEmployeesService employeesService;
 
         public OneononesService(
-            IEmployeesRepository employeesRepository,
-            IOneononesRepository oneononesRepository)
+            IOneononesRepository oneononesRepository,
+            IEmployeesService employeesService)
         {
-            this.employeesRepository = employeesRepository;
+            this.employeesService = employeesService;
             this.oneononesRepository = oneononesRepository;
         }
 
         public async Task<OneononeEntity> Obtain(string leaderEmail, string ledEmail)
         {
-            var (leader, led) = await ObtainEmployees(leaderEmail, ledEmail);
+            var (leader, led) = await employeesService.ObtainPair(leaderEmail, ledEmail);
 
-            var oneonone = await oneononesRepository.Obtain(leaderEmail, ledEmail)
+            var oneonone = (await oneononesRepository.Obtain(leaderEmail, ledEmail))
                 ?? throw new ApiException(HttpStatusCode.NotFound);
 
             oneonone.Leader = leader;
@@ -35,7 +37,10 @@ namespace Oneonones.Service.Implementations
 
         public async Task Insert(OneononeInputEntity oneononeInput)
         {
-            var (leader, led) = await ObtainEmployees(oneononeInput?.LeaderEmail, oneononeInput?.LedEmail);
+            var (leader, led) = await employeesService.ObtainPair(oneononeInput?.LeaderEmail, oneononeInput?.LedEmail);
+
+            if (!Enum.IsDefined(typeof(OneononeFrequencyEnum), oneononeInput.Frequency))
+                throw new ApiException(HttpStatusCode.BadRequest);
 
             var oneononeObtained = await oneononesRepository.Obtain(oneononeInput.LeaderEmail, oneononeInput.LedEmail);
             if (oneononeObtained != null)
@@ -53,36 +58,26 @@ namespace Oneonones.Service.Implementations
 
         public async Task Update(OneononeInputEntity oneononeInput)
         {
-            var (leader, led) = await ObtainEmployees(oneononeInput?.LeaderEmail, oneononeInput?.LedEmail);
+            var (leader, led) = await employeesService.ObtainPair(oneononeInput?.LeaderEmail, oneononeInput?.LedEmail);
 
-            var oneonone = await oneononesRepository.Obtain(oneononeInput.LeaderEmail, oneononeInput.LedEmail)
+            if (!Enum.IsDefined(typeof(OneononeFrequencyEnum), oneononeInput.Frequency))
+                throw new ApiException(HttpStatusCode.BadRequest);
+
+            var oneonone = (await oneononesRepository.Obtain(oneononeInput.LeaderEmail, oneononeInput.LedEmail))
                 ?? throw new ApiException(HttpStatusCode.NotFound);
 
             oneonone.Leader = leader;
             oneonone.Led = led;
+            oneonone.Frequency = oneononeInput.Frequency;
 
             await oneononesRepository.Update(oneonone);
         }
 
         public async Task Delete(string leaderEmail, string ledEmail)
         {
-            _ = await ObtainEmployees(leaderEmail, ledEmail);
+            _ = await employeesService.ObtainPair(leaderEmail, ledEmail);
 
             await oneononesRepository.Delete(leaderEmail, ledEmail);
-        }
-
-        private async Task<(EmployeeEntity, EmployeeEntity)> ObtainEmployees(string leaderEmail, string ledEmail)
-        {
-            if (string.IsNullOrWhiteSpace(leaderEmail)) throw new ApiException(HttpStatusCode.BadRequest);
-            if (string.IsNullOrWhiteSpace(ledEmail)) throw new ApiException(HttpStatusCode.BadRequest);
-
-            var leaderTask = employeesRepository.Obtain(leaderEmail);
-            var ledTask = employeesRepository.Obtain(ledEmail);
-
-            var leader = await leaderTask ?? throw new ApiException(HttpStatusCode.NotFound);
-            var led = await ledTask ?? throw new ApiException(HttpStatusCode.NotFound);
-
-            return (leader, led);
         }
     }
 }
