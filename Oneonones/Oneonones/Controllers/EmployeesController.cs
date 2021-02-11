@@ -29,7 +29,7 @@ namespace Oneonones.Controllers
         public async Task<IActionResult> Insert([FromBody] EmployeeViewModel employeeViewModel)
         {
             var employeeEntity = employeeViewModel.ToEntity();
-            await employeesService.Update(employeeEntity);
+            await employeesService.Insert(employeeEntity);
             return NoContent();
         }
 
@@ -37,7 +37,7 @@ namespace Oneonones.Controllers
         public async Task<IActionResult> Update([FromBody] EmployeeViewModel employeeViewModel)
         {
             var employeeEntity = employeeViewModel.ToEntity();
-            await employeesService.Insert(employeeEntity);
+            await employeesService.Update(employeeEntity);
             return NoContent();
         }
 

@@ -39,7 +39,7 @@ namespace Oneonones.Controllers
         public async Task<IActionResult> Insert([FromBody] OneononeHistoricalInputViewModel oneononeHistoricalInputModel)
         {
             var oneononeHistoricalInputEntity = oneononeHistoricalInputModel.ToEntity();
-            await oneononesHistoricalService.Update(oneononeHistoricalInputEntity);
+            await oneononesHistoricalService.Insert(oneononeHistoricalInputEntity);
             return NoContent();
         }
 
@@ -47,7 +47,7 @@ namespace Oneonones.Controllers
         public async Task<IActionResult> Update([FromBody] OneononeHistoricalInputViewModel oneononeHistoricalInputModel)
         {
             var oneononeHistoricalInputEntity = oneononeHistoricalInputModel.ToEntity();
-            await oneononesHistoricalService.Insert(oneononeHistoricalInputEntity);
+            await oneononesHistoricalService.Update(oneononeHistoricalInputEntity);
             return NoContent();
         }
 

@@ -7,6 +7,8 @@ namespace Oneonones.Infrastructure.Mapping
     {
         public static OneononeHistoricalInputEntity ToEntity(this OneononeHistoricalInputViewModel viewModel)
         {
+            if (viewModel == null) return null;
+
             var entity = new OneononeHistoricalInputEntity
             {
                 LeaderEmail = viewModel.LeaderEmail,
@@ -14,6 +16,7 @@ namespace Oneonones.Infrastructure.Mapping
                 Occurrence = viewModel.Occurrence,
                 Commentary = viewModel.Commentary,
             };
+
             return entity;
         }
     }

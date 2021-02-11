@@ -7,6 +7,8 @@ namespace Oneonones.Infrastructure.Mapping
     {
         public static OneononeHistoricalViewModel ToViewModel(this OneononeHistoricalEntity entity)
         {
+            if (entity == null) return null;
+
             var viewModel = new OneononeHistoricalViewModel
             {
                 Leader = entity.Leader.ToViewModel(),
@@ -14,6 +16,7 @@ namespace Oneonones.Infrastructure.Mapping
                 Occurrence = entity.Occurrence,
                 Commentary = entity.Commentary,
             };
+
             return viewModel;
         }
     }

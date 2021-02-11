@@ -7,6 +7,8 @@ namespace OneononeHistoricals.Persistence.Mapping
     {
         public static OneononeHistoricalModel ToModel(this OneononeHistoricalEntity entity)
         {
+            if (entity == null) return null;
+
             var model = new OneononeHistoricalModel
             {
                 LeaderEmail = entity.Leader.Email,
@@ -14,11 +16,14 @@ namespace OneononeHistoricals.Persistence.Mapping
                 Occurrence = entity.Occurrence,
                 Commentary = entity.Commentary,
             };
+
             return model;
         }
 
         public static OneononeHistoricalEntity ToEntity(this OneononeHistoricalModel model)
         {
+            if (model == null) return null;
+
             var entity = new OneononeHistoricalEntity
             {
                 Leader = new EmployeeEntity { Email = model.LeaderEmail },
@@ -26,6 +31,7 @@ namespace OneononeHistoricals.Persistence.Mapping
                 Occurrence = model.Occurrence,
                 Commentary = model.Commentary,
             };
+
             return entity;
         }
     }
