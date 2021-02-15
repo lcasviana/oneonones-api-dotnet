@@ -15,9 +15,9 @@ namespace Oneonones.Persistence.Repositories
             this.oneononesDatabase = oneoninesDatabase;
         }
 
-        public async Task<OneononeEntity> Obtain(string leaderEmail, string ledEmail)
+        public async Task<OneononeEntity> ObtainByPair(string leaderEmail, string ledEmail)
         {
-            var oneononeModel = await oneononesDatabase.Obtain(leaderEmail, ledEmail);
+            var oneononeModel = await oneononesDatabase.ObtainByPair(leaderEmail, ledEmail);
             var oneononeEntity = oneononeModel.ToEntity();
             return oneononeEntity;
         }

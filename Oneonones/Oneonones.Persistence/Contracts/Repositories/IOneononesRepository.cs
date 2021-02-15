@@ -5,7 +5,7 @@ namespace Oneonones.Persistence.Contracts.Repositories
 {
     public interface IOneononesRepository
     {
-        Task<OneononeEntity> Obtain(string leaderEmail, string ledEmail);
+        Task<OneononeEntity> ObtainByPair(string leaderEmail, string ledEmail);
         Task Insert(OneononeEntity oneonone);
         Task Update(OneononeEntity oneonone);
         Task Delete(string leaderEmail, string ledEmail);

@@ -22,11 +22,11 @@ namespace Oneonones.Service.Implementations
             this.oneononesRepository = oneononesRepository;
         }
 
-        public async Task<OneononeEntity> Obtain(string leaderEmail, string ledEmail)
+        public async Task<OneononeEntity> ObtainByPair(string leaderEmail, string ledEmail)
         {
             var (leader, led) = await employeesService.ObtainPair(leaderEmail, ledEmail);
 
-            var oneonone = (await oneononesRepository.Obtain(leaderEmail, ledEmail))
+            var oneonone = (await oneononesRepository.ObtainByPair(leaderEmail, ledEmail))
                 ?? throw new ApiException(HttpStatusCode.NotFound);
 
             oneonone.Leader = leader;
@@ -42,7 +42,7 @@ namespace Oneonones.Service.Implementations
             if (!Enum.IsDefined(typeof(OneononeFrequencyEnum), oneononeInput.Frequency))
                 throw new ApiException(HttpStatusCode.BadRequest);
 
-            var oneononeObtained = await oneononesRepository.Obtain(oneononeInput.LeaderEmail, oneononeInput.LedEmail);
+            var oneononeObtained = await oneononesRepository.ObtainByPair(oneononeInput.LeaderEmail, oneononeInput.LedEmail);
             if (oneononeObtained != null)
                 throw new ApiException(HttpStatusCode.Conflict);
 
@@ -63,7 +63,7 @@ namespace Oneonones.Service.Implementations
             if (!Enum.IsDefined(typeof(OneononeFrequencyEnum), oneononeInput.Frequency))
                 throw new ApiException(HttpStatusCode.BadRequest);
 
-            var oneonone = (await oneononesRepository.Obtain(oneononeInput.LeaderEmail, oneononeInput.LedEmail))
+            var oneonone = (await oneononesRepository.ObtainByPair(oneononeInput.LeaderEmail, oneononeInput.LedEmail))
                 ?? throw new ApiException(HttpStatusCode.NotFound);
 
             oneonone.Leader = leader;

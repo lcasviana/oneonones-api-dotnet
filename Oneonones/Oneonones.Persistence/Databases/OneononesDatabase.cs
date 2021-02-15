@@ -9,7 +9,7 @@ namespace Oneonones.Persistence.Databases
 {
     public class OneononesDatabase : SqlBase, IOneononesDatabase
     {
-        private const string obtainQuery = @"
+        private const string obtainByPairQuery = @"
             SELECT
                 leader_email AS LeaderEmail,
                 led_email AS LedEmail,
@@ -49,13 +49,13 @@ namespace Oneonones.Persistence.Databases
                 AND led_email = @ledEmail
         ";
 
-        public async Task<OneononeModel> Obtain(string leaderEmail, string ledEmail)
+        public async Task<OneononeModel> ObtainByPair(string leaderEmail, string ledEmail)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@leaderEmail", leaderEmail, DbType.AnsiString);
             parameters.Add("@ledEmail", ledEmail, DbType.AnsiString);
 
-            var oneononeModel = await QueryFirst<OneononeModel>(obtainQuery, parameters);
+            var oneononeModel = await QueryFirst<OneononeModel>(obtainByPairQuery, parameters);
             return oneononeModel;
         }
 
