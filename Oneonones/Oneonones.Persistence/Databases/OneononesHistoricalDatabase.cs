@@ -12,7 +12,7 @@ namespace Oneonones.Persistence.Databases
 {
     public class OneononesHistoricalDatabase : SqlBase, IOneononesHistoricalDatabase
     {
-        private const string obtainAllQuery = @"
+        private const string obtainByPairQuery = @"
             SELECT
                 leader_email AS LeaderEmail,
                 led_email AS LedEmail,
@@ -25,7 +25,7 @@ namespace Oneonones.Persistence.Databases
                 AND led_email = @ledEmail
         ";
 
-        private const string obtainOccurrenceQuery = @"
+        private const string obtainByPairOccurrenceQuery = @"
             SELECT
                 leader_email AS LeaderEmail,
                 led_email AS LedEmail,
@@ -70,24 +70,24 @@ namespace Oneonones.Persistence.Databases
                 AND occurrence = @occurrence
         ";
 
-        public async Task<IList<OneononeHistoricalModel>> ObtainAll(string leaderEmail, string ledEmail)
+        public async Task<IList<OneononeHistoricalModel>> ObtainByPair(string leaderEmail, string ledEmail)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@leaderEmail", leaderEmail, DbType.AnsiString);
             parameters.Add("@ledEmail", ledEmail, DbType.AnsiString);
 
-            var oneononeHistoricalModel = await Query<OneononeHistoricalModel>(obtainAllQuery, parameters);
+            var oneononeHistoricalModel = await Query<OneononeHistoricalModel>(obtainByPairQuery, parameters);
             return oneononeHistoricalModel.ToList();
         }
 
-        public async Task<OneononeHistoricalModel> ObtainOccurrence(string leaderEmail, string ledEmail, DateTime occurrence)
+        public async Task<OneononeHistoricalModel> ObtainByPairOccurrence(string leaderEmail, string ledEmail, DateTime occurrence)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@leaderEmail", leaderEmail, DbType.AnsiString);
             parameters.Add("@ledEmail", ledEmail, DbType.AnsiString);
             parameters.Add("@occurrence", occurrence, DbType.DateTime);
 
-            var oneononeHistoricalModel = await QueryFirst<OneononeHistoricalModel>(obtainOccurrenceQuery, parameters);
+            var oneononeHistoricalModel = await QueryFirst<OneononeHistoricalModel>(obtainByPairOccurrenceQuery, parameters);
             return oneononeHistoricalModel;
         }
 

@@ -20,17 +20,17 @@ namespace Oneonones.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ObtainAll([FromQuery] string leaderEmail, [FromQuery] string ledEmail)
+        public async Task<IActionResult> ObtainByPair([FromQuery] string leaderEmail, [FromQuery] string ledEmail)
         {
-            var oneononeHistoricalEntityList = await oneononesHistoricalService.ObtainAll(leaderEmail, ledEmail);
+            var oneononeHistoricalEntityList = await oneononesHistoricalService.ObtainByPair(leaderEmail, ledEmail);
             var oneononeHistoricalViewModel = oneononeHistoricalEntityList.Select(h => h.ToViewModel());
             return Ok(oneononeHistoricalViewModel);
         }
 
         [HttpGet("{occurrence}")]
-        public async Task<IActionResult> ObtainOccurrence([FromQuery] string leaderEmail, [FromQuery] string ledEmail, [FromRoute] DateTime occurrence)
+        public async Task<IActionResult> ObtainByPairOccurrence([FromQuery] string leaderEmail, [FromQuery] string ledEmail, [FromRoute] DateTime occurrence)
         {
-            var oneononeHistoricalEntity = await oneononesHistoricalService.ObtainOccurrence(leaderEmail, ledEmail, occurrence);
+            var oneononeHistoricalEntity = await oneononesHistoricalService.ObtainByPairOccurrence(leaderEmail, ledEmail, occurrence);
             var oneononeHistoricalViewModel = oneononeHistoricalEntity.ToViewModel();
             return Ok(oneononeHistoricalViewModel);
         }

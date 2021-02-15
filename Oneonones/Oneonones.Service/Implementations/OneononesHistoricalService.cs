@@ -23,11 +23,11 @@ namespace Oneonones.Service.Implementations
             this.employeesService = employeesService;
         }
 
-        public async Task<IList<OneononeHistoricalEntity>> ObtainAll(string leaderEmail, string ledEmail)
+        public async Task<IList<OneononeHistoricalEntity>> ObtainByPair(string leaderEmail, string ledEmail)
         {
             var (leader, led) = await employeesService.ObtainPair(leaderEmail, ledEmail);
 
-            var oneononeHistoricalList = await oneononesHistoricalRepository.ObtainAll(leaderEmail, ledEmail);
+            var oneononeHistoricalList = await oneononesHistoricalRepository.ObtainByPair(leaderEmail, ledEmail);
 
             oneononeHistoricalList = oneononeHistoricalList.Select(h =>
             {
@@ -39,14 +39,14 @@ namespace Oneonones.Service.Implementations
             return oneononeHistoricalList;
         }
 
-        public async Task<OneononeHistoricalEntity> ObtainOccurrence(string leaderEmail, string ledEmail, DateTime occurrence)
+        public async Task<OneononeHistoricalEntity> ObtainByPairOccurrence(string leaderEmail, string ledEmail, DateTime occurrence)
         {
             var (leader, led) = await employeesService.ObtainPair(leaderEmail, ledEmail);
 
             if (occurrence == DateTime.MinValue)
                 throw new ApiException(HttpStatusCode.BadRequest);
 
-            var oneononeHistorical = await oneononesHistoricalRepository.ObtainOccurrence(leaderEmail, ledEmail, occurrence);
+            var oneononeHistorical = await oneononesHistoricalRepository.ObtainByPairOccurrence(leaderEmail, ledEmail, occurrence);
 
             oneononeHistorical.Leader = leader;
             oneononeHistorical.Led = led;
@@ -61,7 +61,7 @@ namespace Oneonones.Service.Implementations
             if (oneononeHistoricalInput.Occurrence == DateTime.MinValue)
                 throw new ApiException(HttpStatusCode.BadRequest);
 
-            var oneononeHistoricalObtained = await oneononesHistoricalRepository.ObtainOccurrence(
+            var oneononeHistoricalObtained = await oneononesHistoricalRepository.ObtainByPairOccurrence(
                oneononeHistoricalInput.LeaderEmail, oneononeHistoricalInput.LedEmail, oneononeHistoricalInput.Occurrence);
             if (oneononeHistoricalObtained != null)
                 throw new ApiException(HttpStatusCode.Conflict);
@@ -84,7 +84,7 @@ namespace Oneonones.Service.Implementations
             if (oneononeHistoricalInput.Occurrence == DateTime.MinValue)
                 throw new ApiException(HttpStatusCode.BadRequest);
 
-            var oneononeHistorical = (await oneononesHistoricalRepository.ObtainOccurrence(
+            var oneononeHistorical = (await oneononesHistoricalRepository.ObtainByPairOccurrence(
                 oneononeHistoricalInput.LeaderEmail, oneononeHistoricalInput.LedEmail, oneononeHistoricalInput.Occurrence))
                 ?? throw new ApiException(HttpStatusCode.NotFound);
 
