@@ -18,7 +18,7 @@ namespace Oneonones.Controllers
             this.oneononesService = oneononesService;
         }
 
-        [HttpGet("{email}")]
+        [HttpGet]
         public async Task<IActionResult> ObtainAll()
         {
             var oneononeEntityList = await oneononesService.ObtainAll();
