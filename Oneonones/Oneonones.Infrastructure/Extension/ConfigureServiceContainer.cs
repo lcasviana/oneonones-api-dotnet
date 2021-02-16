@@ -15,6 +15,7 @@ namespace Oneonones.Infrastructure.Extension
         {
             serviceCollection.AddSingleton<IEmployeesService, EmployeesService>();
             serviceCollection.AddSingleton<IOneononesService, OneononesService>();
+            serviceCollection.AddSingleton<IOneononesHistoricalService, OneononesHistoricalService>();
         }
 
         public static void AddPersistencesImplementations(this IServiceCollection serviceCollection)
