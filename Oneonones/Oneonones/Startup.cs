@@ -5,10 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
-using Microsoft.OpenApi.Models;
-using Oneonones.Infrastructure.Extension;
+using Oneonones.Infrastructure.Configurations;
 using Serilog;
-using System;
 using System.IO;
 
 namespace Oneonones
@@ -20,7 +18,8 @@ namespace Oneonones
             Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger();
             Configuration = configuration;
 
-            IConfigurationBuilder builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");
+            IConfigurationBuilder builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");
             _ = builder.Build();
         }
 
@@ -28,46 +27,22 @@ namespace Oneonones
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddController();
-            services.AddServicesImplementations();
-            services.AddPersistencesImplementations();
-            services.AddVersion();
+            services.ConfigureApi();
+            services.ResolveDependencyInjections();
             services.AddFeatureManagement();
-            services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Version = "v1",
-                Title = "Oneonones API",
-                Contact = new OpenApiContact
-                {
-                    Name = "Lucas Silvestre Viana",
-                    Email = "lcasviana@gmail.com",
-                    Url = new Uri("https://github.com/lcasviana"),
-                },
-            }));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory log)
         {
-            if (env.IsDevelopment())
-                app.UseDeveloperExceptionPage();
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
-            app.UseCors(options => options
-                 .WithOrigins("http://localhost:3000")
-                 .AllowAnyHeader()
-                 .AllowAnyMethod());
-
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Oneonones API"));
-
+            app.UseCors(options => options.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod());
+            app.AddSwagger();
             log.AddSerilog();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
 }

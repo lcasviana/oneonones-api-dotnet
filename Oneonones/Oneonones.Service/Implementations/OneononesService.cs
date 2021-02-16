@@ -5,6 +5,7 @@ using Oneonones.Service.Contracts;
 using Oneonones.Service.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -26,7 +27,8 @@ namespace Oneonones.Service.Implementations
         public async Task<IList<OneononeEntity>> ObtainAll()
         {
             var oneononeList = await oneononesRepository.ObtainAll();
-            return oneononeList;
+            var oneononeListComplete = await CompleteEntityList(oneononeList);
+            return oneononeListComplete;
         }
 
         public async Task<IList<OneononeEntity>> ObtainByEmployee(string email)
@@ -35,7 +37,8 @@ namespace Oneonones.Service.Implementations
                 throw new ApiException(HttpStatusCode.BadRequest);
 
             var oneononeList = await oneononesRepository.ObtainByEmployee(email);
-            return oneononeList;
+            var oneononeListComplete = await CompleteEntityList(oneononeList);
+            return oneononeListComplete;
         }
 
         public async Task<OneononeEntity> ObtainByPair(string leaderEmail, string ledEmail)
@@ -80,6 +83,17 @@ namespace Oneonones.Service.Implementations
             _ = await employeesService.ObtainPair(leaderEmail, ledEmail);
 
             await oneononesRepository.Delete(leaderEmail, ledEmail);
+        }
+
+        private async Task<IList<OneononeEntity>> CompleteEntityList(IList<OneononeEntity> oneononelList)
+        {
+            var oneononeTasks = oneononelList.Select(async o =>
+            {
+                var (leader, led) = await employeesService.ObtainPair(o.Leader.Email, o.Led.Email);
+                return NewEntity(leader, led, o.Frequency);
+            });
+            var oneononeComplete = await Task.WhenAll(oneononeTasks);
+            return oneononeComplete.ToList();
         }
 
         private OneononeEntity NewEntity(EmployeeEntity leader, EmployeeEntity led, OneononeFrequencyEnum frequency)
