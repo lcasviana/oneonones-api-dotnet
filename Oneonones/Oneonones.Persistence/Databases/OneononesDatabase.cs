@@ -2,6 +2,7 @@
 using Oneonones.Persistence.Base;
 using Oneonones.Persistence.Contracts.Databases;
 using Oneonones.Persistence.Models;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -9,6 +10,27 @@ namespace Oneonones.Persistence.Databases
 {
     public class OneononesDatabase : SqlBase, IOneononesDatabase
     {
+        private const string obtainAllQuery = @"
+            SELECT
+                leader_email AS LeaderEmail,
+                led_email AS LedEmail,
+                frequency_type AS FrequencyType
+            FROM
+                oneonones
+        ";
+
+        private const string obtainByEmployeeQuery = @"
+            SELECT
+                leader_email AS LeaderEmail,
+                led_email AS LedEmail,
+                frequency_type AS FrequencyType
+            FROM
+                oneonones
+            WHERE
+                leader_email = @email
+                OR led_email = @email
+        ";
+
         private const string obtainByPairQuery = @"
             SELECT
                 leader_email AS LeaderEmail,
@@ -48,6 +70,21 @@ namespace Oneonones.Persistence.Databases
                 leader_email = @leaderEmail
                 AND led_email = @ledEmail
         ";
+
+        public async Task<IList<OneononeModel>> ObtainAll()
+        {
+            var oneononeModelList = await Query<OneononeModel>(obtainAllQuery);
+            return oneononeModelList;
+        }
+
+        public async Task<IList<OneononeModel>> ObtainByEmployee(string email)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@email", email, DbType.AnsiString);
+
+            var oneononeModelList = await Query<OneononeModel>(obtainByEmployeeQuery, parameters);
+            return oneononeModelList;
+        }
 
         public async Task<OneononeModel> ObtainByPair(string leaderEmail, string ledEmail)
         {

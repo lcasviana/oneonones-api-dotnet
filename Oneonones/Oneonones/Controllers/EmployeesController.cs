@@ -2,6 +2,7 @@
 using Oneonones.Infrastructure.Mapping;
 using Oneonones.Infrastructure.ViewModel;
 using Oneonones.Service.Contracts;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Oneonones.Controllers
@@ -18,11 +19,19 @@ namespace Oneonones.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Obtain([FromQuery] string email)
+        public async Task<IActionResult> ObtainAll()
         {
-            var oneononeEntity = await employeesService.Obtain(email);
-            var oneononeModel = oneononeEntity.ToViewModel();
-            return Ok(oneononeModel);
+            var employeeEntityList = await employeesService.ObtainAll();
+            var employeeViewModelList = employeeEntityList.Select(EmployeeMap.ToViewModel).ToList();
+            return Ok(employeeViewModelList);
+        }
+
+        [HttpGet("{email}")]
+        public async Task<IActionResult> Obtain([FromRoute] string email)
+        {
+            var employeeEntity = await employeesService.Obtain(email);
+            var employeeViewModel = employeeEntity.ToViewModel();
+            return Ok(employeeViewModel);
         }
 
         [HttpPost]
@@ -41,8 +50,8 @@ namespace Oneonones.Controllers
             return NoContent();
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] string email)
+        [HttpDelete("{email}")]
+        public async Task<IActionResult> Delete([FromRoute] string email)
         {
             await employeesService.Delete(email);
             return NoContent();

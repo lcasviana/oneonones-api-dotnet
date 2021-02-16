@@ -3,7 +3,7 @@ using Oneonones.Persistence.Models;
 
 namespace OneononeHistoricals.Persistence.Mapping
 {
-    public static class OneononeHistoricalHistoricalMap
+    public static class OneononeHistoricalMap
     {
         public static OneononeHistoricalModel ToModel(this OneononeHistoricalEntity entity)
         {

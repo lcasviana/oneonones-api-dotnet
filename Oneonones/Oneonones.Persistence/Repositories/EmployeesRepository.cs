@@ -2,6 +2,8 @@
 using Oneonones.Domain.Entities;
 using Oneonones.Persistence.Contracts.Databases;
 using Oneonones.Persistence.Contracts.Repositories;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Oneonones.Persistence.Repositories
@@ -13,6 +15,13 @@ namespace Oneonones.Persistence.Repositories
         public EmployeesRepository(IEmployeesDatabase employeesDatabase)
         {
             this.employeesDatabase = employeesDatabase;
+        }
+
+        public async Task<IList<EmployeeEntity>> ObtainAll()
+        {
+            var employeeModelList = await employeesDatabase.ObtainAll();
+            var employeeEntityList = employeeModelList.Select(EmployeeMap.ToEntity).ToList();
+            return employeeEntityList;
         }
 
         public async Task<EmployeeEntity> Obtain(string email)

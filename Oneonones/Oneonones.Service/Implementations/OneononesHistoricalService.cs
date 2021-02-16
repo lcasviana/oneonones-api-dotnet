@@ -23,20 +23,30 @@ namespace Oneonones.Service.Implementations
             this.employeesService = employeesService;
         }
 
+        public async Task<IList<OneononeHistoricalEntity>> ObtainAll()
+        {
+            var oneononeHistoricalList = await oneononesHistoricalRepository.ObtainAll();
+            var oneononeHistoricalListComplete = await CompleteEntityList(oneononeHistoricalList);
+            return oneononeHistoricalListComplete;
+        }
+
+        public async Task<IList<OneononeHistoricalEntity>> ObtainByEmployee(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                throw new ApiException(HttpStatusCode.BadRequest);
+
+            var oneononeHistoricalList = await oneononesHistoricalRepository.ObtainByEmployee(email);
+            var oneononeHistoricalListComplete = await CompleteEntityList(oneononeHistoricalList);
+            return oneononeHistoricalListComplete;
+        }
+
         public async Task<IList<OneononeHistoricalEntity>> ObtainByPair(string leaderEmail, string ledEmail)
         {
             var (leader, led) = await employeesService.ObtainPair(leaderEmail, ledEmail);
 
             var oneononeHistoricalList = await oneononesHistoricalRepository.ObtainByPair(leaderEmail, ledEmail);
-
-            oneononeHistoricalList = oneononeHistoricalList.Select(h =>
-            {
-                h.Leader = leader;
-                h.Led = led;
-                return h;
-            }).ToList();
-
-            return oneononeHistoricalList;
+            var oneononeHistoricalListComplete = oneononeHistoricalList.Select(h => NewEntity(leader, led, h.Occurrence, h.Commentary)).ToList();
+            return oneononeHistoricalListComplete;
         }
 
         public async Task<OneononeHistoricalEntity> ObtainByPairOccurrence(string leaderEmail, string ledEmail, DateTime occurrence)
@@ -47,11 +57,8 @@ namespace Oneonones.Service.Implementations
                 throw new ApiException(HttpStatusCode.BadRequest);
 
             var oneononeHistorical = await oneononesHistoricalRepository.ObtainByPairOccurrence(leaderEmail, ledEmail, occurrence);
-
-            oneononeHistorical.Leader = leader;
-            oneononeHistorical.Led = led;
-
-            return oneononeHistorical;
+            var oneononeHistoricalComplete = NewEntity(leader, led, oneononeHistorical.Occurrence, oneononeHistorical.Commentary);
+            return oneononeHistoricalComplete;
         }
 
         public async Task Insert(OneononeHistoricalInputEntity oneononeHistoricalInput)
@@ -66,15 +73,8 @@ namespace Oneonones.Service.Implementations
             if (oneononeHistoricalObtained != null)
                 throw new ApiException(HttpStatusCode.Conflict);
 
-            var oneononeHistorical = new OneononeHistoricalEntity
-            {
-                Leader = leader,
-                Led = led,
-                Occurrence = oneononeHistoricalInput.Occurrence,
-                Commentary = oneononeHistoricalInput.Commentary,
-            };
-
-            await oneononesHistoricalRepository.Insert(oneononeHistorical);
+            var oneononeHistoricalComplete = NewEntity(leader, led, oneononeHistoricalInput.Occurrence, oneononeHistoricalInput.Commentary);
+            await oneononesHistoricalRepository.Insert(oneononeHistoricalComplete);
         }
 
         public async Task Update(OneononeHistoricalInputEntity oneononeHistoricalInput)
@@ -84,16 +84,12 @@ namespace Oneonones.Service.Implementations
             if (oneononeHistoricalInput.Occurrence == DateTime.MinValue)
                 throw new ApiException(HttpStatusCode.BadRequest);
 
-            var oneononeHistorical = (await oneononesHistoricalRepository.ObtainByPairOccurrence(
+            _ = (await oneononesHistoricalRepository.ObtainByPairOccurrence(
                 oneononeHistoricalInput.LeaderEmail, oneononeHistoricalInput.LedEmail, oneononeHistoricalInput.Occurrence))
                 ?? throw new ApiException(HttpStatusCode.NotFound);
 
-            oneononeHistorical.Leader = leader;
-            oneononeHistorical.Led = led;
-            oneononeHistorical.Occurrence = oneononeHistoricalInput.Occurrence;
-            oneononeHistorical.Commentary = oneononeHistoricalInput.Commentary;
-
-            await oneononesHistoricalRepository.Update(oneononeHistorical);
+            var oneononeHistoricalComplete = NewEntity(leader, led, oneononeHistoricalInput.Occurrence, oneononeHistoricalInput.Commentary);
+            await oneononesHistoricalRepository.Update(oneononeHistoricalComplete);
         }
 
         public async Task Delete(string leaderEmail, string ledEmail, DateTime occurrence)
@@ -101,6 +97,28 @@ namespace Oneonones.Service.Implementations
             _ = await employeesService.ObtainPair(leaderEmail, ledEmail);
 
             await oneononesHistoricalRepository.Delete(leaderEmail, ledEmail, occurrence);
+        }
+
+        private async Task<IList<OneononeHistoricalEntity>> CompleteEntityList(IList<OneononeHistoricalEntity> oneononeHistoricalList)
+        {
+            var oneononeHistoricalTasks = oneononeHistoricalList.Select(async h =>
+            {
+                var (leader, led) = await employeesService.ObtainPair(h.Leader.Email, h.Led.Email);
+                return NewEntity(leader, led, h.Occurrence, h.Commentary);
+            });
+            var oneononeHistoricalComplete = await Task.WhenAll(oneononeHistoricalTasks);
+            return oneononeHistoricalComplete.ToList();
+        }
+
+        private OneononeHistoricalEntity NewEntity(EmployeeEntity leader, EmployeeEntity led, DateTime occurrence, string commentary)
+        {
+            return new OneononeHistoricalEntity
+            {
+                Leader = leader,
+                Led = led,
+                Occurrence = occurrence,
+                Commentary = commentary,
+            };
         }
     }
 }

@@ -12,6 +12,29 @@ namespace Oneonones.Persistence.Databases
 {
     public class OneononesHistoricalDatabase : SqlBase, IOneononesHistoricalDatabase
     {
+        private const string obtainAllQuery = @"
+            SELECT
+                leader_email AS LeaderEmail,
+                led_email AS LedEmail,
+                occurrence AS Occurrence,
+                commentary AS Commentary
+            FROM
+                oneonones_historical
+        ";
+
+        private const string obtainByEmployeeQuery = @"
+            SELECT
+                leader_email AS LeaderEmail,
+                led_email AS LedEmail,
+                occurrence AS Occurrence,
+                commentary AS Commentary
+            FROM
+                oneonones_historical
+            WHERE
+                leader_email = @email
+                OR led_email = @email
+        ";
+
         private const string obtainByPairQuery = @"
             SELECT
                 leader_email AS LeaderEmail,
@@ -70,14 +93,29 @@ namespace Oneonones.Persistence.Databases
                 AND occurrence = @occurrence
         ";
 
+        public async Task<IList<OneononeHistoricalModel>> ObtainAll()
+        {
+            var oneononeHistoricalModelList = await Query<OneononeHistoricalModel>(obtainAllQuery);
+            return oneononeHistoricalModelList;
+        }
+
+        public async Task<IList<OneononeHistoricalModel>> ObtainByEmployee(string email)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@email", email, DbType.AnsiString);
+
+            var oneononeHistoricalModelList = await Query<OneononeHistoricalModel>(obtainByEmployeeQuery, parameters);
+            return oneononeHistoricalModelList;
+        }
+
         public async Task<IList<OneononeHistoricalModel>> ObtainByPair(string leaderEmail, string ledEmail)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@leaderEmail", leaderEmail, DbType.AnsiString);
             parameters.Add("@ledEmail", ledEmail, DbType.AnsiString);
 
-            var oneononeHistoricalModel = await Query<OneononeHistoricalModel>(obtainByPairQuery, parameters);
-            return oneononeHistoricalModel.ToList();
+            var oneononeHistoricalModelList = await Query<OneononeHistoricalModel>(obtainByPairQuery, parameters);
+            return oneononeHistoricalModelList;
         }
 
         public async Task<OneononeHistoricalModel> ObtainByPairOccurrence(string leaderEmail, string ledEmail, DateTime occurrence)

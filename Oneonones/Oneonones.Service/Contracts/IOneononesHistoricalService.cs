@@ -7,6 +7,8 @@ namespace Oneonones.Service.Contracts
 {
     public interface IOneononesHistoricalService
     {
+        Task<IList<OneononeHistoricalEntity>> ObtainAll();
+        Task<IList<OneononeHistoricalEntity>> ObtainByEmployee(string email);
         Task<IList<OneononeHistoricalEntity>> ObtainByPair(string leaderEmail, string ledEmail);
         Task<OneononeHistoricalEntity> ObtainByPairOccurrence(string leaderEmail, string ledEmail, DateTime occurrence);
         Task Insert(OneononeHistoricalInputEntity oneononeHistoricalInput);

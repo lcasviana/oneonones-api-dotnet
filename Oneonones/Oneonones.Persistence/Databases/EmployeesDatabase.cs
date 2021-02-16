@@ -2,6 +2,7 @@
 using Oneonones.Persistence.Base;
 using Oneonones.Persistence.Contracts.Databases;
 using Oneonones.Persistence.Models;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -9,6 +10,14 @@ namespace Oneonones.Persistence.Databases
 {
     public class EmployeesDatabase : SqlBase, IEmployeesDatabase
     {
+        private const string obtainAllQuery = @"
+            SELECT
+                email AS Email,
+                name AS Name
+            FROM
+                employees
+        ";
+
         private const string obtainQuery = @"
             SELECT
                 email AS Email,
@@ -43,6 +52,12 @@ namespace Oneonones.Persistence.Databases
             WHERE
                 email = @email
         ";
+
+        public async Task<IList<EmployeeModel>> ObtainAll()
+        {
+            var employeeModelList = await Query<EmployeeModel>(obtainAllQuery);
+            return employeeModelList;
+        }
 
         public async Task<EmployeeModel> Obtain(string email)
         {

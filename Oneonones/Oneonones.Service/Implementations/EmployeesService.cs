@@ -2,6 +2,7 @@
 using Oneonones.Persistence.Contracts.Repositories;
 using Oneonones.Service.Contracts;
 using Oneonones.Service.Exceptions;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -14,6 +15,12 @@ namespace Oneonones.Service.Implementations
         public EmployeesService(IEmployeesRepository employeesRepository)
         {
             this.employeesRepository = employeesRepository;
+        }
+
+        public async Task<IList<EmployeeEntity>> ObtainAll()
+        {
+            var employeeList = await employeesRepository.ObtainAll();
+            return employeeList;
         }
 
         public async Task<(EmployeeEntity, EmployeeEntity)> ObtainPair(string leaderEmail, string ledEmail)

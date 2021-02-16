@@ -2,6 +2,7 @@
 using Oneonones.Infrastructure.Mapping;
 using Oneonones.Infrastructure.ViewModel;
 using Oneonones.Service.Contracts;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Oneonones.Controllers
@@ -17,12 +18,28 @@ namespace Oneonones.Controllers
             this.oneononesService = oneononesService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> ObtainByPair([FromQuery] string leaderEmail, [FromQuery] string ledEmail)
+        [HttpGet("{email}")]
+        public async Task<IActionResult> ObtainAll()
+        {
+            var oneononeEntityList = await oneononesService.ObtainAll();
+            var oneononeViewModelList = oneononeEntityList.Select(OneononeMap.ToViewModel).ToList();
+            return Ok(oneononeViewModelList);
+        }
+
+        [HttpGet("{email}")]
+        public async Task<IActionResult> ObtainByEmployee([FromRoute] string email)
+        {
+            var oneononeEntityList = await oneononesService.ObtainByEmployee(email);
+            var oneononeViewModelList = oneononeEntityList.Select(OneononeMap.ToViewModel).ToList();
+            return Ok(oneononeViewModelList);
+        }
+
+        [HttpGet("{leaderEmail}/{ledEmail}")]
+        public async Task<IActionResult> ObtainByPair([FromRoute] string leaderEmail, [FromRoute] string ledEmail)
         {
             var oneononeEntity = await oneononesService.ObtainByPair(leaderEmail, ledEmail);
-            var oneononeModel = oneononeEntity.ToViewModel();
-            return Ok(oneononeModel);
+            var oneononeViewModel = oneononeEntity.ToViewModel();
+            return Ok(oneononeViewModel);
         }
 
         [HttpPost]
@@ -41,8 +58,8 @@ namespace Oneonones.Controllers
             return NoContent();
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] string leaderEmail, [FromQuery] string ledEmail)
+        [HttpDelete("{leaderEmail}/{ledEmail}")]
+        public async Task<IActionResult> Delete([FromRoute] string leaderEmail, [FromRoute] string ledEmail)
         {
             await oneononesService.Delete(leaderEmail, ledEmail);
             return NoContent();

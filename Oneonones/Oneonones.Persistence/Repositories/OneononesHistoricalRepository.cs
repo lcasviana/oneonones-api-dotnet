@@ -18,11 +18,25 @@ namespace Oneonones.Persistence.Repositories
             this.oneononesHistoricalDatabase = oneononesHistoricalDatabase;
         }
 
+        public async Task<IList<OneononeHistoricalEntity>> ObtainAll()
+        {
+            var oneononeHistoricalModelList = await oneononesHistoricalDatabase.ObtainAll();
+            var oneononeHistoricalEntityList = oneononeHistoricalModelList.Select(OneononeHistoricalMap.ToEntity).ToList();
+            return oneononeHistoricalEntityList;
+        }
+
+        public async Task<IList<OneononeHistoricalEntity>> ObtainByEmployee(string email)
+        {
+            var oneononeHistoricalModelList = await oneononesHistoricalDatabase.ObtainByEmployee(email);
+            var oneononeHistoricalEntityList = oneononeHistoricalModelList.Select(OneononeHistoricalMap.ToEntity).ToList();
+            return oneononeHistoricalEntityList;
+        }
+
         public async Task<IList<OneononeHistoricalEntity>> ObtainByPair(string leaderEmail, string ledEmail)
         {
-            var oneononeHistoricalModel = await oneononesHistoricalDatabase.ObtainByPair(leaderEmail, ledEmail);
-            var oneononeHistoricalEntity = oneononeHistoricalModel.Select(model => model.ToEntity());
-            return oneononeHistoricalEntity.ToList();
+            var oneononeHistoricalModelList = await oneononesHistoricalDatabase.ObtainByPair(leaderEmail, ledEmail);
+            var oneononeHistoricalEntityList = oneononeHistoricalModelList.Select(OneononeHistoricalMap.ToEntity).ToList();
+            return oneononeHistoricalEntityList;
         }
 
         public async Task<OneononeHistoricalEntity> ObtainByPairOccurrence(string leaderEmail, string ledEmail, DateTime occurrence)

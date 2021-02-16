@@ -2,6 +2,8 @@
 using Oneonones.Persistence.Contracts.Databases;
 using Oneonones.Persistence.Contracts.Repositories;
 using Oneonones.Persistence.Mapping;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Oneonones.Persistence.Repositories
@@ -10,9 +12,23 @@ namespace Oneonones.Persistence.Repositories
     {
         private readonly IOneononesDatabase oneononesDatabase;
 
-        public OneononesRepository(IOneononesDatabase oneoninesDatabase)
+        public OneononesRepository(IOneononesDatabase oneononesDatabase)
         {
-            this.oneononesDatabase = oneoninesDatabase;
+            this.oneononesDatabase = oneononesDatabase;
+        }
+
+        public async Task<IList<OneononeEntity>> ObtainAll()
+        {
+            var oneononeModelList = await oneononesDatabase.ObtainAll();
+            var oneononeEntityList = oneononeModelList.Select(OneononeMap.ToEntity).ToList();
+            return oneononeEntityList;
+        }
+
+        public async Task<IList<OneononeEntity>> ObtainByEmployee(string email)
+        {
+            var oneononeModelList = await oneononesDatabase.ObtainByEmployee(email);
+            var oneononeEntityList = oneononeModelList.Select(OneononeMap.ToEntity).ToList();
+            return oneononeEntityList;
         }
 
         public async Task<OneononeEntity> ObtainByPair(string leaderEmail, string ledEmail)
