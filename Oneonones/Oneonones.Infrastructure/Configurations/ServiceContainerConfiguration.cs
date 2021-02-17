@@ -10,13 +10,16 @@ namespace Oneonones.Infrastructure.Configurations
     {
         public static void ConfigureApi(this IServiceCollection serviceCollection)
         {
-            serviceCollection.AddControllers().AddNewtonsoftJson();
+            serviceCollection.AddControllers(options => options.Filters.Add(new GlobalExceptionFilterAttribute()))
+                .AddNewtonsoftJson();
+
             serviceCollection.AddApiVersioning(config =>
             {
                 config.DefaultApiVersion = new ApiVersion(1, 0);
                 config.AssumeDefaultVersionWhenUnspecified = true;
                 config.ReportApiVersions = true;
             });
+
             serviceCollection.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo
             {
                 Version = "v1",
