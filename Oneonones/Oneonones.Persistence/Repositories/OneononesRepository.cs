@@ -38,21 +38,24 @@ namespace Oneonones.Persistence.Repositories
             return oneononeEntity;
         }
 
-        public async Task Insert(OneononeEntity oneonone)
+        public async Task<bool> Insert(OneononeEntity oneonone)
         {
             var oneononeModel = oneonone.ToModel();
-            await oneononesDatabase.Insert(oneononeModel);
+            var rowsAffected = await oneononesDatabase.Insert(oneononeModel);
+            return rowsAffected == 1;
         }
 
-        public async Task Update(OneononeEntity oneonone)
+        public async Task<bool> Update(OneononeEntity oneonone)
         {
             var oneononeModel = oneonone.ToModel();
-            await oneononesDatabase.Update(oneononeModel);
+            var rowsAffected = await oneononesDatabase.Update(oneononeModel);
+            return rowsAffected == 1;
         }
 
-        public async Task Delete(string leaderEmail, string ledEmail)
+        public async Task<bool> Delete(string leaderEmail, string ledEmail)
         {
-            await oneononesDatabase.Delete(leaderEmail, ledEmail);
+            var rowsAffected = await oneononesDatabase.Delete(leaderEmail, ledEmail);
+            return rowsAffected == 1;
         }
     }
 }

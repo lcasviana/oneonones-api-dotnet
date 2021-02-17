@@ -128,7 +128,7 @@ namespace Oneonones.Persistence.Databases
             return oneononeHistoricalModel;
         }
 
-        public async Task Insert(OneononeHistoricalModel oneonone)
+        public async Task<int> Insert(OneononeHistoricalModel oneonone)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@leaderEmail", oneonone.LeaderEmail, DbType.AnsiString);
@@ -136,10 +136,11 @@ namespace Oneonones.Persistence.Databases
             parameters.Add("@occurrence", oneonone.Occurrence, DbType.DateTime);
             parameters.Add("@commentary", oneonone.Commentary, DbType.AnsiString);
 
-            await Execute(insertQuery, parameters);
+            var rowsAffected = await Execute(insertQuery, parameters);
+            return rowsAffected;
         }
 
-        public async Task Update(OneononeHistoricalModel oneonone)
+        public async Task<int> Update(OneononeHistoricalModel oneonone)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@leaderEmail", oneonone.LeaderEmail, DbType.AnsiString);
@@ -147,17 +148,19 @@ namespace Oneonones.Persistence.Databases
             parameters.Add("@occurrence", oneonone.Occurrence, DbType.DateTime);
             parameters.Add("@commentary", oneonone.Commentary, DbType.AnsiString);
 
-            await Execute(updateQuery, parameters);
+            var rowsAffected = await Execute(updateQuery, parameters);
+            return rowsAffected;
         }
 
-        public async Task Delete(string leaderEmail, string ledEmail, DateTime occurrence)
+        public async Task<int> Delete(string leaderEmail, string ledEmail, DateTime occurrence)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@leaderEmail", leaderEmail, DbType.AnsiString);
             parameters.Add("@ledEmail", ledEmail, DbType.AnsiString);
             parameters.Add("@occurrence", occurrence, DbType.DateTime);
 
-            await Execute(deleteQuery, parameters);
+            var rowsAffected = await Execute(deleteQuery, parameters);
+            return rowsAffected;
         }
     }
 }

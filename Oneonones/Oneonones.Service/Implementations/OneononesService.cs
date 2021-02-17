@@ -37,6 +37,8 @@ namespace Oneonones.Service.Implementations
             if (string.IsNullOrWhiteSpace(email))
                 throw new ApiException(HttpStatusCode.BadRequest, EmployeesMessages.InvalidEmail);
 
+            _ = await employeesService.Obtain(email);
+
             var oneononeList = await oneononesRepository.ObtainByEmployee(email);
             var oneononeListComplete = await CompleteEntityList(oneononeList);
             return oneononeListComplete;
@@ -63,7 +65,8 @@ namespace Oneonones.Service.Implementations
             if (oneononeObtained != null)
                 throw new ApiException(HttpStatusCode.Conflict, OneononesMessages.Conflict, oneononeInput.LeaderEmail, oneononeInput.LedEmail);
 
-            await oneononesRepository.Insert(NewEntity(leader, led, oneononeInput.Frequency));
+            var inserted = await oneononesRepository.Insert(NewEntity(leader, led, oneononeInput.Frequency));
+            if (!inserted) throw new ApiException(HttpStatusCode.InternalServerError, OneononesMessages.Insert, oneononeInput.LeaderEmail, oneononeInput.LedEmail);
         }
 
         public async Task Update(OneononeInputEntity oneononeInput)
@@ -76,14 +79,19 @@ namespace Oneonones.Service.Implementations
             _ = (await oneononesRepository.ObtainByPair(oneononeInput.LeaderEmail, oneononeInput.LedEmail))
                 ?? throw new ApiException(HttpStatusCode.NotFound, OneononesMessages.NotFound, oneononeInput.LeaderEmail, oneononeInput.LedEmail);
 
-            await oneononesRepository.Update(NewEntity(leader, led, oneononeInput.Frequency));
+            var updated = await oneononesRepository.Update(NewEntity(leader, led, oneononeInput.Frequency));
+            if (!updated) throw new ApiException(HttpStatusCode.InternalServerError, OneononesMessages.Update, oneononeInput.LeaderEmail, oneononeInput.LedEmail);
         }
 
         public async Task Delete(string leaderEmail, string ledEmail)
         {
             _ = await employeesService.ObtainPair(leaderEmail, ledEmail);
 
-            await oneononesRepository.Delete(leaderEmail, ledEmail);
+            _ = (await oneononesRepository.ObtainByPair(leaderEmail, ledEmail))
+                ?? throw new ApiException(HttpStatusCode.NotFound, OneononesMessages.NotFound, leaderEmail, ledEmail);
+
+            var deleted = await oneononesRepository.Delete(leaderEmail, ledEmail);
+            if (!deleted) throw new ApiException(HttpStatusCode.InternalServerError, OneononesMessages.Delete, leaderEmail, ledEmail);
         }
 
         private async Task<IList<OneononeEntity>> CompleteEntityList(IList<OneononeEntity> oneononelList)
@@ -93,6 +101,7 @@ namespace Oneonones.Service.Implementations
                 var (leader, led) = await employeesService.ObtainPair(o.Leader.Email, o.Led.Email);
                 return NewEntity(leader, led, o.Frequency);
             });
+
             var oneononeComplete = await Task.WhenAll(oneononeTasks);
             return oneononeComplete.ToList();
         }

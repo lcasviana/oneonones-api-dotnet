@@ -57,7 +57,8 @@ namespace Oneonones.Service.Implementations
             if (employeeObtained != null)
                 throw new ApiException(HttpStatusCode.Conflict, EmployeesMessages.Conflict, employee.Email);
 
-            await employeesRepository.Insert(employee);
+            var inserted = await employeesRepository.Insert(employee);
+            if (!inserted) throw new ApiException(HttpStatusCode.InternalServerError, OneononesMessages.Insert, employee.Email);
         }
 
         public async Task Update(EmployeeEntity employee)
@@ -66,16 +67,21 @@ namespace Oneonones.Service.Implementations
             if (string.IsNullOrWhiteSpace(employee.Name)) throw new ApiException(HttpStatusCode.BadRequest, EmployeesMessages.InvalidName);
 
             _ = (await employeesRepository.Obtain(employee.Email))
-                ?? throw new ApiException(HttpStatusCode.NotFound, EmployeesMessages.NotFound);
+                ?? throw new ApiException(HttpStatusCode.NotFound, EmployeesMessages.NotFound, employee.Email);
 
-            await employeesRepository.Update(employee);
+            var updated = await employeesRepository.Update(employee);
+            if (!updated) throw new ApiException(HttpStatusCode.InternalServerError, EmployeesMessages.Update, employee.Email);
         }
 
         public async Task Delete(string email)
         {
             if (string.IsNullOrWhiteSpace(email)) throw new ApiException(HttpStatusCode.BadRequest, EmployeesMessages.InvalidEmail);
 
-            await employeesRepository.Delete(email);
+            _ = (await employeesRepository.Obtain(email))
+                ?? throw new ApiException(HttpStatusCode.NotFound, EmployeesMessages.NotFound, email);
+
+            var deleted = await employeesRepository.Delete(email);
+            if (!deleted) throw new ApiException(HttpStatusCode.InternalServerError, EmployeesMessages.Delete, email);
         }
     }
 }

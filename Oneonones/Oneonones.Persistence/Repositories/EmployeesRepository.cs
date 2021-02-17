@@ -31,21 +31,24 @@ namespace Oneonones.Persistence.Repositories
             return employeeEntity;
         }
 
-        public async Task Insert(EmployeeEntity employee)
+        public async Task<bool> Insert(EmployeeEntity employee)
         {
             var employeeModel = employee.ToModel();
-            await employeesDatabase.Insert(employeeModel);
+            var rowsAffected = await employeesDatabase.Insert(employeeModel);
+            return rowsAffected != 0;
         }
 
-        public async Task Update(EmployeeEntity employee)
+        public async Task<bool> Update(EmployeeEntity employee)
         {
             var employeeModel = employee.ToModel();
-            await employeesDatabase.Update(employeeModel);
+            var rowsAffected = await employeesDatabase.Update(employeeModel);
+            return rowsAffected != 0;
         }
 
-        public async Task Delete(string email)
+        public async Task<bool> Delete(string email)
         {
-            await employeesDatabase.Delete(email);
+            var rowsAffected = await employeesDatabase.Delete(email);
+            return rowsAffected != 0;
         }
     }
 }

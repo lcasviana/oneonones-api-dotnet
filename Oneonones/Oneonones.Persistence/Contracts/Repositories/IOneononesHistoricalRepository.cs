@@ -11,8 +11,8 @@ namespace Oneonones.Persistence.Contracts.Repositories
         Task<IList<OneononeHistoricalEntity>> ObtainByEmployee(string email);
         Task<IList<OneononeHistoricalEntity>> ObtainByPair(string leaderEmail, string ledEmail);
         Task<OneononeHistoricalEntity> ObtainByPairOccurrence(string leaderEmail, string ledEmail, DateTime occurrence);
-        Task Insert(OneononeHistoricalEntity oneonone);
-        Task Update(OneononeHistoricalEntity oneonone);
-        Task Delete(string leaderEmail, string ledEmail, DateTime occurrence);
+        Task<bool> Insert(OneononeHistoricalEntity oneonone);
+        Task<bool> Update(OneononeHistoricalEntity oneonone);
+        Task<bool> Delete(string leaderEmail, string ledEmail, DateTime occurrence);
     }
 }

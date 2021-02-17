@@ -96,34 +96,36 @@ namespace Oneonones.Persistence.Databases
             return oneononeModel;
         }
 
-        public async Task Insert(OneononeModel oneonone)
+        public async Task<int> Insert(OneononeModel oneonone)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@leaderEmail", oneonone.LeaderEmail, DbType.AnsiString);
             parameters.Add("@ledEmail", oneonone.LedEmail, DbType.AnsiString);
             parameters.Add("@frequencyType", oneonone.FrequencyType, DbType.Int32);
 
-            await Execute(insertQuery, parameters);
+            var rowsAffected = await Execute(insertQuery, parameters);
+            return rowsAffected;
         }
 
-        public async Task Update(OneononeModel oneonone)
+        public async Task<int> Update(OneononeModel oneonone)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@leaderEmail", oneonone.LeaderEmail, DbType.AnsiString);
             parameters.Add("@ledEmail", oneonone.LedEmail, DbType.AnsiString);
             parameters.Add("@frequencyType", oneonone.FrequencyType, DbType.Int32);
 
-            await Execute(updateQuery, parameters);
+            var rowsAffected = await Execute(updateQuery, parameters);
+            return rowsAffected;
         }
 
-        public async Task Delete(string leaderEmail, string ledEmail)
+        public async Task<int> Delete(string leaderEmail, string ledEmail)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@leaderEmail", leaderEmail, DbType.AnsiString);
             parameters.Add("@ledEmail", ledEmail, DbType.AnsiString);
 
-
-            await Execute(deleteQuery, parameters);
+            var rowsAffected = await Execute(deleteQuery, parameters);
+            return rowsAffected;
         }
     }
 }

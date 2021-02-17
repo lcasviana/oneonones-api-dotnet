@@ -8,8 +8,8 @@ namespace Oneonones.Persistence.Contracts.Repositories
     {
         Task<IList<EmployeeEntity>> ObtainAll();
         Task<EmployeeEntity> Obtain(string email);
-        Task Insert(EmployeeEntity employee);
-        Task Update(EmployeeEntity employee);
-        Task Delete(string email);
+        Task<bool> Insert(EmployeeEntity employee);
+        Task<bool> Update(EmployeeEntity employee);
+        Task<bool> Delete(string email);
     }
 }

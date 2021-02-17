@@ -9,8 +9,8 @@ namespace Oneonones.Persistence.Contracts.Repositories
         Task<IList<OneononeEntity>> ObtainAll();
         Task<IList<OneononeEntity>> ObtainByEmployee(string email);
         Task<OneononeEntity> ObtainByPair(string leaderEmail, string ledEmail);
-        Task Insert(OneononeEntity oneonone);
-        Task Update(OneononeEntity oneonone);
-        Task Delete(string leaderEmail, string ledEmail);
+        Task<bool> Insert(OneononeEntity oneonone);
+        Task<bool> Update(OneononeEntity oneonone);
+        Task<bool> Delete(string leaderEmail, string ledEmail);
     }
 }

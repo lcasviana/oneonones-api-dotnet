@@ -36,6 +36,8 @@ namespace Oneonones.Service.Implementations
             if (string.IsNullOrWhiteSpace(email))
                 throw new ApiException(HttpStatusCode.BadRequest, EmployeesMessages.InvalidEmail);
 
+            _ = await employeesService.Obtain(email);
+
             var oneononeHistoricalList = await oneononesHistoricalRepository.ObtainByEmployee(email);
             var oneononeHistoricalListComplete = await CompleteEntityList(oneononeHistoricalList);
             return oneononeHistoricalListComplete;
@@ -57,7 +59,9 @@ namespace Oneonones.Service.Implementations
             if (occurrence == DateTime.MinValue)
                 throw new ApiException(HttpStatusCode.BadRequest, OneononesHistoricalMessages.InvalidOccurrence);
 
-            var oneononeHistorical = await oneononesHistoricalRepository.ObtainByPairOccurrence(leaderEmail, ledEmail, occurrence);
+            var oneononeHistorical = (await oneononesHistoricalRepository.ObtainByPairOccurrence(leaderEmail, ledEmail, occurrence))
+                ?? throw new ApiException(HttpStatusCode.NotFound, OneononesHistoricalMessages.NotFound, leaderEmail, ledEmail, occurrence.ToString("dd-MM-yyyy"));
+
             var oneononeHistoricalComplete = NewEntity(leader, led, oneononeHistorical.Occurrence, oneononeHistorical.Commentary);
             return oneononeHistoricalComplete;
         }
@@ -72,10 +76,13 @@ namespace Oneonones.Service.Implementations
             var oneononeHistoricalObtained = await oneononesHistoricalRepository.ObtainByPairOccurrence(
                oneononeHistoricalInput.LeaderEmail, oneononeHistoricalInput.LedEmail, oneononeHistoricalInput.Occurrence);
             if (oneononeHistoricalObtained != null)
-                throw new ApiException(HttpStatusCode.Conflict, OneononesHistoricalMessages.Conflict);
+                throw new ApiException(HttpStatusCode.Conflict, OneononesHistoricalMessages.Conflict,
+                oneononeHistoricalInput.LeaderEmail, oneononeHistoricalInput.LedEmail, oneononeHistoricalInput.Occurrence.ToString("dd-MM-yyyy"));
 
             var oneononeHistoricalComplete = NewEntity(leader, led, oneononeHistoricalInput.Occurrence, oneononeHistoricalInput.Commentary);
-            await oneononesHistoricalRepository.Insert(oneononeHistoricalComplete);
+            var inserted = await oneononesHistoricalRepository.Insert(oneononeHistoricalComplete);
+            if (!inserted) throw new ApiException(HttpStatusCode.InternalServerError, OneononesHistoricalMessages.Insert,
+                oneononeHistoricalInput.LeaderEmail, oneononeHistoricalInput.LedEmail, oneononeHistoricalInput.Occurrence.ToString("dd-MM-yyyy"));
         }
 
         public async Task Update(OneononeHistoricalInputEntity oneononeHistoricalInput)
@@ -87,17 +94,24 @@ namespace Oneonones.Service.Implementations
 
             _ = (await oneononesHistoricalRepository.ObtainByPairOccurrence(
                 oneononeHistoricalInput.LeaderEmail, oneononeHistoricalInput.LedEmail, oneononeHistoricalInput.Occurrence))
-                ?? throw new ApiException(HttpStatusCode.NotFound, OneononesHistoricalMessages.NotFound);
+                ?? throw new ApiException(HttpStatusCode.NotFound, OneononesHistoricalMessages.NotFound,
+                oneononeHistoricalInput.LeaderEmail, oneononeHistoricalInput.LedEmail, oneononeHistoricalInput.Occurrence.ToString("dd-MM-yyyy"));
 
             var oneononeHistoricalComplete = NewEntity(leader, led, oneononeHistoricalInput.Occurrence, oneononeHistoricalInput.Commentary);
-            await oneononesHistoricalRepository.Update(oneononeHistoricalComplete);
+            var updated = await oneononesHistoricalRepository.Update(oneononeHistoricalComplete);
+            if (!updated) throw new ApiException(HttpStatusCode.InternalServerError, OneononesHistoricalMessages.Update,
+                oneononeHistoricalInput.LeaderEmail, oneononeHistoricalInput.LedEmail, oneononeHistoricalInput.Occurrence.ToString("dd-MM-yyyy"));
         }
 
         public async Task Delete(string leaderEmail, string ledEmail, DateTime occurrence)
         {
             _ = await employeesService.ObtainPair(leaderEmail, ledEmail);
 
-            await oneononesHistoricalRepository.Delete(leaderEmail, ledEmail, occurrence);
+            _ = (await oneononesHistoricalRepository.ObtainByPairOccurrence(leaderEmail, ledEmail, occurrence))
+                ?? throw new ApiException(HttpStatusCode.NotFound, OneononesHistoricalMessages.NotFound, leaderEmail, ledEmail, occurrence.ToString("dd-MM-yyyy"));
+
+            var deleted = await oneononesHistoricalRepository.Delete(leaderEmail, ledEmail, occurrence);
+            if (!deleted) throw new ApiException(HttpStatusCode.InternalServerError, OneononesHistoricalMessages.Delete, leaderEmail, ledEmail, occurrence.ToString("dd-MM-yyyy"));
         }
 
         private async Task<IList<OneononeHistoricalEntity>> CompleteEntityList(IList<OneononeHistoricalEntity> oneononeHistoricalList)
@@ -107,6 +121,7 @@ namespace Oneonones.Service.Implementations
                 var (leader, led) = await employeesService.ObtainPair(h.Leader.Email, h.Led.Email);
                 return NewEntity(leader, led, h.Occurrence, h.Commentary);
             });
+
             var oneononeHistoricalComplete = await Task.WhenAll(oneononeHistoricalTasks);
             return oneononeHistoricalComplete.ToList();
         }

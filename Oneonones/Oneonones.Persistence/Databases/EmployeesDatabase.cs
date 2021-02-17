@@ -68,30 +68,33 @@ namespace Oneonones.Persistence.Databases
             return employeeModel;
         }
 
-        public async Task Insert(EmployeeModel employee)
+        public async Task<int> Insert(EmployeeModel employee)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@email", employee.Email, DbType.AnsiString);
             parameters.Add("@name", employee.Name, DbType.AnsiString);
 
-            await Execute(insertQuery, parameters);
+            var rowsAffected = await Execute(insertQuery, parameters);
+            return rowsAffected;
         }
 
-        public async Task Update(EmployeeModel employee)
+        public async Task<int> Update(EmployeeModel employee)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@email", employee.Email, DbType.AnsiString);
             parameters.Add("@name", employee.Name, DbType.AnsiString);
 
-            await Execute(updateQuery, parameters);
+            var rowsAffected = await Execute(updateQuery, parameters);
+            return rowsAffected;
         }
 
-        public async Task Delete(string email)
+        public async Task<int> Delete(string email)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@email", email, DbType.AnsiString);
 
-            await Execute(deleteQuery, parameters);
+            var rowsAffected = await Execute(deleteQuery, parameters);
+            return rowsAffected;
         }
     }
 }

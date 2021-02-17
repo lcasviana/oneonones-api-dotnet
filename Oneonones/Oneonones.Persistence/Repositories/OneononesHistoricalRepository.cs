@@ -46,21 +46,24 @@ namespace Oneonones.Persistence.Repositories
             return oneononeHistoricalEntity;
         }
 
-        public async Task Insert(OneononeHistoricalEntity oneonone)
+        public async Task<bool> Insert(OneononeHistoricalEntity oneonone)
         {
             var oneononeHistoricalModel = oneonone.ToModel();
-            await oneononesHistoricalDatabase.Insert(oneononeHistoricalModel);
+            var rowsAffected = await oneononesHistoricalDatabase.Insert(oneononeHistoricalModel);
+            return rowsAffected == 1;
         }
 
-        public async Task Update(OneononeHistoricalEntity oneonone)
+        public async Task<bool> Update(OneononeHistoricalEntity oneonone)
         {
             var oneononeHistoricalModel = oneonone.ToModel();
-            await oneononesHistoricalDatabase.Update(oneononeHistoricalModel);
+            var rowsAffected = await oneononesHistoricalDatabase.Update(oneononeHistoricalModel);
+            return rowsAffected == 1;
         }
 
-        public async Task Delete(string leaderEmail, string ledEmail, DateTime occurrence)
+        public async Task<bool> Delete(string leaderEmail, string ledEmail, DateTime occurrence)
         {
-            await oneononesHistoricalDatabase.Delete(leaderEmail, ledEmail, occurrence);
+            var rowsAffected = await oneononesHistoricalDatabase.Delete(leaderEmail, ledEmail, occurrence);
+            return rowsAffected == 1;
         }
     }
 }

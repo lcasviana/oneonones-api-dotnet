@@ -8,8 +8,8 @@ namespace Oneonones.Persistence.Contracts.Databases
     {
         Task<IList<EmployeeModel>> ObtainAll();
         Task<EmployeeModel> Obtain(string email);
-        Task Insert(EmployeeModel employee);
-        Task Update(EmployeeModel employee);
-        Task Delete(string email);
+        Task<int> Insert(EmployeeModel employee);
+        Task<int> Update(EmployeeModel employee);
+        Task<int> Delete(string email);
     }
 }
