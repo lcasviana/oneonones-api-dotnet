@@ -1,5 +1,6 @@
 ﻿using Oneonones.Domain.Entities;
 using Oneonones.Domain.Enums;
+using Oneonones.Domain.Messages;
 using Oneonones.Persistence.Contracts.Repositories;
 using Oneonones.Service.Contracts;
 using Oneonones.Service.Exceptions;
@@ -34,7 +35,7 @@ namespace Oneonones.Service.Implementations
         public async Task<IList<OneononeEntity>> ObtainByEmployee(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
-                throw new ApiException(HttpStatusCode.BadRequest);
+                throw new ApiException(HttpStatusCode.BadRequest, EmployeesMessages.InvalidEmail);
 
             var oneononeList = await oneononesRepository.ObtainByEmployee(email);
             var oneononeListComplete = await CompleteEntityList(oneononeList);
@@ -46,7 +47,7 @@ namespace Oneonones.Service.Implementations
             var (leader, led) = await employeesService.ObtainPair(leaderEmail, ledEmail);
 
             var oneonone = (await oneononesRepository.ObtainByPair(leaderEmail, ledEmail))
-                ?? throw new ApiException(HttpStatusCode.NotFound);
+                ?? throw new ApiException(HttpStatusCode.NotFound, OneononesMessages.NotFound, leaderEmail, ledEmail);
 
             return NewEntity(leader, led, oneonone.Frequency);
         }
@@ -56,11 +57,11 @@ namespace Oneonones.Service.Implementations
             var (leader, led) = await employeesService.ObtainPair(oneononeInput?.LeaderEmail, oneononeInput?.LedEmail);
 
             if (!Enum.IsDefined(typeof(OneononeFrequencyEnum), oneononeInput.Frequency))
-                throw new ApiException(HttpStatusCode.BadRequest);
+                throw new ApiException(HttpStatusCode.BadRequest, OneononesMessages.InvalidFrequency, oneononeInput.Frequency);
 
             var oneononeObtained = await oneononesRepository.ObtainByPair(oneononeInput.LeaderEmail, oneononeInput.LedEmail);
             if (oneononeObtained != null)
-                throw new ApiException(HttpStatusCode.Conflict);
+                throw new ApiException(HttpStatusCode.Conflict, OneononesMessages.Conflict, oneononeInput.LeaderEmail, oneononeInput.LedEmail);
 
             await oneononesRepository.Insert(NewEntity(leader, led, oneononeInput.Frequency));
         }
@@ -70,10 +71,10 @@ namespace Oneonones.Service.Implementations
             var (leader, led) = await employeesService.ObtainPair(oneononeInput?.LeaderEmail, oneononeInput?.LedEmail);
 
             if (!Enum.IsDefined(typeof(OneononeFrequencyEnum), oneononeInput.Frequency))
-                throw new ApiException(HttpStatusCode.BadRequest);
+                throw new ApiException(HttpStatusCode.BadRequest, OneononesMessages.InvalidFrequency, oneononeInput.Frequency);
 
             _ = (await oneononesRepository.ObtainByPair(oneononeInput.LeaderEmail, oneononeInput.LedEmail))
-                ?? throw new ApiException(HttpStatusCode.NotFound);
+                ?? throw new ApiException(HttpStatusCode.NotFound, OneononesMessages.NotFound, oneononeInput.LeaderEmail, oneononeInput.LedEmail);
 
             await oneononesRepository.Update(NewEntity(leader, led, oneononeInput.Frequency));
         }

@@ -8,20 +8,9 @@ namespace Oneonones.Service.Exceptions
     {
         public HttpStatusCode StatusCode { get; private set; }
 
-        public ApiException(HttpStatusCode statusCode) : base()
-        {
-            StatusCode = statusCode;
-        }
-
-        public ApiException(HttpStatusCode statusCode, string message) : base(message)
-        {
-            StatusCode = statusCode;
-        }
+        public ApiException(HttpStatusCode statusCode, string message) : base(message) => StatusCode = statusCode;
 
         public ApiException(HttpStatusCode statusCode, string message, params object[] args)
-            : base(string.Format(CultureInfo.CurrentCulture, message, args))
-        {
-            StatusCode = statusCode;
-        }
+            : base(string.Format(CultureInfo.CurrentCulture, message, args)) => StatusCode = statusCode;
     }
 }

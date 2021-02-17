@@ -1,4 +1,5 @@
 ﻿using Oneonones.Domain.Entities;
+using Oneonones.Domain.Messages;
 using Oneonones.Persistence.Contracts.Repositories;
 using Oneonones.Service.Contracts;
 using Oneonones.Service.Exceptions;
@@ -33,7 +34,7 @@ namespace Oneonones.Service.Implementations
         public async Task<IList<OneononeHistoricalEntity>> ObtainByEmployee(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
-                throw new ApiException(HttpStatusCode.BadRequest);
+                throw new ApiException(HttpStatusCode.BadRequest, EmployeesMessages.InvalidEmail);
 
             var oneononeHistoricalList = await oneononesHistoricalRepository.ObtainByEmployee(email);
             var oneononeHistoricalListComplete = await CompleteEntityList(oneononeHistoricalList);
@@ -54,7 +55,7 @@ namespace Oneonones.Service.Implementations
             var (leader, led) = await employeesService.ObtainPair(leaderEmail, ledEmail);
 
             if (occurrence == DateTime.MinValue)
-                throw new ApiException(HttpStatusCode.BadRequest);
+                throw new ApiException(HttpStatusCode.BadRequest, OneononesHistoricalMessages.InvalidOccurrence);
 
             var oneononeHistorical = await oneononesHistoricalRepository.ObtainByPairOccurrence(leaderEmail, ledEmail, occurrence);
             var oneononeHistoricalComplete = NewEntity(leader, led, oneononeHistorical.Occurrence, oneononeHistorical.Commentary);
@@ -66,12 +67,12 @@ namespace Oneonones.Service.Implementations
             var (leader, led) = await employeesService.ObtainPair(oneononeHistoricalInput.LeaderEmail, oneononeHistoricalInput.LedEmail);
 
             if (oneononeHistoricalInput.Occurrence == DateTime.MinValue)
-                throw new ApiException(HttpStatusCode.BadRequest);
+                throw new ApiException(HttpStatusCode.BadRequest, OneononesHistoricalMessages.InvalidOccurrence);
 
             var oneononeHistoricalObtained = await oneononesHistoricalRepository.ObtainByPairOccurrence(
                oneononeHistoricalInput.LeaderEmail, oneononeHistoricalInput.LedEmail, oneononeHistoricalInput.Occurrence);
             if (oneononeHistoricalObtained != null)
-                throw new ApiException(HttpStatusCode.Conflict);
+                throw new ApiException(HttpStatusCode.Conflict, OneononesHistoricalMessages.Conflict);
 
             var oneononeHistoricalComplete = NewEntity(leader, led, oneononeHistoricalInput.Occurrence, oneononeHistoricalInput.Commentary);
             await oneononesHistoricalRepository.Insert(oneononeHistoricalComplete);
@@ -82,11 +83,11 @@ namespace Oneonones.Service.Implementations
             var (leader, led) = await employeesService.ObtainPair(oneononeHistoricalInput.LeaderEmail, oneononeHistoricalInput.LedEmail);
 
             if (oneononeHistoricalInput.Occurrence == DateTime.MinValue)
-                throw new ApiException(HttpStatusCode.BadRequest);
+                throw new ApiException(HttpStatusCode.BadRequest, OneononesHistoricalMessages.InvalidOccurrence);
 
             _ = (await oneononesHistoricalRepository.ObtainByPairOccurrence(
                 oneononeHistoricalInput.LeaderEmail, oneononeHistoricalInput.LedEmail, oneononeHistoricalInput.Occurrence))
-                ?? throw new ApiException(HttpStatusCode.NotFound);
+                ?? throw new ApiException(HttpStatusCode.NotFound, OneononesHistoricalMessages.NotFound);
 
             var oneononeHistoricalComplete = NewEntity(leader, led, oneononeHistoricalInput.Occurrence, oneononeHistoricalInput.Commentary);
             await oneononesHistoricalRepository.Update(oneononeHistoricalComplete);
