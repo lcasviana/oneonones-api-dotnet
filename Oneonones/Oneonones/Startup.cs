@@ -36,7 +36,7 @@ namespace Oneonones
         {
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
-            app.UseCors(options => options.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod());
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             app.AddSwagger();
             log.AddSerilog();
             app.UseRouting();
