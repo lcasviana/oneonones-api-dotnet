@@ -19,6 +19,7 @@ namespace Oneonones.Infrastructure.Configurations
 
         private static void AddServicesImplementations(this IServiceCollection serviceCollection)
         {
+            serviceCollection.AddSingleton<IDashboardsService, DashboardsService>();
             serviceCollection.AddSingleton<IEmployeesService, EmployeesService>();
             serviceCollection.AddSingleton<IOneononesService, OneononesService>();
             serviceCollection.AddSingleton<IOneononesHistoricalService, OneononesHistoricalService>();

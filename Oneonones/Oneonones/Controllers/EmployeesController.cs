@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Oneonones.Infrastructure.Mapping;
-using Oneonones.Infrastructure.ViewModel;
+using Oneonones.Infrastructure.ViewModels;
 using Oneonones.Service.Contracts;
 using System.Linq;
 using System.Threading.Tasks;

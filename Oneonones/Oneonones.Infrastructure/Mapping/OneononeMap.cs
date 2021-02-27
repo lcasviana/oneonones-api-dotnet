@@ -1,5 +1,5 @@
 ﻿using Oneonones.Domain.Entities;
-using Oneonones.Infrastructure.ViewModel;
+using Oneonones.Infrastructure.ViewModels;
 
 namespace Oneonones.Infrastructure.Mapping
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Oneonones.Infrastructure.ViewModel
+namespace Oneonones.Infrastructure.ViewModels
 {
     public class OneononeHistoricalViewModel
     {

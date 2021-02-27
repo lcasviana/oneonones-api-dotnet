@@ -1,6 +1,6 @@
 ﻿using Oneonones.Domain.Enums;
 
-namespace Oneonones.Infrastructure.ViewModel
+namespace Oneonones.Infrastructure.ViewModels
 {
     public class OneononeViewModel
     {
