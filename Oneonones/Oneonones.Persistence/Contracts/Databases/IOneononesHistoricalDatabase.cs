@@ -10,6 +10,7 @@ namespace Oneonones.Persistence.Contracts.Databases
         Task<IList<OneononeHistoricalModel>> ObtainAll();
         Task<IList<OneononeHistoricalModel>> ObtainByEmployee(string email);
         Task<IList<OneononeHistoricalModel>> ObtainByPair(string leaderEmail, string ledEmail);
+        Task<OneononeHistoricalModel> ObtainByPairLast(string leaderEmail, string ledEmail);
         Task<OneononeHistoricalModel> ObtainByPairOccurrence(string leaderEmail, string ledEmail, DateTime occurrence);
         Task<int> Insert(OneononeHistoricalModel oneonone);
         Task<int> Update(OneononeHistoricalModel oneonone);

@@ -47,6 +47,28 @@ namespace Oneonones.Persistence.Databases
                 AND led_email = @ledEmail
         ";
 
+        private const string obtainByPairLastQuery = @"
+            SELECT
+	            leader_email AS LeaderEmail,
+	            led_email AS LedEmail,
+	            occurrence AS Occurrence,
+	            commentary AS Commentary
+            FROM
+	            oneonones_historical
+            WHERE
+	            leader_email = @leaderEmail
+	            AND led_email = @ledEmail
+	            AND occurrence = (
+		            SELECT
+			            max(occurrence)
+		            FROM
+			            oneonones_historical
+		            WHERE
+			            leader_email = @leaderEmail
+			            AND led_email = @ledEmail
+	            )
+        ";
+
         private const string obtainByPairOccurrenceQuery = @"
             SELECT
                 leader_email AS LeaderEmail,
@@ -115,6 +137,16 @@ namespace Oneonones.Persistence.Databases
 
             var oneononeHistoricalModelList = await Query<OneononeHistoricalModel>(obtainByPairQuery, parameters);
             return oneononeHistoricalModelList;
+        }
+
+        public async Task<OneononeHistoricalModel> ObtainByPairLast(string leaderEmail, string ledEmail)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@leaderEmail", leaderEmail, DbType.AnsiString);
+            parameters.Add("@ledEmail", ledEmail, DbType.AnsiString);
+
+            var oneononeHistoricalModel = await QueryFirst<OneononeHistoricalModel>(obtainByPairLastQuery, parameters);
+            return oneononeHistoricalModel;
         }
 
         public async Task<OneononeHistoricalModel> ObtainByPairOccurrence(string leaderEmail, string ledEmail, DateTime occurrence)

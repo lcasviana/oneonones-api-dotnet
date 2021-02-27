@@ -43,6 +43,14 @@ namespace Oneonones.Controllers
             return Ok(oneononeHistoricalViewModelList);
         }
 
+        [HttpGet("{leaderEmail}/{ledEmail}/last")]
+        public async Task<IActionResult> ObtainByPairLast([FromRoute] string leaderEmail, [FromRoute] string ledEmail)
+        {
+            var oneononeHistoricalEntity = await oneononesHistoricalService.ObtainByPairLast(leaderEmail, ledEmail);
+            var oneononeHistoricalViewModel = oneononeHistoricalEntity.ToViewModel();
+            return Ok(oneononeHistoricalViewModel);
+        }
+
         [HttpGet("{leaderEmail}/{ledEmail}/{occurrence}")]
         public async Task<IActionResult> ObtainByPairOccurrence([FromRoute] string leaderEmail, [FromRoute] string ledEmail, [FromRoute] DateTime occurrence)
         {
