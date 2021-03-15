@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "oneonone-api",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Oneonones/Oneonones/bin/Debug/net5.0/Oneonones.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Oneonones/Oneonones",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\\\bNow listening on:\\\\s+(https?://\\\\S+)",
+            },
+            "env": {
+                "PORT": "44356",
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views",
+            },
+        },
+    ]
+}
