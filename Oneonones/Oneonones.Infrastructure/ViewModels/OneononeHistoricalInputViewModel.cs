@@ -4,8 +4,8 @@ namespace Oneonones.Infrastructure.ViewModels
 {
     public class OneononeHistoricalInputViewModel
     {
-        public string LeaderEmail { get; set; }
-        public string LedEmail { get; set; }
+        public string LeaderId { get; set; }
+        public string LedId { get; set; }
         public DateTime Occurrence { get; set; }
         public string Commentary { get; set; }
     }

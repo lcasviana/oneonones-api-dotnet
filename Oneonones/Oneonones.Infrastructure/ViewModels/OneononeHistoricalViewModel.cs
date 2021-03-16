@@ -1,8 +1,9 @@
 ﻿using System;
+using Oneonones.Domain.Common;
 
 namespace Oneonones.Infrastructure.ViewModels
 {
-    public class OneononeHistoricalViewModel
+    public class OneononeHistoricalViewModel : Identifier
     {
         public EmployeeViewModel Leader { get; set; }
         public EmployeeViewModel Led { get; set; }
