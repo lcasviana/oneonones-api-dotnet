@@ -1,23 +1,24 @@
-﻿using Dapper;
+﻿using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
+using Dapper;
 using Oneonones.Persistence.Base;
 using Oneonones.Persistence.Contracts.Databases;
 using Oneonones.Persistence.Models;
-using System.Collections.Generic;
-using System.Data;
-using System.Threading.Tasks;
 
 namespace Oneonones.Persistence.Databases
 {
-    public class OneononesDatabase : SqlBase, IOneononesDatabase
+    public class HistoricalsDatabase : SqlBase, IHistoricalsDatabase
     {
         private const string selectQuery = @"
             SELECT
                 id AS Id,
                 leader_id AS LeaderId,
                 led_id AS LedId,
-                frequency AS frequency
+                occurrence AS Occurrence,
+                commentary AS Commentary
             FROM
-                oneonone
+                historical
         ";
 
         private const string whereById = @"
@@ -27,8 +28,8 @@ namespace Oneonones.Persistence.Databases
 
         private const string whereByEmployee = @"
             WHERE
-                leader_id = @id
-                OR led_id = @id
+                leader_id = @email
+                OR led_id = @email
         ";
 
         private const string whereByPair = @"
@@ -39,89 +40,93 @@ namespace Oneonones.Persistence.Databases
 
         private const string insertQuery = @"
             INSERT INTO
-                oneonone
+                historical
             VALUES (
                 @id,
                 @leaderId,
                 @ledId,
-                @frequency
+                @occurrence,
+                @commentary
             )
         ";
 
         private const string updateQuery = @"
             UPDATE
-                oneonone
+                historical
             SET
                 leader_id = @leaderId,
                 led_id = @ledId,
-                frequency = @frequency
+                occurrence = @occurrence,
+                commentary = @commentary
             WHERE
                 id = @id
         ";
 
         private const string deleteQuery = @"
             DELETE FROM
-                oneonone
+                historical
             WHERE
                 id = @id
         ";
 
-        public async Task<IList<OneononeModel>> Obtain()
+        public async Task<IList<HistoricalModel>> Obtain()
         {
-            var oneononeList = await Query<OneononeModel>(selectQuery);
-            return oneononeList;
+            var historicalList = await Query<HistoricalModel>(selectQuery);
+            return historicalList;
         }
 
-        public async Task<OneononeModel> Obtain(string id)
+        public async Task<HistoricalModel> Obtain(string id)
         {
-            var query = selectQuery + whereByPair;
+            var query = selectQuery + whereById;
             var parameters = new DynamicParameters();
             parameters.Add("@id", id, DbType.AnsiStringFixedLength);
 
-            var oneonone = await QueryFirst<OneononeModel>(query, parameters);
-            return oneonone;
+            var historical = await QueryFirst<HistoricalModel>(query, parameters);
+            return historical;
         }
 
-        public async Task<IList<OneononeModel>> ObtainByEmployee(string id)
+        public async Task<IList<HistoricalModel>> ObtainByEmployee(string email)
         {
             var query = selectQuery + whereByEmployee;
             var parameters = new DynamicParameters();
-            parameters.Add("@id", id, DbType.AnsiStringFixedLength);
+            parameters.Add("@email", email, DbType.AnsiString);
 
-            var oneononeList = await Query<OneononeModel>(query, parameters);
-            return oneononeList;
+            var historicalList = await Query<HistoricalModel>(query, parameters);
+            return historicalList;
         }
 
-        public async Task<OneononeModel> ObtainByPair(string leaderId, string ledId)
+        public async Task<IList<HistoricalModel>> ObtainByPair(string leaderId, string ledId)
         {
             var query = selectQuery + whereByPair;
             var parameters = new DynamicParameters();
             parameters.Add("@leaderId", leaderId, DbType.AnsiString);
             parameters.Add("@ledId", ledId, DbType.AnsiString);
 
-            var oneonone = await QueryFirst<OneononeModel>(query, parameters);
-            return oneonone;
+            var historicalList = await Query<HistoricalModel>(query, parameters);
+            return historicalList;
         }
 
-        public async Task<int> Insert(OneononeModel oneonone)
+        public async Task<int> Insert(HistoricalModel historical)
         {
             var parameters = new DynamicParameters();
-            parameters.Add("@id", oneonone.Id, DbType.AnsiStringFixedLength);
-            parameters.Add("@leaderId", oneonone.LeaderId, DbType.AnsiString);
-            parameters.Add("@ledId", oneonone.LedId, DbType.AnsiString);
-            parameters.Add("@frequency", oneonone.Frequency, DbType.Int32);
+            parameters.Add("@id", historical.Id, DbType.AnsiStringFixedLength);
+            parameters.Add("@leaderId", historical.LeaderId, DbType.AnsiString);
+            parameters.Add("@ledId", historical.LedId, DbType.AnsiString);
+            parameters.Add("@occurrence", historical.Occurrence, DbType.DateTime);
+            parameters.Add("@commentary", historical.Commentary, DbType.AnsiString);
 
             var rowsAffected = await Execute(insertQuery, parameters);
             return rowsAffected;
         }
 
-        public async Task<int> Update(OneononeModel oneonone)
+        public async Task<int> Update(HistoricalModel historical)
         {
             var parameters = new DynamicParameters();
-            parameters.Add("@id", oneonone.Id, DbType.AnsiStringFixedLength);
-            parameters.Add("@leaderId", oneonone.LeaderId, DbType.AnsiString);
-            parameters.Add("@ledId", oneonone.LedId, DbType.AnsiString);
-            parameters.Add("@frequency", oneonone.Frequency, DbType.Int32);
+            parameters.Add("@id", historical.Id, DbType.AnsiStringFixedLength);
+            parameters.Add("@leaderId", historical.LeaderId, DbType.AnsiString);
+            parameters.Add("@ledId", historical.LedId, DbType.AnsiString);
+            parameters.Add("@occurrence", historical.Occurrence, DbType.DateTime);
+            parameters.Add("@commentary", historical.Commentary, DbType.AnsiString);
 
             var rowsAffected = await Execute(updateQuery, parameters);
             return rowsAffected;

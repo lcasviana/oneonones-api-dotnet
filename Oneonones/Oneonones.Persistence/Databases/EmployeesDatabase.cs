@@ -10,28 +10,30 @@ namespace Oneonones.Persistence.Databases
 {
     public class EmployeesDatabase : SqlBase, IEmployeesDatabase
     {
-        private const string obtainAllQuery = @"
+        private const string selectQuery = @"
             SELECT
+                id AS Id,
                 email AS Email,
                 name AS Name
             FROM
-                employees
+                employee
         ";
 
-        private const string obtainQuery = @"
-            SELECT
-                email AS Email,
-                name AS Name
-            FROM
-                employees
+        private const string whereById = @"
+            WHERE
+                id = @id
+        ";
+
+        private const string whereByEmail = @"
             WHERE
                 email = @email
         ";
 
         private const string insertQuery = @"
             INSERT INTO
-                employees
+                employee
             VALUES (
+                @id,
                 @email,
                 @name
             )
@@ -39,38 +41,51 @@ namespace Oneonones.Persistence.Databases
 
         private const string updateQuery = @"
             UPDATE
-                employees
+                employee
             SET
+                email = @email,
                 name = @name
             WHERE
-                email = @email
+                id = @id
         ";
 
         private const string deleteQuery = @"
             DELETE FROM
-                employees
+                employee
             WHERE
-                email = @email
+                id = @id
         ";
 
-        public async Task<IList<EmployeeModel>> ObtainAll()
+        public async Task<IList<EmployeeModel>> Obtain()
         {
-            var employeeModelList = await Query<EmployeeModel>(obtainAllQuery);
-            return employeeModelList;
+            var employeeList = await Query<EmployeeModel>(selectQuery);
+            return employeeList;
         }
 
-        public async Task<EmployeeModel> Obtain(string email)
+        public async Task<EmployeeModel> Obtain(string id)
         {
+            var query = selectQuery + whereById;
+            var parameters = new DynamicParameters();
+            parameters.Add("@id", id, DbType.AnsiStringFixedLength);
+
+            var employee = await QueryFirst<EmployeeModel>(query, parameters);
+            return employee;
+        }
+
+        public async Task<EmployeeModel> ObtainByEmail(string email)
+        {
+            var query = selectQuery + whereByEmail;
             var parameters = new DynamicParameters();
             parameters.Add("@email", email, DbType.AnsiString);
 
-            var employeeModel = await QueryFirst<EmployeeModel>(obtainQuery, parameters);
-            return employeeModel;
+            var employee = await QueryFirst<EmployeeModel>(query, parameters);
+            return employee;
         }
 
         public async Task<int> Insert(EmployeeModel employee)
         {
             var parameters = new DynamicParameters();
+            parameters.Add("@id", employee.Id, DbType.AnsiStringFixedLength);
             parameters.Add("@email", employee.Email, DbType.AnsiString);
             parameters.Add("@name", employee.Name, DbType.AnsiString);
 
@@ -81,6 +96,7 @@ namespace Oneonones.Persistence.Databases
         public async Task<int> Update(EmployeeModel employee)
         {
             var parameters = new DynamicParameters();
+            parameters.Add("@id", employee.Id, DbType.AnsiStringFixedLength);
             parameters.Add("@email", employee.Email, DbType.AnsiString);
             parameters.Add("@name", employee.Name, DbType.AnsiString);
 
@@ -88,10 +104,10 @@ namespace Oneonones.Persistence.Databases
             return rowsAffected;
         }
 
-        public async Task<int> Delete(string email)
+        public async Task<int> Delete(string id)
         {
             var parameters = new DynamicParameters();
-            parameters.Add("@email", email, DbType.AnsiString);
+            parameters.Add("@id", id, DbType.AnsiStringFixedLength);
 
             var rowsAffected = await Execute(deleteQuery, parameters);
             return rowsAffected;

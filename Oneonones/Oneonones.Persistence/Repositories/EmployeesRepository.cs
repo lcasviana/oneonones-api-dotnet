@@ -1,4 +1,4 @@
-﻿using Employees.Persistence.Mapping;
+﻿using Oneonones.Persistence.Mapping;
 using Oneonones.Domain.Entities;
 using Oneonones.Persistence.Contracts.Databases;
 using Oneonones.Persistence.Contracts.Repositories;
@@ -17,30 +17,37 @@ namespace Oneonones.Persistence.Repositories
             this.employeesDatabase = employeesDatabase;
         }
 
-        public async Task<IList<EmployeeEntity>> ObtainAll()
+        public async Task<IList<EmployeeEntity>> Obtain()
         {
-            var employeeModelList = await employeesDatabase.ObtainAll();
+            var employeeModelList = await employeesDatabase.Obtain();
             var employeeEntityList = employeeModelList.Select(EmployeeMap.ToEntity).ToList();
             return employeeEntityList;
         }
 
-        public async Task<EmployeeEntity> Obtain(string email)
+        public async Task<EmployeeEntity> Obtain(string id)
         {
-            var employeeModel = await employeesDatabase.Obtain(email);
+            var employeeModel = await employeesDatabase.Obtain(id);
             var employeeEntity = employeeModel.ToEntity();
             return employeeEntity;
         }
 
-        public async Task<bool> Insert(EmployeeEntity employee)
+        public async Task<EmployeeEntity> ObtainByEmail(string email)
         {
-            var employeeModel = employee.ToModel();
+            var employeeModel = await employeesDatabase.ObtainByEmail(email);
+            var employeeEntity = employeeModel.ToEntity();
+            return employeeEntity;
+        }
+
+        public async Task<bool> Insert(EmployeeEntity employeeEntity)
+        {
+            var employeeModel = employeeEntity.ToModel();
             var rowsAffected = await employeesDatabase.Insert(employeeModel);
             return rowsAffected != 0;
         }
 
-        public async Task<bool> Update(EmployeeEntity employee)
+        public async Task<bool> Update(EmployeeEntity employeeEntity)
         {
-            var employeeModel = employee.ToModel();
+            var employeeModel = employeeEntity.ToModel();
             var rowsAffected = await employeesDatabase.Update(employeeModel);
             return rowsAffected != 0;
         }
