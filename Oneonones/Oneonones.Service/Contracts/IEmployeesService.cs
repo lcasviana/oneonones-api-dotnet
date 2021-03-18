@@ -1,16 +1,17 @@
-﻿using Oneonones.Domain.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Oneonones.Domain.Entities;
 
 namespace Oneonones.Service.Contracts
 {
     public interface IEmployeesService
     {
-        Task<IList<EmployeeEntity>> ObtainAll();
-        Task<(EmployeeEntity, EmployeeEntity)> ObtainPair(string leaderEmail, string ledEmail);
-        Task<EmployeeEntity> Obtain(string email);
-        Task Insert(EmployeeEntity employee);
-        Task Update(EmployeeEntity employee);
-        Task Delete(string email);
+        Task<IList<EmployeeEntity>> Obtain();
+        Task<EmployeeEntity> Obtain(string id);
+        Task<EmployeeEntity> ObtainByEmail(string email);
+        Task<(EmployeeEntity, EmployeeEntity)> ObtainPair(string leaderId, string ledId);
+        Task<EmployeeEntity> Insert(EmployeeInputEntity employeeInput);
+        Task<EmployeeEntity> Update(EmployeeEntity employee);
+        Task Delete(string id);
     }
 }

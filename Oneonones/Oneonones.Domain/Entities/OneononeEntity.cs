@@ -1,4 +1,5 @@
-﻿using Oneonones.Domain.Enums;
+﻿using System;
+using Oneonones.Domain.Enums;
 
 namespace Oneonones.Domain.Entities
 {
@@ -8,5 +9,15 @@ namespace Oneonones.Domain.Entities
         public EmployeeEntity Leader { get; set; }
         public EmployeeEntity Led { get; set; }
         public FrequencyEnum Frequency { get; set; }
+
+        public OneononeEntity() { }
+
+        public OneononeEntity(EmployeeEntity leader, EmployeeEntity led, FrequencyEnum frequency)
+        {
+            Id = Guid.NewGuid().ToString("D");
+            Leader = leader;
+            Led = led;
+            Frequency = frequency;
+        }
     }
 }

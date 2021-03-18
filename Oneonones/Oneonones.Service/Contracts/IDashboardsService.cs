@@ -1,12 +1,12 @@
-﻿using Oneonones.Domain.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Oneonones.Domain.Entities;
 
 namespace Oneonones.Service.Contracts
 {
     public interface IDashboardsService
     {
-        Task<IList<DashboardEntity>> ObtainAll();
-        Task<DashboardEntity> ObtainByEmployee(string email);
+        Task<IList<DashboardEntity>> Obtain();
+        Task<DashboardEntity> Obtain(string id);
     }
 }

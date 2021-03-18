@@ -22,7 +22,7 @@ namespace Oneonones.Infrastructure.Configurations
             serviceCollection.AddSingleton<IDashboardsService, DashboardsService>();
             serviceCollection.AddSingleton<IEmployeesService, EmployeesService>();
             serviceCollection.AddSingleton<IOneononesService, OneononesService>();
-            serviceCollection.AddSingleton<IOneononesHistoricalService, OneononesHistoricalService>();
+            serviceCollection.AddSingleton<IHistoricalsService, HistoricalsService>();
         }
 
         private static void AddDatabasesImplementations(this IServiceCollection serviceCollection)

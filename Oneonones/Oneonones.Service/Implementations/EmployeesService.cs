@@ -1,11 +1,13 @@
-﻿using Oneonones.Domain.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using Oneonones.Domain.Entities;
 using Oneonones.Domain.Messages;
 using Oneonones.Persistence.Contracts.Repositories;
 using Oneonones.Service.Contracts;
 using Oneonones.Service.Exceptions;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace Oneonones.Service.Implementations
 {
@@ -18,70 +20,119 @@ namespace Oneonones.Service.Implementations
             this.employeesRepository = employeesRepository;
         }
 
-        public async Task<IList<EmployeeEntity>> ObtainAll()
+        public async Task<IList<EmployeeEntity>> Obtain()
         {
-            var employeeList = await employeesRepository.ObtainAll();
+            var employeeList = await employeesRepository.Obtain();
             return employeeList;
         }
 
-        public async Task<(EmployeeEntity, EmployeeEntity)> ObtainPair(string leaderEmail, string ledEmail)
+        public async Task<EmployeeEntity> Obtain(string id)
         {
-            if (string.IsNullOrWhiteSpace(leaderEmail)) throw new ApiException(HttpStatusCode.BadRequest, EmployeesMessages.InvalidEmailLeader);
-            if (string.IsNullOrWhiteSpace(ledEmail)) throw new ApiException(HttpStatusCode.BadRequest, EmployeesMessages.InvalidEmailLed);
+            if (Guid.TryParse(id, out var _))
+                throw new ApiException(HttpStatusCode.BadRequest, GlobalMessages.InvalidId(id));
 
-            var leaderTask = employeesRepository.Obtain(leaderEmail);
-            var ledTask = employeesRepository.Obtain(ledEmail);
-
-            var leader = (await leaderTask) ?? throw new ApiException(HttpStatusCode.NotFound, EmployeesMessages.NotFoundLeader, leaderEmail);
-            var led = (await ledTask) ?? throw new ApiException(HttpStatusCode.NotFound, EmployeesMessages.NotFoundLed, ledEmail);
-
-            return (leader, led);
-        }
-
-        public async Task<EmployeeEntity> Obtain(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email)) throw new ApiException(HttpStatusCode.BadRequest, EmployeesMessages.InvalidEmail);
-
-            var employee = (await employeesRepository.Obtain(email))
-                ?? throw new ApiException(HttpStatusCode.NotFound, EmployeesMessages.NotFound, email);
+            var employee = await employeesRepository.Obtain(id);
+            if (employee == null)
+                throw new ApiException(HttpStatusCode.NotFound, EmployeesMessages.NotFoundId(id));
 
             return employee;
         }
 
-        public async Task Insert(EmployeeEntity employee)
+        public async Task<EmployeeEntity> ObtainByEmail(string email)
         {
-            if (string.IsNullOrWhiteSpace(employee.Email)) throw new ApiException(HttpStatusCode.BadRequest, EmployeesMessages.InvalidEmail);
-            if (string.IsNullOrWhiteSpace(employee.Name)) throw new ApiException(HttpStatusCode.BadRequest, EmployeesMessages.InvalidName);
+            if (string.IsNullOrWhiteSpace(email))
+                throw new ApiException(HttpStatusCode.BadRequest, EmployeesMessages.InvalidEmail);
+
+            var employee = await employeesRepository.Obtain(email);
+            if (employee == null)
+                throw new ApiException(HttpStatusCode.NotFound, EmployeesMessages.NotFoundEmail(email));
+
+            return employee;
+        }
+
+        public async Task<(EmployeeEntity, EmployeeEntity)> ObtainPair(string leaderId, string ledId)
+        {
+            var requestErrors = new List<string>
+            {
+                Guid.TryParse(leaderId, out var _) ? null : GlobalMessages.InvalidId(leaderId),
+                Guid.TryParse(ledId, out var _) ? null : GlobalMessages.InvalidId(ledId),
+            }.Where(e => e != null).ToList();
+            if (requestErrors.Any())
+                throw new ApiException(HttpStatusCode.BadRequest, requestErrors);
+
+            var leaderTask = employeesRepository.Obtain(leaderId);
+            var ledTask = employeesRepository.Obtain(ledId);
+
+            var leaderEntity = await leaderTask;
+            var ledEntity = await ledTask;
+
+            var taskErrors = new List<string>
+            {
+                leaderEntity != null ? null : EmployeesMessages.NotFoundLeader(leaderId),
+                ledEntity != null ? null : EmployeesMessages.NotFoundLed(ledId),
+            }.Where(e => e != null).ToList();
+            if (taskErrors.Any())
+                throw new ApiException(HttpStatusCode.NotFound, taskErrors);
+
+            return (leaderEntity, ledEntity);
+        }
+
+        public async Task<EmployeeEntity> Insert(EmployeeInputEntity employeeInput)
+        {
+            var requestErrors = new List<string>
+            {
+                string.IsNullOrWhiteSpace(employeeInput.Email) ? EmployeesMessages.InvalidEmail : null,
+                string.IsNullOrWhiteSpace(employeeInput.Name) ? EmployeesMessages.InvalidName : null,
+            }.Where(e => e != null).ToList();
+            if (requestErrors.Any())
+                throw new ApiException(HttpStatusCode.BadRequest, requestErrors);
+
+            var employeeObtained = await employeesRepository.ObtainByEmail(employeeInput.Email);
+            if (employeeObtained != null)
+                throw new ApiException(HttpStatusCode.Conflict, EmployeesMessages.Conflict(employeeInput.Email));
+
+            var employee = new EmployeeEntity(employeeInput.Email, employeeInput.Name);
+            var inserted = await employeesRepository.Insert(employee);
+            if (!inserted)
+                throw new ApiException(HttpStatusCode.InternalServerError, EmployeesMessages.Insert(employee.Email));
+
+            return employee;
+        }
+
+        public async Task<EmployeeEntity> Update(EmployeeEntity employee)
+        {
+            var requestErrors = new List<string>
+            {
+                Guid.TryParse(employee.Id, out var _) ? null : GlobalMessages.InvalidId(employee.Id),
+                string.IsNullOrWhiteSpace(employee.Email) ? EmployeesMessages.InvalidEmail : null,
+                string.IsNullOrWhiteSpace(employee.Name) ? EmployeesMessages.InvalidName : null,
+            }.Where(e => e != null).ToList();
+            if (requestErrors.Any())
+                throw new ApiException(HttpStatusCode.BadRequest, requestErrors);
 
             var employeeObtained = await employeesRepository.Obtain(employee.Email);
-            if (employeeObtained != null)
-                throw new ApiException(HttpStatusCode.Conflict, EmployeesMessages.Conflict, employee.Email);
-
-            var inserted = await employeesRepository.Insert(employee);
-            if (!inserted) throw new ApiException(HttpStatusCode.InternalServerError, OneononesMessages.Insert, employee.Email);
-        }
-
-        public async Task Update(EmployeeEntity employee)
-        {
-            if (string.IsNullOrWhiteSpace(employee.Email)) throw new ApiException(HttpStatusCode.BadRequest, EmployeesMessages.InvalidEmail);
-            if (string.IsNullOrWhiteSpace(employee.Name)) throw new ApiException(HttpStatusCode.BadRequest, EmployeesMessages.InvalidName);
-
-            _ = (await employeesRepository.Obtain(employee.Email))
-                ?? throw new ApiException(HttpStatusCode.NotFound, EmployeesMessages.NotFound, employee.Email);
+            if (employeeObtained == null)
+                throw new ApiException(HttpStatusCode.NotFound, EmployeesMessages.NotFoundEmail(employee.Email));
 
             var updated = await employeesRepository.Update(employee);
-            if (!updated) throw new ApiException(HttpStatusCode.InternalServerError, EmployeesMessages.Update, employee.Email);
+            if (!updated)
+                throw new ApiException(HttpStatusCode.InternalServerError, EmployeesMessages.Update(employee.Email));
+
+            return employee;
         }
 
-        public async Task Delete(string email)
+        public async Task Delete(string id)
         {
-            if (string.IsNullOrWhiteSpace(email)) throw new ApiException(HttpStatusCode.BadRequest, EmployeesMessages.InvalidEmail);
+            if (Guid.TryParse(id, out var _))
+                throw new ApiException(HttpStatusCode.BadRequest, GlobalMessages.InvalidId(id));
 
-            _ = (await employeesRepository.Obtain(email))
-                ?? throw new ApiException(HttpStatusCode.NotFound, EmployeesMessages.NotFound, email);
+            var employee = await employeesRepository.Obtain(id);
+            if (employee == null)
+                throw new ApiException(HttpStatusCode.NotFound, EmployeesMessages.NotFoundId(id));
 
-            var deleted = await employeesRepository.Delete(email);
-            if (!deleted) throw new ApiException(HttpStatusCode.InternalServerError, EmployeesMessages.Delete, email);
+            var deleted = await employeesRepository.Delete(id);
+            if (!deleted)
+                throw new ApiException(HttpStatusCode.InternalServerError, EmployeesMessages.Delete(id));
         }
     }
 }
