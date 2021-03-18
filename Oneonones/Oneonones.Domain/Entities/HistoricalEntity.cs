@@ -2,8 +2,9 @@
 
 namespace Oneonones.Domain.Entities
 {
-    public class OneononeHistoricalEntity
+    public class HistoricalEntity
     {
+        public string Id { get; set; }
         public EmployeeEntity Leader { get; set; }
         public EmployeeEntity Led { get; set; }
         public DateTime Occurrence { get; set; }

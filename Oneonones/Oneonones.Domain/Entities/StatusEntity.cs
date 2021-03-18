@@ -2,7 +2,7 @@
 
 namespace Oneonones.Domain.Entities
 {
-    public class OneononeStatusEntity
+    public class StatusEntity
     {
         public DateTime LastOccurrence { get; set; }
         public DateTime NextOccurrence { get; set; }

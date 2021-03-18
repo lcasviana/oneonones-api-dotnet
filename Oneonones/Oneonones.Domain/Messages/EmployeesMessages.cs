@@ -6,12 +6,15 @@
         public const string InvalidEmailLeader = "Leader email is empty or whitespaces.";
         public const string InvalidEmailLed = "Led email is empty or whitespaces.";
         public const string InvalidName = "Name is empty or whitespaces.";
-        public const string NotFound = "Employee with email {0} was not found.";
-        public const string NotFoundLeader = "Leader with email {0} was not found.";
-        public const string NotFoundLed = "Led with email {0} was not found.";
-        public const string Conflict = "Employee with email {0} was already created.";
-        public const string Insert = "Fail to insert {0}.";
-        public const string Update = "Fail to update {0}.";
-        public const string Delete = "Fail to delete {0}.";
+        public static string NotFoundId(string id) => $"Employee with id {id} was not found.";
+        public static string NotFoundEmail(string email) => $"Employee with email {email} was not found.";
+        public static string NotFoundLeaderId(string id) => $"Leader with id {id} was not found.";
+        public static string NotFoundLeadermail(string email) => $"Leader with email {email} was not found.";
+        public static string NotFoundLedId(string id) => $"Led with id {id} was not found.";
+        public static string NotFoundLedmail(string email) => $"Led with email {email} was not found.";
+        public static string Conflict(string email) => $"Employee with email {email} was already created.";
+        public static string Insert(string email) => $"Fail to insert {email}.";
+        public static string Update(string email) => $"Fail to update {email}.";
+        public static string Delete(string email) => $"Fail to delete {email}.";
     }
 }

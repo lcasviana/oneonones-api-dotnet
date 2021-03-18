@@ -29,8 +29,8 @@ namespace Oneonones.Persistence.Mapping
             {
                 Id = model.Id,
                 Leader = new EmployeeEntity { Id = model.LeaderId },
-                Led = new EmployeeEntity { Id = model.LeaderId },
-                Frequency = (OneononeFrequencyEnum)model.Frequency,
+                Led = new EmployeeEntity { Id = model.LedId },
+                Frequency = (FrequencyEnum)model.Frequency,
             };
 
             return entity;

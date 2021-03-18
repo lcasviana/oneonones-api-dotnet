@@ -1,6 +1,6 @@
 ﻿namespace Oneonones.Domain.Enums
 {
-    public enum OneononeFrequencyEnum
+    public enum FrequencyEnum
     {
         Weekly = 7,
         Semimonthly = 15,
