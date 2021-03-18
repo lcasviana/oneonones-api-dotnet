@@ -2,7 +2,7 @@
 
 namespace Oneonones.Infrastructure.ViewModels
 {
-    public class OneononeHistoricalInputViewModel
+    public class HistoricalInputViewModel
     {
         public string LeaderId { get; set; }
         public string LedId { get; set; }

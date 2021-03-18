@@ -3,32 +3,34 @@ using Oneonones.Infrastructure.ViewModels;
 
 namespace Oneonones.Infrastructure.Mapping
 {
-    public static class OneononeMap
+    public static class HistoricalMap
     {
-        public static OneononeViewModel ToViewModel(this OneononeEntity entity)
+        public static HistoricalViewModel ToViewModel(this HistoricalEntity entity)
         {
             if (entity == null) return null;
 
-            var viewModel = new OneononeViewModel
+            var viewModel = new HistoricalViewModel
             {
                 Id = entity.Id,
                 Leader = entity.Leader.ToViewModel(),
                 Led = entity.Led.ToViewModel(),
-                Frequency = entity.Frequency,
+                Occurrence = entity.Occurrence,
+                Commentary = entity.Commentary,
             };
 
             return viewModel;
         }
 
-        public static OneononeInputEntity ToEntity(this OneononeInputViewModel viewModel)
+        public static HistoricalInputEntity ToEntity(this HistoricalInputViewModel viewModel)
         {
             if (viewModel == null) return null;
 
-            var entity = new OneononeInputEntity
+            var entity = new HistoricalInputEntity
             {
                 LeaderId = viewModel.LeaderId,
                 LedId = viewModel.LedId,
-                Frequency = viewModel.Frequency,
+                Occurrence = viewModel.Occurrence,
+                Commentary = viewModel.Commentary,
             };
 
             return entity;

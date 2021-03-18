@@ -6,6 +6,6 @@ namespace Oneonones.Infrastructure.ViewModels
     {
         public string LeaderId { get; set; }
         public string LedId { get; set; }
-        public OneononeFrequencyEnum Frequency { get; set; }
+        public FrequencyEnum Frequency { get; set; }
     }
 }

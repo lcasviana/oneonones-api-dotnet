@@ -5,11 +5,11 @@ namespace Oneonones.Infrastructure.Mapping
 {
     public static class OneononeStatusMap
     {
-        public static OneononeStatusViewModel ToViewModel(this OneononeStatusEntity entity)
+        public static StatusViewModel ToViewModel(this StatusEntity entity)
         {
             if (entity == null) return null;
 
-            var viewModel = new OneononeStatusViewModel
+            var viewModel = new StatusViewModel
             {
                 NextOccurrence = entity.NextOccurrence,
                 LastOccurrence = entity.LastOccurrence,

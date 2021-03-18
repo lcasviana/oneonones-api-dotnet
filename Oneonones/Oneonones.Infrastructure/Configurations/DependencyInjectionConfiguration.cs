@@ -29,14 +29,14 @@ namespace Oneonones.Infrastructure.Configurations
         {
             serviceCollection.AddSingleton<IEmployeesDatabase, EmployeesDatabase>();
             serviceCollection.AddSingleton<IOneononesDatabase, OneononesDatabase>();
-            serviceCollection.AddSingleton<IOneononesHistoricalDatabase, OneononesHistoricalDatabase>();
+            serviceCollection.AddSingleton<IHistoricalsDatabase, HistoricalsDatabase>();
         }
 
         private static void AddRepositoriesImplementations(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<IEmployeesRepository, EmployeesRepository>();
             serviceCollection.AddSingleton<IOneononesRepository, OneononesRepository>();
-            serviceCollection.AddSingleton<IOneononesHistoricalRepository, OneononesHistoricalRepository>();
+            serviceCollection.AddSingleton<IHistoricalsRepository, HistoricalsRepository>();
         }
     }
 }

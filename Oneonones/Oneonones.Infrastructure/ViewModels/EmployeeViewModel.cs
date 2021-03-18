@@ -1,9 +1,8 @@
-﻿using Oneonones.Domain.Common;
-
-namespace Oneonones.Infrastructure.ViewModels
+﻿namespace Oneonones.Infrastructure.ViewModels
 {
-    public class EmployeeViewModel : Identifier
+    public class EmployeeViewModel
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
     }
