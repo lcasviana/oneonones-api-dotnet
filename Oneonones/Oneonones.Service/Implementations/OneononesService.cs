@@ -28,13 +28,13 @@ namespace Oneonones.Service.Implementations
         public async Task<IList<OneononeEntity>> Obtain()
         {
             var oneononeList = await oneononesRepository.Obtain();
-            FillEmployees(oneononeList);
+            await FillEmployees(oneononeList);
             return oneononeList;
         }
 
         public async Task<OneononeEntity> Obtain(string id)
         {
-            if (Guid.TryParse(id, out var _))
+            if (!Guid.TryParse(id, out var _))
                 throw new ApiException(HttpStatusCode.BadRequest, GlobalMessages.InvalidId(id));
 
             var oneonone = await oneononesRepository.Obtain(id);
@@ -53,7 +53,7 @@ namespace Oneonones.Service.Implementations
             if (oneononeList == null || !oneononeList.Any())
                 throw new ApiException(HttpStatusCode.NotFound, OneononesMessages.Empty(employee.Email));
 
-            FillEmployees(oneononeList);
+            await FillEmployees(oneononeList);
             return oneononeList;
         }
 
@@ -97,7 +97,11 @@ namespace Oneonones.Service.Implementations
 
             var oneononeObtained = await oneononesRepository.Obtain(oneonone.Id);
             if (oneononeObtained == null)
-                throw new ApiException(HttpStatusCode.NotFound, OneononesMessages.NotFound(leader.Email, led.Email));
+                throw new ApiException(HttpStatusCode.NotFound, OneononesMessages.NotFound(oneonone.Id));
+
+            var oneononeConflict = await oneononesRepository.ObtainByPair(leader.Id, led.Id);
+            if (oneononeConflict != null && oneononeConflict.Id != oneononeObtained.Id)
+                throw new ApiException(HttpStatusCode.Conflict, OneononesMessages.Conflict(leader.Email, led.Email));
 
             FillEmployees(oneonone, leader, led);
             var updated = await oneononesRepository.Update(oneonone);
@@ -109,7 +113,7 @@ namespace Oneonones.Service.Implementations
 
         public async Task Delete(string id)
         {
-            if (Guid.TryParse(id, out var _))
+            if (!Guid.TryParse(id, out var _))
                 throw new ApiException(HttpStatusCode.BadRequest, GlobalMessages.InvalidId(id));
 
             var oneonone = await oneononesRepository.Obtain(id);
@@ -121,9 +125,9 @@ namespace Oneonones.Service.Implementations
                 throw new ApiException(HttpStatusCode.InternalServerError, OneononesMessages.Delete(id));
         }
 
-        private void FillEmployees(IList<OneononeEntity> oneononeList)
+        private async Task FillEmployees(IList<OneononeEntity> oneononeList)
         {
-            Parallel.For(0, oneononeList.Count, async i => await FillEmployees(oneononeList[i]));
+            await Task.WhenAll(oneononeList.Select(oneonone => FillEmployees(oneonone)));
         }
 
         private async Task FillEmployees(OneononeEntity oneonone)

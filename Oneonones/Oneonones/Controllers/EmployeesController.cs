@@ -22,18 +22,9 @@ namespace Oneonones.Controllers
         [HttpGet]
         public async Task<IActionResult> Obtain([FromQuery] string email = null)
         {
-            if (email == null)
-            {
-                var employeeEntityList = await employeesService.Obtain();
-                var employeeViewModelList = employeeEntityList.Select(EmployeeMap.ToViewModel).ToList();
-                return StatusCode((int)StatusCodes.Status200OK, employeeViewModelList);
-            }
-            else
-            {
-                var employeeEntity = await employeesService.ObtainByEmail(email);
-                var employeeViewModel = employeeEntity.ToViewModel();
-                return StatusCode((int)StatusCodes.Status200OK, employeeViewModel);
-            }
+            return email != null
+                ? await ObtainByEmail(email)
+                : await ObtainAll();
         }
 
         [HttpGet("{id}")]
@@ -68,5 +59,23 @@ namespace Oneonones.Controllers
             await employeesService.Delete(id);
             return StatusCode((int)StatusCodes.Status204NoContent);
         }
+
+        #region Obtain Filters
+
+        private async Task<IActionResult> ObtainByEmail(string email)
+        {
+            var employeeEntity = await employeesService.ObtainByEmail(email);
+            var employeeViewModel = employeeEntity.ToViewModel();
+            return StatusCode((int)StatusCodes.Status200OK, employeeViewModel);
+        }
+
+        private async Task<IActionResult> ObtainAll()
+        {
+            var employeeEntityList = await employeesService.Obtain();
+            var employeeViewModelList = employeeEntityList.Select(EmployeeMap.ToViewModel).ToList();
+            return StatusCode((int)StatusCodes.Status200OK, employeeViewModelList);
+        }
+
+        #endregion
     }
 }

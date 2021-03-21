@@ -11,6 +11,7 @@ namespace Oneonones.Infrastructure.Mapping
 
             var entity = new OneononeEntity
             {
+                Id = viewModel.Id,
                 Leader = viewModel.Leader.ToEntity(),
                 Led = viewModel.Led.ToEntity(),
                 Frequency = viewModel.Frequency,

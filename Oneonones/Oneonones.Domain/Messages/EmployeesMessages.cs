@@ -2,6 +2,7 @@
 {
     public static class EmployeesMessages
     {
+        public const string Same = "Leader and led can't be the same.";
         public const string InvalidEmail = "Email is empty or whitespaces.";
         public const string InvalidEmailLeader = "Leader email is empty or whitespaces.";
         public const string InvalidEmailLed = "Led email is empty or whitespaces.";

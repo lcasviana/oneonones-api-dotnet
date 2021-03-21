@@ -1,10 +1,10 @@
-﻿using Dapper;
+﻿using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
+using Dapper;
 using Oneonones.Persistence.Base;
 using Oneonones.Persistence.Contracts.Databases;
 using Oneonones.Persistence.Models;
-using System.Collections.Generic;
-using System.Data;
-using System.Threading.Tasks;
 
 namespace Oneonones.Persistence.Databases
 {
@@ -15,7 +15,7 @@ namespace Oneonones.Persistence.Databases
                 id AS Id,
                 leader_id AS LeaderId,
                 led_id AS LedId,
-                frequency AS frequency
+                frequency AS Frequency
             FROM
                 oneonone
         ";
@@ -74,7 +74,7 @@ namespace Oneonones.Persistence.Databases
 
         public async Task<OneononeModel> Obtain(string id)
         {
-            var query = selectQuery + whereByPair;
+            var query = selectQuery + whereById;
             var parameters = new DynamicParameters();
             parameters.Add("@id", id, DbType.AnsiStringFixedLength);
 

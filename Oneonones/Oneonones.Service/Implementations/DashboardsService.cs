@@ -1,10 +1,10 @@
-﻿using Oneonones.Domain.Entities;
-using Oneonones.Domain.Enums;
-using Oneonones.Service.Contracts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Oneonones.Domain.Entities;
+using Oneonones.Domain.Enums;
+using Oneonones.Service.Contracts;
 
 namespace Oneonones.Service.Implementations
 {
@@ -32,16 +32,16 @@ namespace Oneonones.Service.Implementations
             return dashboardCompleted.ToList();
         }
 
-        public async Task<DashboardEntity> Obtain(string email)
+        public async Task<DashboardEntity> Obtain(string id)
         {
-            var employee = await employeesService.Obtain(email);
+            var employee = await employeesService.Obtain(id);
             var dashboardEntity = await ObtainEmployeeDashboard(employee);
             return dashboardEntity;
         }
 
         private async Task<DashboardEntity> ObtainEmployeeDashboard(EmployeeEntity employee)
         {
-            var oneononeList = await oneononesService.ObtainByEmployee(employee.Email);
+            var oneononeList = await oneononesService.ObtainByEmployee(employee.Id);
             var oneononeComposeTask = oneononeList.Select(ObtainEmployeeOneononeCompose);
             var oneononeComposeComplete = await Task.WhenAll(oneononeComposeTask);
             var dashboardEntity = new DashboardEntity
@@ -55,7 +55,7 @@ namespace Oneonones.Service.Implementations
         private async Task<OneononeComposeEntity> ObtainEmployeeOneononeCompose(OneononeEntity oneonone)
         {
             StatusEntity status = null;
-            var historical = await historicalsService.ObtainByPair(oneonone.Leader.Email, oneonone.Led.Email);
+            var historical = await historicalsService.ObtainByPair(oneonone.Leader.Id, oneonone.Led.Id);
             if (historical.Any())
             {
                 var lastOccurrence = historical.Max(h => h.Occurrence);

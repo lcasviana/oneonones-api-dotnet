@@ -12,8 +12,8 @@ namespace Oneonones.Persistence.Mapping
             var model = new HistoricalModel
             {
                 Id = entity.Id,
-                LeaderId = entity.Leader.Email,
-                LedId = entity.Led.Email,
+                LeaderId = entity.Leader.Id,
+                LedId = entity.Led.Id,
                 Occurrence = entity.Occurrence,
                 Commentary = entity.Commentary,
             };

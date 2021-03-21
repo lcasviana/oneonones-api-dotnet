@@ -13,8 +13,8 @@ namespace Oneonones.Persistence.Mapping
             var model = new OneononeModel
             {
                 Id = entity.Id,
-                LeaderId = entity.Leader.Email,
-                LedId = entity.Led.Email,
+                LeaderId = entity.Leader.Id,
+                LedId = entity.Led.Id,
                 Frequency = (int)entity.Frequency,
             };
 

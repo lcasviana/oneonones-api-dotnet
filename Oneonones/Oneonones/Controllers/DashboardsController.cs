@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Oneonones.Infrastructure.Mapping;
 using Oneonones.Service.Contracts;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Oneonones.Controllers
 {
@@ -18,19 +19,35 @@ namespace Oneonones.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ObtainAll()
+        public async Task<IActionResult> Obtain([FromQuery] string email)
+        {
+            return email != null
+                ? await ObtainByEmail(email)
+                : await ObtainAll();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> ObtainById([FromRoute] string id)
+        {
+            var dashboardEntity = await dashboardsService.Obtain(id);
+            var dashboardViewModel = dashboardEntity.ToViewModel();
+            return StatusCode((int)StatusCodes.Status200OK, dashboardViewModel);
+        }
+
+        #region Obtain Filters
+
+        private async Task<IActionResult> ObtainByEmail(string email)
+        {
+            throw new System.NotImplementedException("Query by id.");
+        }
+
+        private async Task<IActionResult> ObtainAll()
         {
             var dashboardEntityList = await dashboardsService.Obtain();
             var dashboardViewModelList = dashboardEntityList.Select(DashboardMap.ToViewModel).ToList();
-            return Ok(dashboardViewModelList);
+            return StatusCode((int)StatusCodes.Status200OK, dashboardViewModelList);
         }
 
-        [HttpGet("{email}")]
-        public async Task<IActionResult> ObtainByEmployee([FromRoute] string email)
-        {
-            var dashboardEntity = await dashboardsService.Obtain(email);
-            var dashboardViewModel = dashboardEntity.ToViewModel();
-            return Ok(dashboardViewModel);
-        }
+        #endregion
     }
 }

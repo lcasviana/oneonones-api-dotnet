@@ -28,7 +28,7 @@ namespace Oneonones.Service.Implementations
 
         public async Task<EmployeeEntity> Obtain(string id)
         {
-            if (Guid.TryParse(id, out var _))
+            if (!Guid.TryParse(id, out var _))
                 throw new ApiException(HttpStatusCode.BadRequest, GlobalMessages.InvalidId(id));
 
             var employee = await employeesRepository.Obtain(id);
@@ -43,7 +43,7 @@ namespace Oneonones.Service.Implementations
             if (string.IsNullOrWhiteSpace(email))
                 throw new ApiException(HttpStatusCode.BadRequest, EmployeesMessages.InvalidEmail);
 
-            var employee = await employeesRepository.Obtain(email);
+            var employee = await employeesRepository.ObtainByEmail(email);
             if (employee == null)
                 throw new ApiException(HttpStatusCode.NotFound, EmployeesMessages.NotFoundEmail(email));
 
@@ -52,13 +52,14 @@ namespace Oneonones.Service.Implementations
 
         public async Task<(EmployeeEntity, EmployeeEntity)> ObtainPair(string leaderId, string ledId)
         {
-            var requestErrors = new List<string>
+            var requestErrors = new string[]
             {
                 Guid.TryParse(leaderId, out var _) ? null : GlobalMessages.InvalidId(leaderId),
                 Guid.TryParse(ledId, out var _) ? null : GlobalMessages.InvalidId(ledId),
-            }.Where(e => e != null).ToList();
+                leaderId == ledId ? EmployeesMessages.Same : null,
+            }.Where(e => e != null);
             if (requestErrors.Any())
-                throw new ApiException(HttpStatusCode.BadRequest, requestErrors);
+                throw new ApiException(HttpStatusCode.BadRequest, requestErrors.ToList());
 
             var leaderTask = employeesRepository.Obtain(leaderId);
             var ledTask = employeesRepository.Obtain(ledId);
@@ -66,26 +67,26 @@ namespace Oneonones.Service.Implementations
             var leaderEntity = await leaderTask;
             var ledEntity = await ledTask;
 
-            var taskErrors = new List<string>
+            var taskErrors = new string[]
             {
                 leaderEntity != null ? null : EmployeesMessages.NotFoundLeader(leaderId),
                 ledEntity != null ? null : EmployeesMessages.NotFoundLed(ledId),
-            }.Where(e => e != null).ToList();
+            }.Where(e => e != null);
             if (taskErrors.Any())
-                throw new ApiException(HttpStatusCode.NotFound, taskErrors);
+                throw new ApiException(HttpStatusCode.NotFound, taskErrors.ToList());
 
             return (leaderEntity, ledEntity);
         }
 
         public async Task<EmployeeEntity> Insert(EmployeeInputEntity employeeInput)
         {
-            var requestErrors = new List<string>
+            var requestErrors = new string[]
             {
                 string.IsNullOrWhiteSpace(employeeInput.Email) ? EmployeesMessages.InvalidEmail : null,
                 string.IsNullOrWhiteSpace(employeeInput.Name) ? EmployeesMessages.InvalidName : null,
-            }.Where(e => e != null).ToList();
+            }.Where(e => e != null);
             if (requestErrors.Any())
-                throw new ApiException(HttpStatusCode.BadRequest, requestErrors);
+                throw new ApiException(HttpStatusCode.BadRequest, requestErrors.ToList());
 
             var employeeObtained = await employeesRepository.ObtainByEmail(employeeInput.Email);
             if (employeeObtained != null)
@@ -101,18 +102,22 @@ namespace Oneonones.Service.Implementations
 
         public async Task<EmployeeEntity> Update(EmployeeEntity employee)
         {
-            var requestErrors = new List<string>
+            var requestErrors = new string[]
             {
                 Guid.TryParse(employee.Id, out var _) ? null : GlobalMessages.InvalidId(employee.Id),
                 string.IsNullOrWhiteSpace(employee.Email) ? EmployeesMessages.InvalidEmail : null,
                 string.IsNullOrWhiteSpace(employee.Name) ? EmployeesMessages.InvalidName : null,
-            }.Where(e => e != null).ToList();
+            }.Where(e => e != null);
             if (requestErrors.Any())
-                throw new ApiException(HttpStatusCode.BadRequest, requestErrors);
+                throw new ApiException(HttpStatusCode.BadRequest, requestErrors.ToList());
 
-            var employeeObtained = await employeesRepository.Obtain(employee.Email);
+            var employeeObtained = await employeesRepository.Obtain(employee.Id);
             if (employeeObtained == null)
-                throw new ApiException(HttpStatusCode.NotFound, EmployeesMessages.NotFoundEmail(employee.Email));
+                throw new ApiException(HttpStatusCode.NotFound, EmployeesMessages.NotFoundId(employee.Id));
+
+            var oneononeConflict = await employeesRepository.ObtainByEmail(employee.Email);
+            if (oneononeConflict != null && oneononeConflict.Id != employeeObtained.Id)
+                throw new ApiException(HttpStatusCode.Conflict, EmployeesMessages.Conflict(employee.Email));
 
             var updated = await employeesRepository.Update(employee);
             if (!updated)
@@ -123,7 +128,7 @@ namespace Oneonones.Service.Implementations
 
         public async Task Delete(string id)
         {
-            if (Guid.TryParse(id, out var _))
+            if (!Guid.TryParse(id, out var _))
                 throw new ApiException(HttpStatusCode.BadRequest, GlobalMessages.InvalidId(id));
 
             var employee = await employeesRepository.Obtain(id);

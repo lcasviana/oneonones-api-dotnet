@@ -33,7 +33,7 @@ namespace Oneonones.Service.Implementations
 
         public async Task<HistoricalEntity> Obtain(string id)
         {
-            if (Guid.TryParse(id, out var _))
+            if (!Guid.TryParse(id, out var _))
                 throw new ApiException(HttpStatusCode.BadRequest, GlobalMessages.InvalidId(id));
 
             var historical = await historicalsRepository.Obtain(id);
@@ -143,7 +143,7 @@ namespace Oneonones.Service.Implementations
 
         public async Task Delete(string id)
         {
-            if (Guid.TryParse(id, out var _))
+            if (!Guid.TryParse(id, out var _))
                 throw new ApiException(HttpStatusCode.BadRequest, GlobalMessages.InvalidId(id));
 
             var historical = await historicalsRepository.Obtain(id);

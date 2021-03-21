@@ -21,32 +21,20 @@ namespace Oneonones.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Obtain(
-            [FromQuery] string email,
-            [FromQuery] string leaderEmail, [FromQuery] string ledEmail,
-            [FromQuery] string leaderId, [FromQuery] string ledId)
+            [FromQuery] string id, [FromQuery] string email,
+            [FromQuery] string leaderId, [FromQuery] string ledId,
+            [FromQuery] string leaderEmail, [FromQuery] string ledEmail)
         {
-            if (email != null)
-            {
-                var oneononeEntityList = await oneononesService.ObtainByEmployee(email);
-                var oneononeViewModelList = oneononeEntityList.Select(OneononeMap.ToViewModel).ToList();
-                return Ok(oneononeViewModelList);
-            }
-            else if (leaderEmail != null || ledEmail != null)
-            {
-                throw new System.NotImplementedException("Query by id.");
-            }
+            if (id != null)
+                return await ObtainByEmployeeId(id);
+            else if (email != null)
+                return await ObtainByEmployeeEmail(email);
             else if (leaderId != null || ledId != null)
-            {
-                var oneononeEntity = await oneononesService.ObtainByPair(leaderId, ledId);
-                var oneononeViewModel = oneononeEntity.ToViewModel();
-                return Ok(oneononeViewModel);
-            }
+                return await ObtainByPairId(leaderId, ledId);
+            else if (leaderEmail != null || ledEmail != null)
+                return await ObtainByPairEmail(leaderEmail, ledEmail);
             else
-            {
-                var oneononeEntityList = await oneononesService.Obtain();
-                var oneononeViewModelList = oneononeEntityList.Select(OneononeMap.ToViewModel).ToList();
-                return Ok(oneononeViewModelList);
-            }
+                return await ObtainAll();
         }
 
         [HttpGet("{id}")]
@@ -81,5 +69,40 @@ namespace Oneonones.Controllers
             await oneononesService.Delete(id);
             return StatusCode((int)StatusCodes.Status204NoContent);
         }
+
+        #region Obtain Filters
+
+        private async Task<IActionResult> ObtainByEmployeeId(string id)
+        {
+            var oneononeEntityList = await oneononesService.ObtainByEmployee(id);
+            var oneononeViewModelList = oneononeEntityList.Select(OneononeMap.ToViewModel).ToList();
+            return StatusCode((int)StatusCodes.Status200OK, oneononeViewModelList);
+        }
+
+        private async Task<IActionResult> ObtainByEmployeeEmail(string email)
+        {
+            throw new System.NotImplementedException("Query by id.");
+        }
+
+        private async Task<IActionResult> ObtainByPairId(string leaderId, string ledId)
+        {
+            var oneononeEntity = await oneononesService.ObtainByPair(leaderId, ledId);
+            var oneononeViewModel = oneononeEntity.ToViewModel();
+            return StatusCode((int)StatusCodes.Status200OK, oneononeViewModel);
+        }
+
+        private async Task<IActionResult> ObtainByPairEmail(string leaderEmail, string ledEmail)
+        {
+            throw new System.NotImplementedException("Query by id.");
+        }
+
+        private async Task<IActionResult> ObtainAll()
+        {
+            var oneononeEntityList = await oneononesService.Obtain();
+            var oneononeViewModelList = oneononeEntityList.Select(OneononeMap.ToViewModel).ToList();
+            return StatusCode((int)StatusCodes.Status200OK, oneononeViewModelList);
+        }
+
+        #endregion
     }
 }
