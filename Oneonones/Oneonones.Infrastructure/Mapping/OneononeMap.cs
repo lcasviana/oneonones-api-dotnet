@@ -5,6 +5,20 @@ namespace Oneonones.Infrastructure.Mapping
 {
     public static class OneononeMap
     {
+        public static OneononeEntity ToEntity(this OneononeViewModel viewModel)
+        {
+            if (viewModel?.Leader == null || viewModel?.Led == null) return null;
+
+            var entity = new OneononeEntity
+            {
+                Leader = viewModel.Leader.ToEntity(),
+                Led = viewModel.Led.ToEntity(),
+                Frequency = viewModel.Frequency,
+            };
+
+            return entity;
+        }
+
         public static OneononeViewModel ToViewModel(this OneononeEntity entity)
         {
             if (entity == null) return null;

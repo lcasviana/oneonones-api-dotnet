@@ -20,7 +20,7 @@ namespace Oneonones.Controllers
         [HttpGet]
         public async Task<IActionResult> ObtainAll()
         {
-            var dashboardEntityList = await dashboardsService.ObtainAll();
+            var dashboardEntityList = await dashboardsService.Obtain();
             var dashboardViewModelList = dashboardEntityList.Select(DashboardMap.ToViewModel).ToList();
             return Ok(dashboardViewModelList);
         }
@@ -28,7 +28,7 @@ namespace Oneonones.Controllers
         [HttpGet("{email}")]
         public async Task<IActionResult> ObtainByEmployee([FromRoute] string email)
         {
-            var dashboardEntity = await dashboardsService.ObtainByEmployee(email);
+            var dashboardEntity = await dashboardsService.Obtain(email);
             var dashboardViewModel = dashboardEntity.ToViewModel();
             return Ok(dashboardViewModel);
         }

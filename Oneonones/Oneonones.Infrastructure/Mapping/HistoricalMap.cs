@@ -5,6 +5,22 @@ namespace Oneonones.Infrastructure.Mapping
 {
     public static class HistoricalMap
     {
+        public static HistoricalEntity ToEntity(this HistoricalViewModel viewModel)
+        {
+            if (viewModel?.Leader == null || viewModel?.Led == null) return null;
+
+            var entity = new HistoricalEntity
+            {
+                Id = viewModel.Id,
+                Leader = viewModel.Leader.ToEntity(),
+                Led = viewModel.Led.ToEntity(),
+                Occurrence = viewModel.Occurrence,
+                Commentary = viewModel.Commentary,
+            };
+
+            return entity;
+        }
+
         public static HistoricalViewModel ToViewModel(this HistoricalEntity entity)
         {
             if (entity == null) return null;

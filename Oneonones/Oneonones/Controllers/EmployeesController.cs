@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Oneonones.Infrastructure.Mapping;
 using Oneonones.Infrastructure.ViewModels;
 using Oneonones.Service.Contracts;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Oneonones.Controllers
 {
@@ -19,42 +20,53 @@ namespace Oneonones.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ObtainAll()
+        public async Task<IActionResult> Obtain([FromQuery] string email = null)
         {
-            var employeeEntityList = await employeesService.ObtainAll();
-            var employeeViewModelList = employeeEntityList.Select(EmployeeMap.ToViewModel).ToList();
-            return Ok(employeeViewModelList);
+            if (email == null)
+            {
+                var employeeEntityList = await employeesService.Obtain();
+                var employeeViewModelList = employeeEntityList.Select(EmployeeMap.ToViewModel).ToList();
+                return StatusCode((int)StatusCodes.Status200OK, employeeViewModelList);
+            }
+            else
+            {
+                var employeeEntity = await employeesService.ObtainByEmail(email);
+                var employeeViewModel = employeeEntity.ToViewModel();
+                return StatusCode((int)StatusCodes.Status200OK, employeeViewModel);
+            }
         }
 
-        [HttpGet("{email}")]
-        public async Task<IActionResult> Obtain([FromRoute] string email)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> ObtainById([FromRoute] string id)
         {
-            var employeeEntity = await employeesService.Obtain(email);
+            var employeeEntity = await employeesService.Obtain(id);
             var employeeViewModel = employeeEntity.ToViewModel();
-            return Ok(employeeViewModel);
+            return StatusCode((int)StatusCodes.Status200OK, employeeViewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Insert([FromBody] EmployeeViewModel employeeViewModel)
+        public async Task<IActionResult> Insert([FromBody] EmployeeInputViewModel employeeInputViewModel)
         {
-            var employeeEntity = employeeViewModel.ToEntity();
-            await employeesService.Insert(employeeEntity);
-            return NoContent();
+            var employeeInputEntity = employeeInputViewModel.ToEntity();
+            var employeeEntity = await employeesService.Insert(employeeInputEntity);
+            var employeeViewModel = employeeEntity.ToViewModel();
+            return StatusCode((int)StatusCodes.Status201Created, employeeViewModel);
         }
 
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] EmployeeViewModel employeeViewModel)
         {
             var employeeEntity = employeeViewModel.ToEntity();
-            await employeesService.Update(employeeEntity);
-            return NoContent();
+            var employeeEntityUpdated = await employeesService.Update(employeeEntity);
+            var employeeViewModelUpdated = employeeEntityUpdated.ToViewModel();
+            return StatusCode((int)StatusCodes.Status202Accepted, employeeViewModelUpdated);
         }
 
-        [HttpDelete("{email}")]
-        public async Task<IActionResult> Delete([FromRoute] string email)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] string id)
         {
-            await employeesService.Delete(email);
-            return NoContent();
+            await employeesService.Delete(id);
+            return StatusCode((int)StatusCodes.Status204NoContent);
         }
     }
 }
