@@ -39,6 +39,13 @@ namespace Oneonones.Service.Implementations
             return dashboardEntity;
         }
 
+        public async Task<DashboardEntity> ObtainByEmail(string email)
+        {
+            var employee = await employeesService.ObtainByEmail(email);
+            var dashboardEntity = await ObtainEmployeeDashboard(employee);
+            return dashboardEntity;
+        }
+
         private async Task<DashboardEntity> ObtainEmployeeDashboard(EmployeeEntity employee)
         {
             var oneononeList = await oneononesService.ObtainByEmployee(employee.Id);

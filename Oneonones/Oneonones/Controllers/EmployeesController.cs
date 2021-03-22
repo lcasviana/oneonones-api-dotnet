@@ -22,9 +22,10 @@ namespace Oneonones.Controllers
         [HttpGet]
         public async Task<IActionResult> Obtain([FromQuery] string email = null)
         {
-            return email != null
-                ? await ObtainByEmail(email)
-                : await ObtainAll();
+            if (email != null)
+                return await ObtainByEmail(email);
+            else
+                return await ObtainAll();
         }
 
         [HttpGet("{id}")]

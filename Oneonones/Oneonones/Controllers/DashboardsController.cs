@@ -19,26 +19,30 @@ namespace Oneonones.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Obtain([FromQuery] string email)
+        public async Task<IActionResult> Obtain([FromQuery] string id, [FromQuery] string email)
         {
-            return email != null
-                ? await ObtainByEmail(email)
-                : await ObtainAll();
+            if (id != null)
+                return await ObtainById(id);
+            else if (email != null)
+                return await ObtainByEmail(email);
+            else
+                return await ObtainAll();
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> ObtainById([FromRoute] string id)
+        #region Obtain Filters
+
+        private async Task<IActionResult> ObtainById(string id)
         {
             var dashboardEntity = await dashboardsService.Obtain(id);
             var dashboardViewModel = dashboardEntity.ToViewModel();
             return StatusCode((int)StatusCodes.Status200OK, dashboardViewModel);
         }
 
-        #region Obtain Filters
-
         private async Task<IActionResult> ObtainByEmail(string email)
         {
-            throw new System.NotImplementedException("Query by id.");
+            var dashboardEntity = await dashboardsService.ObtainByEmail(email);
+            var dashboardViewModel = dashboardEntity.ToViewModel();
+            return StatusCode((int)StatusCodes.Status200OK, dashboardViewModel);
         }
 
         private async Task<IActionResult> ObtainAll()

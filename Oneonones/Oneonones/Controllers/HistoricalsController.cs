@@ -14,10 +14,14 @@ namespace Oneonones.Controllers
     public class HistoricalsController : ControllerBase
     {
         private readonly IHistoricalsService historicalsService;
+        private readonly IEmployeesService employeesService;
 
-        public HistoricalsController(IHistoricalsService historicalsService)
+        public HistoricalsController(
+            IHistoricalsService historicalsService,
+            IEmployeesService employeesService)
         {
             this.historicalsService = historicalsService;
+            this.employeesService = employeesService;
         }
 
         [HttpGet]
@@ -83,7 +87,10 @@ namespace Oneonones.Controllers
 
         private async Task<IActionResult> ObtainByEmployeeEmail(string email)
         {
-            throw new System.NotImplementedException("Query by id.");
+            var employee = await employeesService.ObtainByEmail(email);
+            var historicalEntityList = await historicalsService.ObtainByEmployee(employee.Id);
+            var historicalViewModelList = historicalEntityList.Select(HistoricalMap.ToViewModel).ToList();
+            return StatusCode((int)StatusCodes.Status200OK, historicalViewModelList);
         }
 
         private async Task<IActionResult> ObtainByPairId(string leaderId, string ledId, DateTime? occurrence)
@@ -109,7 +116,27 @@ namespace Oneonones.Controllers
 
         private async Task<IActionResult> ObtainByPairEmail(string leaderEmail, string ledEmail, DateTime? occurrence)
         {
-            throw new System.NotImplementedException("Query by id.");
+            return occurrence != null
+                ? await ObtainByPairEmailOccurrence(leaderEmail, ledEmail, occurrence)
+                : await ObtainByPairEmailAll(leaderEmail, ledEmail);
+        }
+
+        private async Task<IActionResult> ObtainByPairEmailOccurrence(string leaderEmail, string ledEmail, DateTime? occurrence)
+        {
+            var leader = await employeesService.ObtainByEmail(leaderEmail);
+            var led = await employeesService.ObtainByEmail(ledEmail);
+            var historicalEntity = await historicalsService.ObtainByOccurrence(leader.Id, led.Id, occurrence.Value);
+            var historicalViewModel = historicalEntity.ToViewModel();
+            return StatusCode((int)StatusCodes.Status200OK, historicalViewModel);
+        }
+
+        private async Task<IActionResult> ObtainByPairEmailAll(string leaderEmail, string ledEmail)
+        {
+            var leader = await employeesService.ObtainByEmail(leaderEmail);
+            var led = await employeesService.ObtainByEmail(ledEmail);
+            var historicalEntityList = await historicalsService.ObtainByPair(leader.Id, led.Id);
+            var historicalViewModelList = historicalEntityList.Select(HistoricalMap.ToViewModel).ToList();
+            return StatusCode((int)StatusCodes.Status200OK, historicalViewModelList);
         }
 
         private async Task<IActionResult> ObtainAll()

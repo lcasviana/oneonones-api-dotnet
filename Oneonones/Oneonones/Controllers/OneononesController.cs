@@ -13,10 +13,14 @@ namespace Oneonones.Controllers
     public class OneononesController : ControllerBase
     {
         private readonly IOneononesService oneononesService;
+        private readonly IEmployeesService employeesService;
 
-        public OneononesController(IOneononesService oneononesService)
+        public OneononesController(
+            IOneononesService oneononesService,
+            IEmployeesService employeesService)
         {
             this.oneononesService = oneononesService;
+            this.employeesService = employeesService;
         }
 
         [HttpGet]
@@ -81,7 +85,10 @@ namespace Oneonones.Controllers
 
         private async Task<IActionResult> ObtainByEmployeeEmail(string email)
         {
-            throw new System.NotImplementedException("Query by id.");
+            var employee = await employeesService.ObtainByEmail(email);
+            var oneononeEntityList = await oneononesService.ObtainByEmployee(employee.Id);
+            var oneononeViewModelList = oneononeEntityList.Select(OneononeMap.ToViewModel).ToList();
+            return StatusCode((int)StatusCodes.Status200OK, oneononeViewModelList);
         }
 
         private async Task<IActionResult> ObtainByPairId(string leaderId, string ledId)
@@ -93,7 +100,11 @@ namespace Oneonones.Controllers
 
         private async Task<IActionResult> ObtainByPairEmail(string leaderEmail, string ledEmail)
         {
-            throw new System.NotImplementedException("Query by id.");
+            var leader = await employeesService.ObtainByEmail(leaderEmail);
+            var led = await employeesService.ObtainByEmail(ledEmail);
+            var oneononeEntity = await oneononesService.ObtainByPair(leader.Id, led.Id);
+            var oneononeViewModel = oneononeEntity.ToViewModel();
+            return StatusCode((int)StatusCodes.Status200OK, oneononeViewModel);
         }
 
         private async Task<IActionResult> ObtainAll()

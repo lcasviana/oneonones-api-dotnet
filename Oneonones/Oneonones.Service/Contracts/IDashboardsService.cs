@@ -8,5 +8,6 @@ namespace Oneonones.Service.Contracts
     {
         Task<IList<DashboardEntity>> Obtain();
         Task<DashboardEntity> Obtain(string id);
+        Task<DashboardEntity> ObtainByEmail(string email);
     }
 }

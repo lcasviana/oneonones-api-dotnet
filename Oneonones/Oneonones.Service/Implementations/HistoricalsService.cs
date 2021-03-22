@@ -15,19 +15,22 @@ namespace Oneonones.Service.Implementations
     {
         private readonly IHistoricalsRepository historicalsRepository;
         private readonly IEmployeesService employeesService;
+        private readonly IOneononesService oneononesService;
 
         public HistoricalsService(
             IHistoricalsRepository historicalsRepository,
-            IEmployeesService employeesService)
+            IEmployeesService employeesService,
+            IOneononesService oneononesService)
         {
             this.historicalsRepository = historicalsRepository;
             this.employeesService = employeesService;
+            this.oneononesService = oneononesService;
         }
 
         public async Task<IList<HistoricalEntity>> Obtain()
         {
             var historicalList = await historicalsRepository.Obtain();
-            FillEmployees(historicalList);
+            await FillEmployees(historicalList);
             return historicalList;
         }
 
@@ -52,7 +55,7 @@ namespace Oneonones.Service.Implementations
             if (historicalList == null || !historicalList.Any())
                 throw new ApiException(HttpStatusCode.NotFound, HistoricalsMessages.Empty(employee.Email));
 
-            FillEmployees(historicalList);
+            await FillEmployees(historicalList);
             return historicalList;
         }
 
@@ -64,7 +67,7 @@ namespace Oneonones.Service.Implementations
             if (historicalList == null || !historicalList.Any())
                 throw new ApiException(HttpStatusCode.NotFound, HistoricalsMessages.Empty(leader.Email, led.Email));
 
-            FillEmployees(historicalList);
+            await FillEmployees(historicalList);
             return historicalList;
         }
 
@@ -103,15 +106,17 @@ namespace Oneonones.Service.Implementations
 
         public async Task<HistoricalEntity> Insert(HistoricalInputEntity historicalInput)
         {
-            var (leader, led) = await employeesService.ObtainPair(historicalInput?.LeaderId, historicalInput?.LedId);
-
             if (historicalInput.Occurrence == DateTime.MinValue)
                 throw new ApiException(HttpStatusCode.BadRequest, HistoricalsMessages.InvalidOccurrence(historicalInput.Occurrence));
+
+            var (leader, led) = await employeesService.ObtainPair(historicalInput?.LeaderId, historicalInput?.LedId);
 
             var historicalList = await historicalsRepository.ObtainByPair(historicalInput.LeaderId, historicalInput.LedId);
             var occurrenceObtained = historicalList?.FirstOrDefault(historical => historical.Occurrence.Date == historicalInput.Occurrence.Date);
             if (occurrenceObtained != null)
                 throw new ApiException(HttpStatusCode.Conflict, HistoricalsMessages.Conflict(leader.Email, led.Email, historicalInput.Occurrence));
+
+            _ = await oneononesService.ObtainByPair(leader.Id, led.Id);
 
             var historical = new HistoricalEntity(leader, led, historicalInput.Occurrence, historicalInput.Commentary);
             var inserted = await historicalsRepository.Insert(historical);
@@ -123,15 +128,25 @@ namespace Oneonones.Service.Implementations
 
         public async Task<HistoricalEntity> Update(HistoricalEntity historical)
         {
+            var requestErrors = new string[]
+            {
+                Guid.TryParse(historical.Id, out var _) ? null : GlobalMessages.InvalidId(historical.Id),
+                historical.Occurrence == DateTime.MinValue ? HistoricalsMessages.InvalidOccurrence(historical.Occurrence) : null,
+            }.Where(e => e != null);
+            if (requestErrors.Any())
+                throw new ApiException(HttpStatusCode.BadRequest, requestErrors.ToList());
+
             var (leader, led) = await employeesService.ObtainPair(historical?.Leader?.Id, historical?.Led?.Id);
 
-            if (historical.Occurrence == DateTime.MinValue)
-                throw new ApiException(HttpStatusCode.BadRequest, HistoricalsMessages.InvalidOccurrence(historical.Occurrence));
-
+            var historicalObtained = await historicalsRepository.Obtain(historical.Id);
             var historicalList = await historicalsRepository.ObtainByPair(historical.Leader.Id, historical.Led.Id);
             var occurrenceObtained = historicalList?.FirstOrDefault(historical => historical.Occurrence.Date == historical.Occurrence.Date);
-            if (occurrenceObtained == null)
-                throw new ApiException(HttpStatusCode.Conflict, HistoricalsMessages.NotFound(leader.Email, led.Email, historical.Occurrence));
+            if (historicalObtained == null)
+                throw new ApiException(HttpStatusCode.NotFound, HistoricalsMessages.NotFound(historical.Id));
+            if (occurrenceObtained != null && historical.Id != occurrenceObtained.Id)
+                throw new ApiException(HttpStatusCode.NotFound, HistoricalsMessages.Conflict(leader.Email, led.Email, historical.Occurrence));
+
+            _ = await oneononesService.ObtainByPair(leader.Id, led.Id);
 
             FillEmployees(historical, leader, led);
             var updated = await historicalsRepository.Update(historical);
@@ -160,9 +175,9 @@ namespace Oneonones.Service.Implementations
             Parallel.For(0, historicalList.Count, i => FillEmployees(historicalList[i], leader, led));
         }
 
-        private void FillEmployees(IList<HistoricalEntity> historicalList)
+        private async Task FillEmployees(IList<HistoricalEntity> historicalList)
         {
-            Parallel.For(0, historicalList.Count, async i => await FillEmployees(historicalList[i]));
+            await Task.WhenAll(historicalList.Select(async historical => await FillEmployees(historical)));
         }
 
         private async Task FillEmployees(HistoricalEntity historical)
