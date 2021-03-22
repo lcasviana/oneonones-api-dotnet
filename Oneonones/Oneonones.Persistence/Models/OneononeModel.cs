@@ -2,8 +2,9 @@
 {
     public class OneononeModel
     {
-        public string LeaderEmail { get; set; }
-        public string LedEmail { get; set; }
-        public int FrequencyType { get; set; }
+        public string Id { get; set; }
+        public string LeaderId { get; set; }
+        public string LedId { get; set; }
+        public int Frequency { get; set; }
     }
 }

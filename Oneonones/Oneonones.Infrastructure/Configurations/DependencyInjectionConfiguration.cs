@@ -22,21 +22,21 @@ namespace Oneonones.Infrastructure.Configurations
             serviceCollection.AddSingleton<IDashboardsService, DashboardsService>();
             serviceCollection.AddSingleton<IEmployeesService, EmployeesService>();
             serviceCollection.AddSingleton<IOneononesService, OneononesService>();
-            serviceCollection.AddSingleton<IOneononesHistoricalService, OneononesHistoricalService>();
+            serviceCollection.AddSingleton<IHistoricalsService, HistoricalsService>();
         }
 
         private static void AddDatabasesImplementations(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<IEmployeesDatabase, EmployeesDatabase>();
             serviceCollection.AddSingleton<IOneononesDatabase, OneononesDatabase>();
-            serviceCollection.AddSingleton<IOneononesHistoricalDatabase, OneononesHistoricalDatabase>();
+            serviceCollection.AddSingleton<IHistoricalsDatabase, HistoricalsDatabase>();
         }
 
         private static void AddRepositoriesImplementations(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<IEmployeesRepository, EmployeesRepository>();
             serviceCollection.AddSingleton<IOneononesRepository, OneononesRepository>();
-            serviceCollection.AddSingleton<IOneononesHistoricalRepository, OneononesHistoricalRepository>();
+            serviceCollection.AddSingleton<IHistoricalsRepository, HistoricalsRepository>();
         }
     }
 }

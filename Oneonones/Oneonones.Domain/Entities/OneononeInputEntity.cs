@@ -4,8 +4,8 @@ namespace Oneonones.Domain.Entities
 {
     public class OneononeInputEntity
     {
-        public string LeaderEmail { get; set; }
-        public string LedEmail { get; set; }
-        public OneononeFrequencyEnum Frequency { get; set; }
+        public string LeaderId { get; set; }
+        public string LedId { get; set; }
+        public FrequencyEnum Frequency { get; set; }
     }
 }

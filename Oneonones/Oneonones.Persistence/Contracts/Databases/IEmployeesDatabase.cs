@@ -6,10 +6,11 @@ namespace Oneonones.Persistence.Contracts.Databases
 {
     public interface IEmployeesDatabase
     {
-        Task<IList<EmployeeModel>> ObtainAll();
-        Task<EmployeeModel> Obtain(string email);
+        Task<IList<EmployeeModel>> Obtain();
+        Task<EmployeeModel> Obtain(string id);
+        Task<EmployeeModel> ObtainByEmail(string email);
         Task<int> Insert(EmployeeModel employee);
         Task<int> Update(EmployeeModel employee);
-        Task<int> Delete(string email);
+        Task<int> Delete(string id);
     }
 }

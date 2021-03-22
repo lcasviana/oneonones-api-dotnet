@@ -2,7 +2,7 @@
 
 namespace Oneonones.Infrastructure.ViewModels
 {
-    public class OneononeStatusViewModel
+    public class StatusViewModel
     {
         public DateTime LastOccurrence { get; set; }
         public DateTime NextOccurrence { get; set; }

@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Oneonones.Infrastructure.Mapping;
 using Oneonones.Service.Contracts;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Oneonones.Controllers
 {
@@ -18,19 +19,39 @@ namespace Oneonones.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ObtainAll()
+        public async Task<IActionResult> Obtain([FromQuery] string id, [FromQuery] string email)
         {
-            var dashboardEntityList = await dashboardsService.ObtainAll();
-            var dashboardViewModelList = dashboardEntityList.Select(DashboardMap.ToViewModel).ToList();
-            return Ok(dashboardViewModelList);
+            if (id != null)
+                return await ObtainById(id);
+            else if (email != null)
+                return await ObtainByEmail(email);
+            else
+                return await ObtainAll();
         }
 
-        [HttpGet("{email}")]
-        public async Task<IActionResult> ObtainByEmployee([FromRoute] string email)
+        #region Obtain Filters
+
+        private async Task<IActionResult> ObtainById(string id)
         {
-            var dashboardEntity = await dashboardsService.ObtainByEmployee(email);
+            var dashboardEntity = await dashboardsService.Obtain(id);
             var dashboardViewModel = dashboardEntity.ToViewModel();
-            return Ok(dashboardViewModel);
+            return StatusCode((int)StatusCodes.Status200OK, dashboardViewModel);
         }
+
+        private async Task<IActionResult> ObtainByEmail(string email)
+        {
+            var dashboardEntity = await dashboardsService.ObtainByEmail(email);
+            var dashboardViewModel = dashboardEntity.ToViewModel();
+            return StatusCode((int)StatusCodes.Status200OK, dashboardViewModel);
+        }
+
+        private async Task<IActionResult> ObtainAll()
+        {
+            var dashboardEntityList = await dashboardsService.Obtain();
+            var dashboardViewModelList = dashboardEntityList.Select(DashboardMap.ToViewModel).ToList();
+            return StatusCode((int)StatusCodes.Status200OK, dashboardViewModelList);
+        }
+
+        #endregion
     }
 }

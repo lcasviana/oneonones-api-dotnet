@@ -5,7 +5,7 @@ namespace Oneonones.Infrastructure.ViewModels
     public class OneononeComposeViewModel
     {
         public OneononeViewModel Oneonone { get; set; }
-        public IList<OneononeHistoricalViewModel> Historical { get; set; }
-        public OneononeStatusViewModel Status { get; set; }
+        public IList<HistoricalViewModel> Historical { get; set; }
+        public StatusViewModel Status { get; set; }
     }
 }

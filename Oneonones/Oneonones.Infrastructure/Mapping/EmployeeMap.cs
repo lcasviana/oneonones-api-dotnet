@@ -11,6 +11,7 @@ namespace Oneonones.Infrastructure.Mapping
 
             var entity = new EmployeeEntity
             {
+                Id = viewModel.Id,
                 Email = viewModel.Email,
                 Name = viewModel.Name,
             };
@@ -24,11 +25,25 @@ namespace Oneonones.Infrastructure.Mapping
 
             var viewModel = new EmployeeViewModel
             {
-                Name = entity.Name,
+                Id = entity.Id,
                 Email = entity.Email,
+                Name = entity.Name,
             };
 
             return viewModel;
+        }
+
+        public static EmployeeInputEntity ToEntity(this EmployeeInputViewModel viewModel)
+        {
+            if (viewModel == null) return null;
+
+            var entity = new EmployeeInputEntity
+            {
+                Email = viewModel.Email,
+                Name = viewModel.Name,
+            };
+
+            return entity;
         }
     }
 }

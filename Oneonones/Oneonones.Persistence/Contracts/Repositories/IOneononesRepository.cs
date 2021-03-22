@@ -1,16 +1,17 @@
-﻿using Oneonones.Domain.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Oneonones.Domain.Entities;
 
 namespace Oneonones.Persistence.Contracts.Repositories
 {
     public interface IOneononesRepository
     {
-        Task<IList<OneononeEntity>> ObtainAll();
-        Task<IList<OneononeEntity>> ObtainByEmployee(string email);
-        Task<OneononeEntity> ObtainByPair(string leaderEmail, string ledEmail);
-        Task<bool> Insert(OneononeEntity oneonone);
-        Task<bool> Update(OneononeEntity oneonone);
-        Task<bool> Delete(string leaderEmail, string ledEmail);
+        Task<IList<OneononeEntity>> Obtain();
+        Task<OneononeEntity> Obtain(string id);
+        Task<IList<OneononeEntity>> ObtainByEmployee(string id);
+        Task<OneononeEntity> ObtainByPair(string leaderId, string ledId);
+        Task<bool> Insert(OneononeEntity oneononeEntity);
+        Task<bool> Update(OneononeEntity oneononeEntity);
+        Task<bool> Delete(string id);
     }
 }

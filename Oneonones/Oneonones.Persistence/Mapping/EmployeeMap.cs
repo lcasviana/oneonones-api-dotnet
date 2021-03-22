@@ -1,7 +1,7 @@
 ﻿using Oneonones.Domain.Entities;
 using Oneonones.Persistence.Models;
 
-namespace Employees.Persistence.Mapping
+namespace Oneonones.Persistence.Mapping
 {
     public static class EmployeeMap
     {
@@ -11,6 +11,7 @@ namespace Employees.Persistence.Mapping
 
             var model = new EmployeeModel
             {
+                Id = entity.Id,
                 Email = entity.Email,
                 Name = entity.Name,
             };
@@ -24,6 +25,7 @@ namespace Employees.Persistence.Mapping
 
             var entity = new EmployeeEntity
             {
+                Id = model.Id,
                 Email = model.Email,
                 Name = model.Name,
             };

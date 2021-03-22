@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Oneonones.Infrastructure.Mapping
 {
-    public static class OneononeComposeMap
+    public static class ComposeMap
     {
         public static OneononeComposeViewModel ToViewModel(this OneononeComposeEntity entity)
         {
@@ -13,7 +13,7 @@ namespace Oneonones.Infrastructure.Mapping
             var viewModel = new OneononeComposeViewModel
             {
                 Oneonone = entity.Oneonone.ToViewModel(),
-                Historical = entity.Historical.Select(OneononeHistoricalMap.ToViewModel).ToList(),
+                Historical = entity.Historical.Select(HistoricalMap.ToViewModel).ToList(),
                 Status = entity.Status.ToViewModel(),
             };
 

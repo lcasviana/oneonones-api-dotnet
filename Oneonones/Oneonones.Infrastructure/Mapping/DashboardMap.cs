@@ -13,7 +13,7 @@ namespace Oneonones.Infrastructure.Mapping
             var viewModel = new DashboardViewModel
             {
                 Employee = entity.Employee.ToViewModel(),
-                Oneonones = entity.Oneonones.Select(OneononeComposeMap.ToViewModel).ToList(),
+                Oneonones = entity.Oneonones.Select(ComposeMap.ToViewModel).ToList(),
             };
 
             return viewModel;

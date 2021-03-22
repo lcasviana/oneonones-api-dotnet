@@ -2,8 +2,9 @@
 
 namespace Oneonones.Infrastructure.ViewModels
 {
-    public class OneononeHistoricalViewModel
+    public class HistoricalViewModel
     {
+        public string Id { get; set; }
         public EmployeeViewModel Leader { get; set; }
         public EmployeeViewModel Led { get; set; }
         public DateTime Occurrence { get; set; }

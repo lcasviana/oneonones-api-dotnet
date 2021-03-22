@@ -1,14 +1,14 @@
-﻿using Oneonones.Domain.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using Oneonones.Domain.Entities;
 using Oneonones.Domain.Enums;
 using Oneonones.Domain.Messages;
 using Oneonones.Persistence.Contracts.Repositories;
 using Oneonones.Service.Contracts;
 using Oneonones.Service.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace Oneonones.Service.Implementations
 {
@@ -25,95 +25,126 @@ namespace Oneonones.Service.Implementations
             this.oneononesRepository = oneononesRepository;
         }
 
-        public async Task<IList<OneononeEntity>> ObtainAll()
+        public async Task<IList<OneononeEntity>> Obtain()
         {
-            var oneononeList = await oneononesRepository.ObtainAll();
-            var oneononeListComplete = await CompleteEntityList(oneononeList);
-            return oneononeListComplete;
+            var oneononeList = await oneononesRepository.Obtain();
+            await FillEmployees(oneononeList);
+            return oneononeList;
         }
 
-        public async Task<IList<OneononeEntity>> ObtainByEmployee(string email)
+        public async Task<OneononeEntity> Obtain(string id)
         {
-            if (string.IsNullOrWhiteSpace(email))
-                throw new ApiException(HttpStatusCode.BadRequest, EmployeesMessages.InvalidEmail);
+            if (!Guid.TryParse(id, out var _))
+                throw new ApiException(HttpStatusCode.BadRequest, GlobalMessages.InvalidId(id));
 
-            _ = await employeesService.Obtain(email);
+            var oneonone = await oneononesRepository.Obtain(id);
+            if (oneonone == null)
+                throw new ApiException(HttpStatusCode.NotFound, OneononesMessages.NotFound(id));
 
-            var oneononeList = await oneononesRepository.ObtainByEmployee(email);
-            var oneononeListComplete = await CompleteEntityList(oneononeList);
-            return oneononeListComplete;
+            await FillEmployees(oneonone);
+            return oneonone;
         }
 
-        public async Task<OneononeEntity> ObtainByPair(string leaderEmail, string ledEmail)
+        public async Task<IList<OneononeEntity>> ObtainByEmployee(string id)
         {
-            var (leader, led) = await employeesService.ObtainPair(leaderEmail, ledEmail);
+            var employee = await employeesService.Obtain(id);
 
-            var oneonone = (await oneononesRepository.ObtainByPair(leaderEmail, ledEmail))
-                ?? throw new ApiException(HttpStatusCode.NotFound, OneononesMessages.NotFound, leaderEmail, ledEmail);
+            var oneononeList = await oneononesRepository.ObtainByEmployee(id);
+            if (oneononeList == null || !oneononeList.Any())
+                throw new ApiException(HttpStatusCode.NotFound, OneononesMessages.Empty(employee.Email));
 
-            return NewEntity(leader, led, oneonone.Frequency);
+            await FillEmployees(oneononeList);
+            return oneononeList;
         }
 
-        public async Task Insert(OneononeInputEntity oneononeInput)
+        public async Task<OneononeEntity> ObtainByPair(string leaderId, string ledId)
         {
-            var (leader, led) = await employeesService.ObtainPair(oneononeInput?.LeaderEmail, oneononeInput?.LedEmail);
+            var (leader, led) = await employeesService.ObtainPair(leaderId, ledId);
 
-            if (!Enum.IsDefined(typeof(OneononeFrequencyEnum), oneononeInput.Frequency))
-                throw new ApiException(HttpStatusCode.BadRequest, OneononesMessages.InvalidFrequency, oneononeInput.Frequency);
+            var oneonone = await oneononesRepository.ObtainByPair(leaderId, ledId);
+            if (oneonone == null)
+                throw new ApiException(HttpStatusCode.NotFound, OneononesMessages.NotFound(leader.Email, led.Email));
 
-            var oneononeObtained = await oneononesRepository.ObtainByPair(oneononeInput.LeaderEmail, oneononeInput.LedEmail);
+            FillEmployees(oneonone, leader, led);
+            return oneonone;
+        }
+
+        public async Task<OneononeEntity> Insert(OneononeInputEntity oneononeInput)
+        {
+            if (!Enum.IsDefined(typeof(FrequencyEnum), oneononeInput.Frequency))
+                throw new ApiException(HttpStatusCode.BadRequest, OneononesMessages.InvalidFrequency((int)oneononeInput.Frequency));
+
+            var (leader, led) = await employeesService.ObtainPair(oneononeInput?.LeaderId, oneononeInput?.LedId);
+
+            var oneononeObtained = await oneononesRepository.ObtainByPair(leader.Id, led.Id);
             if (oneononeObtained != null)
-                throw new ApiException(HttpStatusCode.Conflict, OneononesMessages.Conflict, oneononeInput.LeaderEmail, oneononeInput.LedEmail);
+                throw new ApiException(HttpStatusCode.Conflict, OneononesMessages.Conflict(leader.Email, led.Email));
 
-            var inserted = await oneononesRepository.Insert(NewEntity(leader, led, oneononeInput.Frequency));
-            if (!inserted) throw new ApiException(HttpStatusCode.InternalServerError, OneononesMessages.Insert, oneononeInput.LeaderEmail, oneononeInput.LedEmail);
+            var oneonone = new OneononeEntity(leader, led, oneononeInput.Frequency);
+            var inserted = await oneononesRepository.Insert(oneonone);
+            if (!inserted)
+                throw new ApiException(HttpStatusCode.InternalServerError, OneononesMessages.Insert(oneonone.Leader.Email, oneonone.Led.Email));
+
+            return oneonone;
         }
 
-        public async Task Update(OneononeInputEntity oneononeInput)
+        public async Task<OneononeEntity> Update(OneononeEntity oneonone)
         {
-            var (leader, led) = await employeesService.ObtainPair(oneononeInput?.LeaderEmail, oneononeInput?.LedEmail);
-
-            if (!Enum.IsDefined(typeof(OneononeFrequencyEnum), oneononeInput.Frequency))
-                throw new ApiException(HttpStatusCode.BadRequest, OneononesMessages.InvalidFrequency, oneononeInput.Frequency);
-
-            _ = (await oneononesRepository.ObtainByPair(oneononeInput.LeaderEmail, oneononeInput.LedEmail))
-                ?? throw new ApiException(HttpStatusCode.NotFound, OneononesMessages.NotFound, oneononeInput.LeaderEmail, oneononeInput.LedEmail);
-
-            var updated = await oneononesRepository.Update(NewEntity(leader, led, oneononeInput.Frequency));
-            if (!updated) throw new ApiException(HttpStatusCode.InternalServerError, OneononesMessages.Update, oneononeInput.LeaderEmail, oneononeInput.LedEmail);
-        }
-
-        public async Task Delete(string leaderEmail, string ledEmail)
-        {
-            _ = await employeesService.ObtainPair(leaderEmail, ledEmail);
-
-            _ = (await oneononesRepository.ObtainByPair(leaderEmail, ledEmail))
-                ?? throw new ApiException(HttpStatusCode.NotFound, OneononesMessages.NotFound, leaderEmail, ledEmail);
-
-            var deleted = await oneononesRepository.Delete(leaderEmail, ledEmail);
-            if (!deleted) throw new ApiException(HttpStatusCode.InternalServerError, OneononesMessages.Delete, leaderEmail, ledEmail);
-        }
-
-        private async Task<IList<OneononeEntity>> CompleteEntityList(IList<OneononeEntity> oneononelList)
-        {
-            var oneononeTasks = oneononelList.Select(async o =>
+            var requestErrors = new string[]
             {
-                var (leader, led) = await employeesService.ObtainPair(o.Leader.Email, o.Led.Email);
-                return NewEntity(leader, led, o.Frequency);
-            });
+                Guid.TryParse(oneonone.Id, out var _) ? null : GlobalMessages.InvalidId(oneonone.Id),
+                Enum.IsDefined(typeof(FrequencyEnum), oneonone.Frequency) ? null : OneononesMessages.InvalidFrequency((int)oneonone.Frequency),
+            }.Where(e => e != null);
+            if (requestErrors.Any())
+                throw new ApiException(HttpStatusCode.BadRequest, requestErrors.ToList());
 
-            var oneononeComplete = await Task.WhenAll(oneononeTasks);
-            return oneononeComplete.ToList();
+            var (leader, led) = await employeesService.ObtainPair(oneonone?.Leader?.Id, oneonone?.Led?.Id);
+
+            var oneononeObtained = await oneononesRepository.Obtain(oneonone.Id);
+            if (oneononeObtained == null)
+                throw new ApiException(HttpStatusCode.NotFound, OneononesMessages.NotFound(oneonone.Id));
+
+            var oneononeConflict = await oneononesRepository.ObtainByPair(leader.Id, led.Id);
+            if (oneononeConflict != null && oneononeConflict.Id != oneononeObtained.Id)
+                throw new ApiException(HttpStatusCode.Conflict, OneononesMessages.Conflict(leader.Email, led.Email));
+
+            FillEmployees(oneonone, leader, led);
+            var updated = await oneononesRepository.Update(oneonone);
+            if (!updated)
+                throw new ApiException(HttpStatusCode.InternalServerError, OneononesMessages.Update(oneonone.Leader.Email, oneonone.Led.Email));
+
+            return oneonone;
         }
 
-        private OneononeEntity NewEntity(EmployeeEntity leader, EmployeeEntity led, OneononeFrequencyEnum frequency)
+        public async Task Delete(string id)
         {
-            return new OneononeEntity
-            {
-                Leader = leader,
-                Led = led,
-                Frequency = frequency,
-            };
+            if (!Guid.TryParse(id, out var _))
+                throw new ApiException(HttpStatusCode.BadRequest, GlobalMessages.InvalidId(id));
+
+            var oneonone = await oneononesRepository.Obtain(id);
+            if (oneonone == null)
+                throw new ApiException(HttpStatusCode.NotFound, OneononesMessages.NotFound(id));
+
+            var deleted = await oneononesRepository.Delete(id);
+            if (!deleted)
+                throw new ApiException(HttpStatusCode.InternalServerError, OneononesMessages.Delete(id));
+        }
+
+        private async Task FillEmployees(IList<OneononeEntity> oneononeList)
+        {
+            await Task.WhenAll(oneononeList.Select(oneonone => FillEmployees(oneonone)));
+        }
+
+        private async Task FillEmployees(OneononeEntity oneonone)
+        {
+            var (leader, led) = await employeesService.ObtainPair(oneonone.Leader.Id, oneonone.Led.Id);
+            FillEmployees(oneonone, leader, led);
+        }
+
+        private void FillEmployees(OneononeEntity oneonone, EmployeeEntity leader, EmployeeEntity led)
+        {
+            oneonone.Leader = leader;
+            oneonone.Led = led;
         }
     }
 }
