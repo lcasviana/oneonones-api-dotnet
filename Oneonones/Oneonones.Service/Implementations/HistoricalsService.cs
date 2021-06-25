@@ -31,7 +31,7 @@ namespace Oneonones.Service.Implementations
         {
             var historicalList = await historicalsRepository.Obtain();
             await FillEmployees(historicalList);
-            return historicalList;
+            return historicalList.OrderByDescending(h => h.Occurrence).ToList();
         }
 
         public async Task<HistoricalEntity> Obtain(string id)
@@ -56,7 +56,7 @@ namespace Oneonones.Service.Implementations
                 throw new ApiException(HttpStatusCode.NotFound, HistoricalsMessages.Empty(employee.Email));
 
             await FillEmployees(historicalList);
-            return historicalList;
+            return historicalList.OrderByDescending(h => h.Occurrence).ToList();
         }
 
         public async Task<IList<HistoricalEntity>> ObtainByPair(string leaderId, string ledId)
@@ -68,7 +68,7 @@ namespace Oneonones.Service.Implementations
                 throw new ApiException(HttpStatusCode.NotFound, HistoricalsMessages.Empty(leader.Email, led.Email));
 
             await FillEmployees(historicalList);
-            return historicalList;
+            return historicalList.OrderByDescending(h => h.Occurrence).ToList();
         }
 
         public async Task<HistoricalEntity> ObtainByPairLast(string leaderId, string ledId)

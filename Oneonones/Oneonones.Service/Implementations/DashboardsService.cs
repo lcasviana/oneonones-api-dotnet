@@ -29,7 +29,8 @@ namespace Oneonones.Service.Implementations
             var employees = await employeesService.Obtain();
             var dashboardTask = employees.Select(ObtainEmployeeDashboard);
             var dashboardCompleted = await Task.WhenAll(dashboardTask);
-            return dashboardCompleted.ToList();
+            var dashboard = dashboardCompleted.OrderBy(d => d.Employee.Name).ToList();
+            return dashboard;
         }
 
         public async Task<DashboardEntity> Obtain(string id)
@@ -61,19 +62,9 @@ namespace Oneonones.Service.Implementations
 
         private async Task<OneononeComposeEntity> ObtainEmployeeOneononeCompose(OneononeEntity oneonone)
         {
-            StatusEntity status = null;
-            var historical = await historicalsService.ObtainByPair(oneonone.Leader.Id, oneonone.Led.Id);
-            if (historical.Any())
-            {
-                var lastOccurrence = historical.Max(h => h.Occurrence);
-                var nextOccurrence = ObtainNextOccurrence(oneonone.Frequency, lastOccurrence);
-                status = new StatusEntity
-                {
-                    LastOccurrence = lastOccurrence,
-                    NextOccurrence = nextOccurrence,
-                    IsLate = nextOccurrence.Date < DateTime.Now.Date,
-                };
-            }
+            var historical = await ObtainHistoricalByPair(oneonone.Leader.Id, oneonone.Led.Id);
+            StatusEntity status = ObtainStatusByHistorical(historical, oneonone.Frequency);
+
             var oneononeComposeEntity = new OneononeComposeEntity
             {
                 Oneonone = oneonone,
@@ -81,6 +72,38 @@ namespace Oneonones.Service.Implementations
                 Status = status,
             };
             return oneononeComposeEntity;
+        }
+
+        private async Task<IList<HistoricalEntity>> ObtainHistoricalByPair(string leaderId, string ledId)
+        {
+            try
+            {
+                var historical = await historicalsService.ObtainByPair(leaderId, ledId);
+                return historical;
+            }
+            catch
+            {
+                return new HistoricalEntity[] { };
+            }
+        }
+
+        private StatusEntity ObtainStatusByHistorical(IList<HistoricalEntity> historical, FrequencyEnum frequency)
+        {
+            if (historical.Any())
+            {
+                var lastOccurrence = historical.Max(h => h.Occurrence);
+                var nextOccurrence = ObtainNextOccurrence(frequency, lastOccurrence);
+
+                var status = new StatusEntity
+                {
+                    LastOccurrence = lastOccurrence,
+                    NextOccurrence = nextOccurrence,
+                    IsLate = nextOccurrence.Date < DateTime.Now.Date,
+                };
+                return status;
+            }
+
+            return null;
         }
 
         private DateTime ObtainNextOccurrence(FrequencyEnum frequency, DateTime lastOccurrence)
