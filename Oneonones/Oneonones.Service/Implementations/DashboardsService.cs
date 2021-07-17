@@ -49,7 +49,15 @@ namespace Oneonones.Service.Implementations
 
         private async Task<DashboardEntity> ObtainEmployeeDashboard(EmployeeEntity employee)
         {
-            var oneononeList = await oneononesService.ObtainByEmployee(employee.Id);
+            IList<OneononeEntity> oneononeList = new List<OneononeEntity>();
+            try
+            {
+                oneononeList = await oneononesService.ObtainByEmployee(employee.Id);
+            }
+            catch
+            {
+                // supress
+            }
             var oneononeComposeTask = oneononeList.Select(ObtainEmployeeOneononeCompose);
             var oneononeComposeComplete = await Task.WhenAll(oneononeComposeTask);
             var dashboardEntity = new DashboardEntity

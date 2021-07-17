@@ -42,20 +42,20 @@ namespace Oneonones.Persistence.Repositories
         {
             var employeeModel = employeeEntity.ToModel();
             var rowsAffected = await employeesDatabase.Insert(employeeModel);
-            return rowsAffected != 0;
+            return rowsAffected == 1;
         }
 
         public async Task<bool> Update(EmployeeEntity employeeEntity)
         {
             var employeeModel = employeeEntity.ToModel();
             var rowsAffected = await employeesDatabase.Update(employeeModel);
-            return rowsAffected != 0;
+            return rowsAffected == 1;
         }
 
         public async Task<bool> Delete(string email)
         {
             var rowsAffected = await employeesDatabase.Delete(email);
-            return rowsAffected != 0;
+            return rowsAffected == 1;
         }
     }
 }

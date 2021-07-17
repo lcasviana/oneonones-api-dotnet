@@ -19,6 +19,7 @@ namespace Oneonones.Infrastructure.Configurations
 
         private static void AddServicesImplementations(this IServiceCollection serviceCollection)
         {
+            serviceCollection.AddSingleton<IAccountsService, AccountsService>();
             serviceCollection.AddSingleton<IDashboardsService, DashboardsService>();
             serviceCollection.AddSingleton<IEmployeesService, EmployeesService>();
             serviceCollection.AddSingleton<IOneononesService, OneononesService>();
@@ -27,6 +28,7 @@ namespace Oneonones.Infrastructure.Configurations
 
         private static void AddDatabasesImplementations(this IServiceCollection serviceCollection)
         {
+            serviceCollection.AddSingleton<IAccountsDatabase, AccountsDatabase>();
             serviceCollection.AddSingleton<IEmployeesDatabase, EmployeesDatabase>();
             serviceCollection.AddSingleton<IOneononesDatabase, OneononesDatabase>();
             serviceCollection.AddSingleton<IHistoricalsDatabase, HistoricalsDatabase>();
@@ -34,6 +36,7 @@ namespace Oneonones.Infrastructure.Configurations
 
         private static void AddRepositoriesImplementations(this IServiceCollection serviceCollection)
         {
+            serviceCollection.AddSingleton<IAccountsRepository, AccountsRepository>();
             serviceCollection.AddSingleton<IEmployeesRepository, EmployeesRepository>();
             serviceCollection.AddSingleton<IOneononesRepository, OneononesRepository>();
             serviceCollection.AddSingleton<IHistoricalsRepository, HistoricalsRepository>();
