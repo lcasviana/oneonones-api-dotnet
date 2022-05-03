@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Oneonones.Infrastructure.Mapping;
 using Oneonones.Infrastructure.ViewModels;
 using Oneonones.Service.Contracts;

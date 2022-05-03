@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Oneonones.Infrastructure.ViewModels
+﻿namespace Oneonones.Infrastructure.ViewModels
 {
     public class HistoricalInputViewModel
     {

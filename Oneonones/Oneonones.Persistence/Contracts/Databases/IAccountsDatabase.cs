@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Oneonones.Persistence.Models;
 
 namespace Oneonones.Persistence.Contracts.Databases

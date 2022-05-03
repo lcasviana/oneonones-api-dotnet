@@ -1,5 +1,4 @@
-﻿using System;
-using Oneonones.Domain.Enums;
+﻿using Oneonones.Domain.Enums;
 
 namespace Oneonones.Domain.Entities
 {

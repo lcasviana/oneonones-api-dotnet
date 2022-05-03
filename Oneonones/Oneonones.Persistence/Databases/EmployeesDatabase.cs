@@ -1,16 +1,14 @@
-﻿using Dapper;
+using System.Data;
+using Dapper;
 using Oneonones.Persistence.Base;
 using Oneonones.Persistence.Contracts.Databases;
 using Oneonones.Persistence.Models;
-using System.Collections.Generic;
-using System.Data;
-using System.Threading.Tasks;
 
 namespace Oneonones.Persistence.Databases
 {
     public class EmployeesDatabase : SqlBase, IEmployeesDatabase
     {
-        private const string selectQuery = @"
+        private const string SelectQuery = @"
             SELECT
                 id AS Id,
                 email AS Email,
@@ -19,17 +17,17 @@ namespace Oneonones.Persistence.Databases
                 employee
         ";
 
-        private const string whereById = @"
+        private const string WhereById = @"
             WHERE
                 id = @id
         ";
 
-        private const string whereByEmail = @"
+        private const string WhereByEmail = @"
             WHERE
                 email = @email
         ";
 
-        private const string insertQuery = @"
+        private const string InsertQuery = @"
             INSERT INTO
                 employee
             VALUES (
@@ -39,7 +37,7 @@ namespace Oneonones.Persistence.Databases
             )
         ";
 
-        private const string updateQuery = @"
+        private const string UpdateQuery = @"
             UPDATE
                 employee
             SET
@@ -49,7 +47,7 @@ namespace Oneonones.Persistence.Databases
                 id = @id
         ";
 
-        private const string deleteQuery = @"
+        private const string DeleteQuery = @"
             DELETE FROM
                 employee
             WHERE
@@ -58,13 +56,13 @@ namespace Oneonones.Persistence.Databases
 
         public async Task<IList<EmployeeModel>> Obtain()
         {
-            var employeeList = await Query<EmployeeModel>(selectQuery);
+            var employeeList = await Query<EmployeeModel>(SelectQuery);
             return employeeList;
         }
 
         public async Task<EmployeeModel> Obtain(string id)
         {
-            var query = selectQuery + whereById;
+            var query = SelectQuery + WhereById;
             var parameters = new DynamicParameters();
             parameters.Add("@id", id, DbType.AnsiStringFixedLength);
 
@@ -74,7 +72,7 @@ namespace Oneonones.Persistence.Databases
 
         public async Task<EmployeeModel> ObtainByEmail(string email)
         {
-            var query = selectQuery + whereByEmail;
+            var query = SelectQuery + WhereByEmail;
             var parameters = new DynamicParameters();
             parameters.Add("@email", email, DbType.AnsiString);
 
@@ -89,7 +87,7 @@ namespace Oneonones.Persistence.Databases
             parameters.Add("@email", employee.Email, DbType.AnsiString);
             parameters.Add("@name", employee.Name, DbType.AnsiString);
 
-            var rowsAffected = await Execute(insertQuery, parameters);
+            var rowsAffected = await Execute(InsertQuery, parameters);
             return rowsAffected;
         }
 
@@ -100,7 +98,7 @@ namespace Oneonones.Persistence.Databases
             parameters.Add("@email", employee.Email, DbType.AnsiString);
             parameters.Add("@name", employee.Name, DbType.AnsiString);
 
-            var rowsAffected = await Execute(updateQuery, parameters);
+            var rowsAffected = await Execute(UpdateQuery, parameters);
             return rowsAffected;
         }
 
@@ -109,7 +107,7 @@ namespace Oneonones.Persistence.Databases
             var parameters = new DynamicParameters();
             parameters.Add("@id", id, DbType.AnsiStringFixedLength);
 
-            var rowsAffected = await Execute(deleteQuery, parameters);
+            var rowsAffected = await Execute(DeleteQuery, parameters);
             return rowsAffected;
         }
     }

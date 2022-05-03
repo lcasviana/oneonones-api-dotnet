@@ -1,5 +1,4 @@
 using System.Net;
-using System.Threading.Tasks;
 using Oneonones.Domain.Entities;
 using Oneonones.Domain.Messages;
 using Oneonones.Persistence.Contracts.Repositories;

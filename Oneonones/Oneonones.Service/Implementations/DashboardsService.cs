@@ -1,7 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Oneonones.Domain.Entities;
 using Oneonones.Domain.Enums;
 using Oneonones.Service.Contracts;
@@ -91,11 +87,11 @@ namespace Oneonones.Service.Implementations
             }
             catch
             {
-                return new HistoricalEntity[] { };
+                return Array.Empty<HistoricalEntity>();
             }
         }
 
-        private StatusEntity ObtainStatusByHistorical(IList<HistoricalEntity> historical, FrequencyEnum frequency)
+        private static StatusEntity ObtainStatusByHistorical(IList<HistoricalEntity> historical, FrequencyEnum frequency)
         {
             if (historical.Any())
             {
@@ -114,7 +110,7 @@ namespace Oneonones.Service.Implementations
             return null;
         }
 
-        private DateTime ObtainNextOccurrence(FrequencyEnum frequency, DateTime lastOccurrence)
+        private static DateTime ObtainNextOccurrence(FrequencyEnum frequency, DateTime lastOccurrence)
         {
             return frequency switch
             {

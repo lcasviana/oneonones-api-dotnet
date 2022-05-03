@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Oneonones.Persistence.Models
+﻿namespace Oneonones.Persistence.Models
 {
     public class HistoricalModel
     {

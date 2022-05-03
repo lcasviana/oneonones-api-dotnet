@@ -1,6 +1,3 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Oneonones.Domain.Entities;
 using Oneonones.Persistence.Contracts.Databases;
 using Oneonones.Persistence.Contracts.Repositories;
@@ -12,9 +9,9 @@ namespace Oneonones.Persistence.Repositories
     {
         private readonly IHistoricalsDatabase historicalsDatabase;
 
-        public HistoricalsRepository(IHistoricalsDatabase oneononesHistoricalDatabase)
+        public HistoricalsRepository(IHistoricalsDatabase historicalsDatabase)
         {
-            this.historicalsDatabase = oneononesHistoricalDatabase;
+            this.historicalsDatabase = historicalsDatabase;
         }
 
         public async Task<IList<HistoricalEntity>> Obtain()

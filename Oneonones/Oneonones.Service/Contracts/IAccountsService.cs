@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Oneonones.Domain.Entities;
 
 namespace Oneonones.Service.Contracts

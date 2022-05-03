@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Oneonones.Domain.Extensions;
 using Oneonones.Infrastructure.Mapping;

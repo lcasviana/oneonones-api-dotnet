@@ -2,9 +2,6 @@
 using Oneonones.Persistence.Contracts.Databases;
 using Oneonones.Persistence.Contracts.Repositories;
 using Oneonones.Persistence.Mapping;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Oneonones.Persistence.Repositories
 {

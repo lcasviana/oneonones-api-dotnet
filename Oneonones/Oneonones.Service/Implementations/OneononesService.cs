@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using Oneonones.Domain.Entities;
 using Oneonones.Domain.Enums;
 using Oneonones.Domain.Messages;
@@ -141,7 +137,7 @@ namespace Oneonones.Service.Implementations
             FillEmployees(oneonone, leader, led);
         }
 
-        private void FillEmployees(OneononeEntity oneonone, EmployeeEntity leader, EmployeeEntity led)
+        private static void FillEmployees(OneononeEntity oneonone, EmployeeEntity leader, EmployeeEntity led)
         {
             oneonone.Leader = leader;
             oneonone.Led = led;

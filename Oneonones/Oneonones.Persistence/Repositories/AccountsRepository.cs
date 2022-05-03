@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Oneonones.Domain.Entities;
 using Oneonones.Persistence.Contracts.Databases;
 using Oneonones.Persistence.Contracts.Repositories;

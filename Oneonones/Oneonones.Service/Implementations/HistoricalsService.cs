@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using Oneonones.Domain.Entities;
 using Oneonones.Domain.Messages;
 using Oneonones.Persistence.Contracts.Repositories;
@@ -170,11 +166,6 @@ namespace Oneonones.Service.Implementations
                 throw new ApiException(HttpStatusCode.InternalServerError, HistoricalsMessages.Delete(id));
         }
 
-        private void FillEmployees(IList<HistoricalEntity> historicalList, EmployeeEntity leader, EmployeeEntity led)
-        {
-            Parallel.For(0, historicalList.Count, i => FillEmployees(historicalList[i], leader, led));
-        }
-
         private async Task FillEmployees(IList<HistoricalEntity> historicalList)
         {
             await Task.WhenAll(historicalList.Select(async historical => await FillEmployees(historical)));
@@ -186,7 +177,7 @@ namespace Oneonones.Service.Implementations
             FillEmployees(historical, leader, led);
         }
 
-        private void FillEmployees(HistoricalEntity historical, EmployeeEntity leader, EmployeeEntity led)
+        private static void FillEmployees(HistoricalEntity historical, EmployeeEntity leader, EmployeeEntity led)
         {
             historical.Leader = leader;
             historical.Led = led;

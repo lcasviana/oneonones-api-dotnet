@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
 using System.Data;
-using System.Threading.Tasks;
 using Dapper;
 using Oneonones.Persistence.Base;
 using Oneonones.Persistence.Contracts.Databases;
@@ -10,7 +8,7 @@ namespace Oneonones.Persistence.Databases
 {
     public class HistoricalsDatabase : SqlBase, IHistoricalsDatabase
     {
-        private const string selectQuery = @"
+        private const string SelectQuery = @"
             SELECT
                 id AS Id,
                 leader_id AS LeaderId,
@@ -21,24 +19,24 @@ namespace Oneonones.Persistence.Databases
                 historical
         ";
 
-        private const string whereById = @"
+        private const string WhereById = @"
             WHERE
                 id = @id
         ";
 
-        private const string whereByEmployee = @"
+        private const string WhereByEmployee = @"
             WHERE
                 leader_id = @email
                 OR led_id = @email
         ";
 
-        private const string whereByPair = @"
+        private const string WhereByPair = @"
             WHERE
                 leader_id = @leaderId
                 AND led_id = @ledId
         ";
 
-        private const string insertQuery = @"
+        private const string InsertQuery = @"
             INSERT INTO
                 historical
             VALUES (
@@ -50,7 +48,7 @@ namespace Oneonones.Persistence.Databases
             )
         ";
 
-        private const string updateQuery = @"
+        private const string UpdateQuery = @"
             UPDATE
                 historical
             SET
@@ -62,7 +60,7 @@ namespace Oneonones.Persistence.Databases
                 id = @id
         ";
 
-        private const string deleteQuery = @"
+        private const string DeleteQuery = @"
             DELETE FROM
                 historical
             WHERE
@@ -71,13 +69,13 @@ namespace Oneonones.Persistence.Databases
 
         public async Task<IList<HistoricalModel>> Obtain()
         {
-            var historicalList = await Query<HistoricalModel>(selectQuery);
+            var historicalList = await Query<HistoricalModel>(SelectQuery);
             return historicalList;
         }
 
         public async Task<HistoricalModel> Obtain(string id)
         {
-            var query = selectQuery + whereById;
+            var query = SelectQuery + WhereById;
             var parameters = new DynamicParameters();
             parameters.Add("@id", id, DbType.AnsiStringFixedLength);
 
@@ -87,7 +85,7 @@ namespace Oneonones.Persistence.Databases
 
         public async Task<IList<HistoricalModel>> ObtainByEmployee(string email)
         {
-            var query = selectQuery + whereByEmployee;
+            var query = SelectQuery + WhereByEmployee;
             var parameters = new DynamicParameters();
             parameters.Add("@email", email, DbType.AnsiString);
 
@@ -97,7 +95,7 @@ namespace Oneonones.Persistence.Databases
 
         public async Task<IList<HistoricalModel>> ObtainByPair(string leaderId, string ledId)
         {
-            var query = selectQuery + whereByPair;
+            var query = SelectQuery + WhereByPair;
             var parameters = new DynamicParameters();
             parameters.Add("@leaderId", leaderId, DbType.AnsiString);
             parameters.Add("@ledId", ledId, DbType.AnsiString);
@@ -115,7 +113,7 @@ namespace Oneonones.Persistence.Databases
             parameters.Add("@occurrence", historical.Occurrence, DbType.DateTime);
             parameters.Add("@commentary", historical.Commentary, DbType.AnsiString);
 
-            var rowsAffected = await Execute(insertQuery, parameters);
+            var rowsAffected = await Execute(InsertQuery, parameters);
             return rowsAffected;
         }
 
@@ -128,7 +126,7 @@ namespace Oneonones.Persistence.Databases
             parameters.Add("@occurrence", historical.Occurrence, DbType.DateTime);
             parameters.Add("@commentary", historical.Commentary, DbType.AnsiString);
 
-            var rowsAffected = await Execute(updateQuery, parameters);
+            var rowsAffected = await Execute(UpdateQuery, parameters);
             return rowsAffected;
         }
 
@@ -137,7 +135,7 @@ namespace Oneonones.Persistence.Databases
             var parameters = new DynamicParameters();
             parameters.Add("@id", id, DbType.AnsiStringFixedLength);
 
-            var rowsAffected = await Execute(deleteQuery, parameters);
+            var rowsAffected = await Execute(DeleteQuery, parameters);
             return rowsAffected;
         }
     }

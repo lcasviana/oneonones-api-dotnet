@@ -1,5 +1,4 @@
 using System.Data;
-using System.Threading.Tasks;
 using Dapper;
 using Oneonones.Persistence.Base;
 using Oneonones.Persistence.Contracts.Databases;
@@ -9,7 +8,7 @@ namespace Oneonones.Persistence.Databases
 {
     public class AccountsDatabase : SqlBase, IAccountsDatabase
     {
-        private const string selectQuery = @"
+        private const string SelectQuery = @"
             select
                 employee_id AS EmployeeId,
                 password AS Password,
@@ -20,7 +19,7 @@ namespace Oneonones.Persistence.Databases
                 employee_id = @employeeId
         ";
 
-        private const string insertQuery = @"
+        private const string InsertQuery = @"
             INSERT INTO
                 account
             VALUES (
@@ -30,7 +29,7 @@ namespace Oneonones.Persistence.Databases
             )
         ";
 
-        private const string updateQuery = @"
+        private const string UpdateQuery = @"
             UPDATE
                 account
             SET
@@ -40,7 +39,7 @@ namespace Oneonones.Persistence.Databases
                 employee_id = @employeeId
         ";
 
-        private const string deleteQuery = @"
+        private const string DeleteQuery = @"
             DELETE FROM
                 account
             WHERE
@@ -52,7 +51,7 @@ namespace Oneonones.Persistence.Databases
             var parameters = new DynamicParameters();
             parameters.Add("@employeeId", employeeId, DbType.AnsiStringFixedLength);
 
-            var account = await QueryFirst<AccountModel>(selectQuery, parameters);
+            var account = await QueryFirst<AccountModel>(SelectQuery, parameters);
             return account;
         }
 
@@ -63,7 +62,7 @@ namespace Oneonones.Persistence.Databases
             parameters.Add("@password", account.Password, DbType.AnsiStringFixedLength);
             parameters.Add("@admin", account.Admin, DbType.Boolean);
 
-            var rowsAffected = await Execute(insertQuery, parameters);
+            var rowsAffected = await Execute(InsertQuery, parameters);
             return rowsAffected;
         }
 
@@ -74,7 +73,7 @@ namespace Oneonones.Persistence.Databases
             parameters.Add("@password", account.Password, DbType.AnsiStringFixedLength);
             parameters.Add("@admin", account.Admin, DbType.Boolean);
 
-            var rowsAffected = await Execute(updateQuery, parameters);
+            var rowsAffected = await Execute(UpdateQuery, parameters);
             return rowsAffected;
         }
 
@@ -83,7 +82,7 @@ namespace Oneonones.Persistence.Databases
             var parameters = new DynamicParameters();
             parameters.Add("@employeeId", employeeId, DbType.AnsiStringFixedLength);
 
-            var rowsAffected = await Execute(deleteQuery, parameters);
+            var rowsAffected = await Execute(DeleteQuery, parameters);
             return rowsAffected;
         }
     }

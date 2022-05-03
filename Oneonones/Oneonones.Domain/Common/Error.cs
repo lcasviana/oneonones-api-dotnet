@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Oneonones.Domain.Common
+﻿namespace Oneonones.Domain.Common
 {
     public class Error
     {

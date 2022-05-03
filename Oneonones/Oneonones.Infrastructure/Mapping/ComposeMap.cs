@@ -1,6 +1,5 @@
 ﻿using Oneonones.Domain.Entities;
 using Oneonones.Infrastructure.ViewModels;
-using System.Linq;
 
 namespace Oneonones.Infrastructure.Mapping
 {

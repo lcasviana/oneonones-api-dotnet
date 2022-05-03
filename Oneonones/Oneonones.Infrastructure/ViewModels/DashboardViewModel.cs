@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Oneonones.Infrastructure.ViewModels
+﻿namespace Oneonones.Infrastructure.ViewModels
 {
     public class DashboardViewModel
     {

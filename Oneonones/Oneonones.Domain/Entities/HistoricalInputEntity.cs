@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Oneonones.Domain.Entities
+﻿namespace Oneonones.Domain.Entities
 {
     public class HistoricalInputEntity
     {
