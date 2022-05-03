@@ -1,18 +1,17 @@
-namespace Oneonones
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+using Oneonones.Infrastructure.Configurations;
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls($"http://*:{Environment.GetEnvironmentVariable("PORT")}");
-                });
-    }
-}
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.ConfigureApi();
+builder.Services.ResolveDependencyInjections();
+
+var app = builder.Build();
+
+app.UseCors(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+app.AddSwagger();
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseEndpoints(endpoints => endpoints.MapControllers());
+
+app.Run();

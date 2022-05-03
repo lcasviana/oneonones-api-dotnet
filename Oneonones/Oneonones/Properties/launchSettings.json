@@ -1,32 +1,11 @@
 ﻿{
   "$schema": "http://json.schemastore.org/launchsettings.json",
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:53623",
-      "sslPort": 44356
-    }
-  },
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "environmentVariables": {
-        "Environment": "Development",
-        "DatabaseConnectionString": "SSL Mode=Require;Trust Server Certificate=true;Host=ec2-75-101-232-85.compute-1.amazonaws.com;Port=5432;Username=fmqglbnyernrbk;Password=73c112a14597b135924b60f89f4b682353d5e01b08e2278c678be4b6df24bd2e;Database=db8au375ri5kdt"
-      }
-    },
-    "Oneonones": {
+    "Oneonone's": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:53623",
-      "environmentVariables": {
-        "Environment": "Development",
-        "DatabaseConnectionString": "SSL Mode=Require;Trust Server Certificate=true;Host=ec2-75-101-232-85.compute-1.amazonaws.com;Port=5432;Username=fmqglbnyernrbk;Password=73c112a14597b135924b60f89f4b682353d5e01b08e2278c678be4b6df24bd2e;Database=db8au375ri5kdt"
-      }
+      "applicationUrl": "https://localhost:53623"
     }
   }
 }
