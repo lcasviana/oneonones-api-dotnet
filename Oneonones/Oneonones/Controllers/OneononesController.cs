@@ -1,114 +1,62 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using Oneonones.Infrastructure.Mapping;
-using Oneonones.Infrastructure.ViewModels;
-using Oneonones.Service.Contracts;
+using Oneonones.Domain.Inputs;
+using Oneonones.Services.Contracts;
+using Oneonones.Services.Exceptions;
 
 namespace Oneonones.Controllers;
 
-[ApiController, Route("api/v1/oneonones")]
+[ApiController, Route("api/v1/[controller]")]
 public class OneononesController : ControllerBase
 {
-    private readonly IOneononesService oneononesService;
-    private readonly IEmployeesService employeesService;
+    private readonly IOneononeService oneononeService;
+    private readonly IValidator<OneononeInput> oneononeValidator;
 
     public OneononesController(
-        IOneononesService oneononesService,
-        IEmployeesService employeesService)
+        IOneononeService oneononeService,
+        IValidator<OneononeInput> oneononeValidator)
     {
-        this.oneononesService = oneononesService;
-        this.employeesService = employeesService;
+        this.oneononeService = oneononeService;
+        this.oneononeValidator = oneononeValidator;
     }
 
     [HttpGet]
-    public async Task<IActionResult> Obtain(
-        [FromQuery] string id, [FromQuery] string email,
-        [FromQuery] string leaderId, [FromQuery] string ledId,
-        [FromQuery] string leaderEmail, [FromQuery] string ledEmail)
+    public async Task<IActionResult> ObtainAllAsync()
     {
-        if (id != null)
-            return await ObtainByEmployeeId(id);
-        else if (email != null)
-            return await ObtainByEmployeeEmail(email);
-        else if (leaderId != null || ledId != null)
-            return await ObtainByPairId(leaderId, ledId);
-        else if (leaderEmail != null || ledEmail != null)
-            return await ObtainByPairEmail(leaderEmail, ledEmail);
-        else
-            return await ObtainAll();
+        var oneonones = await oneononeService.ObtainAllAsync();
+        return Ok(oneonones);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> Obtain([FromRoute] string id)
+    [HttpGet("{oneononeId}")]
+    public async Task<IActionResult> ObtainByIdAsync(Guid oneononeId)
     {
-        var oneononeEntity = await oneononesService.Obtain(id);
-        var oneononeViewModel = oneononeEntity.ToViewModel();
-        return StatusCode(StatusCodes.Status200OK, oneononeViewModel);
+        var oneonone = await oneononeService.ObtainByIdAsync(oneononeId);
+        return Accepted(oneonone);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Insert([FromBody] OneononeInputViewModel oneononeInputViewModel)
+    public async Task<IActionResult> InsertAsync(OneononeInput oneononeInput)
     {
-        var oneononeInputEntity = oneononeInputViewModel.ToEntity();
-        var oneononeEntity = await oneononesService.Insert(oneononeInputEntity);
-        var oneononeViewModel = oneononeEntity.ToViewModel();
-        return StatusCode(StatusCodes.Status201Created, oneononeViewModel);
+        var validation = oneononeValidator.Validate(oneononeInput);
+        if (!validation.IsValid) throw new InvalidException(validation.Errors);
+
+        var guid = await oneononeService.InsertAsync(oneononeInput);
+        return CreatedAtAction(nameof(InsertAsync), guid);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] OneononeViewModel oneononeViewModel)
+    [HttpPut("{oneononeId}")]
+    public async Task<IActionResult> UpdateAsync(Guid oneononeId, OneononeInput oneononeInput)
     {
-        var oneononeEntity = oneononeViewModel.ToEntity();
-        var oneononeEntityUpdated = await oneononesService.Update(oneononeEntity);
-        var oneononeViewModelUpdated = oneononeEntityUpdated.ToViewModel();
-        return StatusCode(StatusCodes.Status202Accepted, oneononeViewModelUpdated);
+        var validation = oneononeValidator.Validate(oneononeInput);
+        if (!validation.IsValid) throw new InvalidException(validation.Errors);
+
+        var oneonone = await oneononeService.UpdateAsync(oneononeId, oneononeInput);
+        return Accepted(oneonone);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] string id)
+    [HttpDelete("{oneononeId}")]
+    public async Task<IActionResult> DeleteAsync(Guid oneononeId)
     {
-        await oneononesService.Delete(id);
-        return StatusCode(StatusCodes.Status204NoContent);
+        await oneononeService.DeleteAsync(oneononeId);
+        return NoContent();
     }
-
-    #region Obtain Filters
-
-    private async Task<IActionResult> ObtainByEmployeeId(string id)
-    {
-        var oneononeEntityList = await oneononesService.ObtainByEmployee(id);
-        var oneononeViewModelList = oneononeEntityList.Select(OneononeMap.ToViewModel).ToList();
-        return StatusCode(StatusCodes.Status200OK, oneononeViewModelList);
-    }
-
-    private async Task<IActionResult> ObtainByEmployeeEmail(string email)
-    {
-        var employee = await employeesService.ObtainByEmail(email);
-        var oneononeEntityList = await oneononesService.ObtainByEmployee(employee.Id);
-        var oneononeViewModelList = oneononeEntityList.Select(OneononeMap.ToViewModel).ToList();
-        return StatusCode(StatusCodes.Status200OK, oneononeViewModelList);
-    }
-
-    private async Task<IActionResult> ObtainByPairId(string leaderId, string ledId)
-    {
-        var oneononeEntity = await oneononesService.ObtainByPair(leaderId, ledId);
-        var oneononeViewModel = oneononeEntity.ToViewModel();
-        return StatusCode(StatusCodes.Status200OK, oneononeViewModel);
-    }
-
-    private async Task<IActionResult> ObtainByPairEmail(string leaderEmail, string ledEmail)
-    {
-        var leader = await employeesService.ObtainByEmail(leaderEmail);
-        var led = await employeesService.ObtainByEmail(ledEmail);
-        var oneononeEntity = await oneononesService.ObtainByPair(leader.Id, led.Id);
-        var oneononeViewModel = oneononeEntity.ToViewModel();
-        return StatusCode(StatusCodes.Status200OK, oneononeViewModel);
-    }
-
-    private async Task<IActionResult> ObtainAll()
-    {
-        var oneononeEntityList = await oneononesService.Obtain();
-        var oneononeViewModelList = oneononeEntityList.Select(OneononeMap.ToViewModel).ToList();
-        return StatusCode(StatusCodes.Status200OK, oneononeViewModelList);
-    }
-
-    #endregion
 }

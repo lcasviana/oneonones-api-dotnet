@@ -1,77 +1,76 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using Oneonones.Infrastructure.Mapping;
-using Oneonones.Infrastructure.ViewModels;
-using Oneonones.Service.Contracts;
+using Oneonones.Domain.Inputs;
+using Oneonones.Services.Contracts;
+using Oneonones.Services.Exceptions;
 
 namespace Oneonones.Controllers;
 
-[ApiController, Route("api/v1/employees")]
+[ApiController, Route("api/v1/[controller]")]
 public class EmployeesController : ControllerBase
 {
-    private readonly IEmployeesService employeesService;
+    private readonly IEmployeeService employeesService;
+    private readonly IValidator<EmployeeInput> employeeValidator;
 
-    public EmployeesController(IEmployeesService employeesService)
+    public EmployeesController(
+        IEmployeeService employeesService,
+        IValidator<EmployeeInput> employeeValidator)
     {
         this.employeesService = employeesService;
+        this.employeeValidator = employeeValidator;
     }
 
     [HttpGet]
-    public async Task<IActionResult> Obtain([FromQuery] string email = null)
+    public async Task<IActionResult> ObtainAsync([FromQuery] string? employeeEmail)
     {
-        if (email != null)
-            return await ObtainByEmail(email);
-        else
-            return await ObtainAll();
+        return employeeEmail is null
+            ? await ObtainAllAsync()
+            : await ObtainByEmailAsync(employeeEmail);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> ObtainById([FromRoute] string id)
+    [HttpGet("{employeeId}")]
+    public async Task<IActionResult> ObtainByIdAsync([FromRoute] Guid employeeId)
     {
-        var employeeEntity = await employeesService.Obtain(id);
-        var employeeViewModel = employeeEntity.ToViewModel();
-        return StatusCode(StatusCodes.Status200OK, employeeViewModel);
+        var employee = await employeesService.ObtainByIdAsync(employeeId);
+        return Ok(employee);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Insert([FromBody] EmployeeInputViewModel employeeInputViewModel)
+    public async Task<IActionResult> InsertAsync([FromBody] EmployeeInput employeeInput)
     {
-        var employeeInputEntity = employeeInputViewModel.ToEntity();
-        var employeeEntity = await employeesService.Insert(employeeInputEntity);
-        var employeeViewModel = employeeEntity.ToViewModel();
-        return StatusCode(StatusCodes.Status201Created, employeeViewModel);
+        var validation = employeeValidator.Validate(employeeInput);
+        if (!validation.IsValid) throw new InvalidException(validation.Errors);
+
+        var guid = await employeesService.InsertAsync(employeeInput);
+        return CreatedAtAction(nameof(InsertAsync), guid);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] EmployeeViewModel employeeViewModel)
+    [HttpPut("{employeeId}")]
+    public async Task<IActionResult> UpdateAsync([FromRoute] Guid employeeId, [FromBody] EmployeeInput employeeInput)
     {
-        var employeeEntity = employeeViewModel.ToEntity();
-        var employeeEntityUpdated = await employeesService.Update(employeeEntity);
-        var employeeViewModelUpdated = employeeEntityUpdated.ToViewModel();
-        return StatusCode(StatusCodes.Status202Accepted, employeeViewModelUpdated);
+        var validation = employeeValidator.Validate(employeeInput);
+        if (!validation.IsValid) throw new InvalidException(validation.Errors);
+
+        var employee = await employeesService.UpdateAsync(employeeId, employeeInput);
+        return Accepted(employee);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] string id)
+    [HttpDelete("{employeeId}")]
+    public async Task<IActionResult> DeleteAsync([FromRoute] Guid employeeId)
     {
-        await employeesService.Delete(id);
-        return StatusCode(StatusCodes.Status204NoContent);
+        await employeesService.DeleteAsync(employeeId);
+        return NoContent();
     }
 
-    #region Obtain Filters
-
-    private async Task<IActionResult> ObtainByEmail(string email)
+    private async Task<IActionResult> ObtainAllAsync()
     {
-        var employeeEntity = await employeesService.ObtainByEmail(email);
-        var employeeViewModel = employeeEntity.ToViewModel();
-        return StatusCode(StatusCodes.Status200OK, employeeViewModel);
+        var employees = await employeesService.ObtainAllAsync();
+        return Ok(employees);
     }
 
-    private async Task<IActionResult> ObtainAll()
+    private async Task<IActionResult> ObtainByEmailAsync(string employeeEmail)
     {
-        var employeeEntityList = await employeesService.Obtain();
-        var employeeViewModelList = employeeEntityList.Select(EmployeeMap.ToViewModel).ToList();
-        return StatusCode(StatusCodes.Status200OK, employeeViewModelList);
+        var employee = await employeesService.ObtainByEmailAsync(employeeEmail);
+        return Ok(employee);
     }
-
-    #endregion
 }

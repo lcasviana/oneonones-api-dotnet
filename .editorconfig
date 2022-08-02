@@ -99,7 +99,7 @@ csharp_prefer_simple_default_expression = true:suggestion
 csharp_style_pattern_local_over_anonymous_function = true:suggestion
 csharp_style_inlined_variable_declaration = true:suggestion
 # namespace preferences
-csharp_style_namespace_declarations = file_scoped:silent
+csharp_style_namespace_declarations = file_scoped:warning
 ###############################
 # C# Formatting Rules         #
 ###############################
@@ -135,4 +135,5 @@ csharp_prefer_simple_using_statement = true:suggestion
 csharp_style_expression_bodied_lambdas = true:silent
 csharp_style_expression_bodied_local_functions = false:silent
 csharp_style_prefer_null_check_over_type_check = true:suggestion
-csharp_indent_braces = true
+csharp_indent_braces = false
+csharp_style_prefer_method_group_conversion = true:silent

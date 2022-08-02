@@ -1,19 +1,34 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30804.86
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oneonones", "Oneonones\Oneonones\Oneonones.csproj", "{44D0E253-94E1-44CF-A2DC-E1966A9B09FB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oneonones.Domain", "Oneonones\Oneonones.Domain\Oneonones.Domain.csproj", "{9D23ECA3-BE6E-43B3-9FC4-38DCBDD46758}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Settings", "Settings", "{4FB94BCB-AEF1-40EB-AA99-08A135CB9DFF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oneonones.Infrastructure", "Oneonones\Oneonones.Infrastructure\Oneonones.Infrastructure.csproj", "{9F8CA841-349E-4D6E-8CF4-5ED47772B036}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VS Code", "VS Code", "{B43AFF8E-ED76-4F49-802A-E60291A1C8A1}"
+	ProjectSection(SolutionItems) = preProject
+		.vscode\launch.json = .vscode\launch.json
+		.vscode\settings.json = .vscode\settings.json
+		.vscode\tasks.json = .vscode\tasks.json
+	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oneonones.Persistence", "Oneonones\Oneonones.Persistence\Oneonones.Persistence.csproj", "{3A7059B7-7A13-4F62-9E48-7AA9730A3AEF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{95AC86E0-109C-4AE5-8136-9DAA908E4382}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+		Dockerfile = Dockerfile
+	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oneonones.Service", "Oneonones\Oneonones.Service\Oneonones.Service.csproj", "{1736ACD7-E1FF-4968-BC2F-6C0A88EE311E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{D3DC1724-C0F5-4D71-ADF5-5808F2B29CF0}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oneonones.Test.Unit", "Oneonones\Oneonones.Test.Unit\Oneonones.Test.Unit.csproj", "{7D66E0A5-04ED-4B97-A4EB-EDF11EC08A38}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VS", "VS", "{5A7F5383-66EC-4C9F-9E83-0D19A883420A}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,29 +40,15 @@ Global
 		{44D0E253-94E1-44CF-A2DC-E1966A9B09FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44D0E253-94E1-44CF-A2DC-E1966A9B09FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44D0E253-94E1-44CF-A2DC-E1966A9B09FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9D23ECA3-BE6E-43B3-9FC4-38DCBDD46758}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D23ECA3-BE6E-43B3-9FC4-38DCBDD46758}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9D23ECA3-BE6E-43B3-9FC4-38DCBDD46758}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9D23ECA3-BE6E-43B3-9FC4-38DCBDD46758}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9F8CA841-349E-4D6E-8CF4-5ED47772B036}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9F8CA841-349E-4D6E-8CF4-5ED47772B036}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9F8CA841-349E-4D6E-8CF4-5ED47772B036}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9F8CA841-349E-4D6E-8CF4-5ED47772B036}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3A7059B7-7A13-4F62-9E48-7AA9730A3AEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3A7059B7-7A13-4F62-9E48-7AA9730A3AEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3A7059B7-7A13-4F62-9E48-7AA9730A3AEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A7059B7-7A13-4F62-9E48-7AA9730A3AEF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1736ACD7-E1FF-4968-BC2F-6C0A88EE311E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1736ACD7-E1FF-4968-BC2F-6C0A88EE311E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1736ACD7-E1FF-4968-BC2F-6C0A88EE311E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1736ACD7-E1FF-4968-BC2F-6C0A88EE311E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7D66E0A5-04ED-4B97-A4EB-EDF11EC08A38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7D66E0A5-04ED-4B97-A4EB-EDF11EC08A38}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7D66E0A5-04ED-4B97-A4EB-EDF11EC08A38}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7D66E0A5-04ED-4B97-A4EB-EDF11EC08A38}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B43AFF8E-ED76-4F49-802A-E60291A1C8A1} = {4FB94BCB-AEF1-40EB-AA99-08A135CB9DFF}
+		{95AC86E0-109C-4AE5-8136-9DAA908E4382} = {4FB94BCB-AEF1-40EB-AA99-08A135CB9DFF}
+		{D3DC1724-C0F5-4D71-ADF5-5808F2B29CF0} = {4FB94BCB-AEF1-40EB-AA99-08A135CB9DFF}
+		{5A7F5383-66EC-4C9F-9E83-0D19A883420A} = {4FB94BCB-AEF1-40EB-AA99-08A135CB9DFF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {61CCBB14-F3E0-4F6B-8F50-D7A3AC6680AA}

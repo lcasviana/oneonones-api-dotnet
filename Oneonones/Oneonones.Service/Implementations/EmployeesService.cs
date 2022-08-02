@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using Oneonones.Domain.Entities;
 using Oneonones.Domain.Messages;
-using Oneonones.Persistence.Contracts.Repositories;
 using Oneonones.Service.Contracts;
 using Oneonones.Service.Exceptions;
 

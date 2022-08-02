@@ -1,5 +1,4 @@
 using Oneonones.Domain.Entities;
-using Oneonones.Domain.Enums;
 using Oneonones.Service.Contracts;
 
 namespace Oneonones.Service.Implementations
@@ -91,7 +90,7 @@ namespace Oneonones.Service.Implementations
             }
         }
 
-        private static StatusEntity ObtainStatusByHistorical(IList<HistoricalEntity> historical, FrequencyEnum frequency)
+        private static StatusEntity ObtainStatusByHistorical(IList<HistoricalEntity> historical, Frequency frequency)
         {
             if (historical.Any())
             {
@@ -110,18 +109,18 @@ namespace Oneonones.Service.Implementations
             return null;
         }
 
-        private static DateTime ObtainNextOccurrence(FrequencyEnum frequency, DateTime lastOccurrence)
+        private static DateTime ObtainNextOccurrence(Frequency frequency, DateTime lastOccurrence)
         {
             return frequency switch
             {
-                FrequencyEnum.Weekly => lastOccurrence.AddDays(7).Date,
-                FrequencyEnum.Semimonthly => lastOccurrence.AddDays(14).Date,
-                FrequencyEnum.Monthly => lastOccurrence.AddMonths(1).Date,
-                FrequencyEnum.Bimonthly => lastOccurrence.AddMonths(2).Date,
-                FrequencyEnum.Trimonthly => lastOccurrence.AddMonths(3).Date,
-                FrequencyEnum.Semiyearly => lastOccurrence.AddMonths(6).Date,
-                FrequencyEnum.Yearly => lastOccurrence.AddYears(1).Date,
-                FrequencyEnum.Occasionally => DateTime.MaxValue.Date,
+                Frequency.Weekly => lastOccurrence.AddDays(7).Date,
+                Frequency.Semimonthly => lastOccurrence.AddDays(14).Date,
+                Frequency.Monthly => lastOccurrence.AddMonths(1).Date,
+                Frequency.Bimonthly => lastOccurrence.AddMonths(2).Date,
+                Frequency.Trimonthly => lastOccurrence.AddMonths(3).Date,
+                Frequency.Semiyearly => lastOccurrence.AddMonths(6).Date,
+                Frequency.Yearly => lastOccurrence.AddYears(1).Date,
+                Frequency.Occasionally => DateTime.MaxValue.Date,
                 _ => DateTime.MinValue,
             };
         }

@@ -1,8 +1,6 @@
 using System.Net;
 using Oneonones.Domain.Entities;
-using Oneonones.Domain.Enums;
 using Oneonones.Domain.Messages;
-using Oneonones.Persistence.Contracts.Repositories;
 using Oneonones.Service.Contracts;
 using Oneonones.Service.Exceptions;
 
@@ -67,7 +65,7 @@ namespace Oneonones.Service.Implementations
 
         public async Task<OneononeEntity> Insert(OneononeInputEntity oneononeInput)
         {
-            if (!Enum.IsDefined(typeof(FrequencyEnum), oneononeInput.Frequency))
+            if (!Enum.IsDefined(typeof(Frequency), oneononeInput.Frequency))
                 throw new ApiException(HttpStatusCode.BadRequest, OneononesMessages.InvalidFrequency((int)oneononeInput.Frequency));
 
             var (leader, led) = await employeesService.ObtainPair(oneononeInput?.LeaderId, oneononeInput?.LedId);
@@ -89,7 +87,7 @@ namespace Oneonones.Service.Implementations
             var requestErrors = new string[]
             {
                 Guid.TryParse(oneonone.Id, out var _) ? null : GlobalMessages.InvalidId(oneonone.Id),
-                Enum.IsDefined(typeof(FrequencyEnum), oneonone.Frequency) ? null : OneononesMessages.InvalidFrequency((int)oneonone.Frequency),
+                Enum.IsDefined(typeof(Frequency), oneonone.Frequency) ? null : OneononesMessages.InvalidFrequency((int)oneonone.Frequency),
             }.Where(e => e != null);
             if (requestErrors.Any())
                 throw new ApiException(HttpStatusCode.BadRequest, requestErrors.ToList());
