@@ -19,12 +19,12 @@ public class Employee : Entity
     public Employee(string email, string name)
     {
         Email = email;
-        Name = name;
+        Name = name.Trim();
     }
 
     public void Update(string email, string name)
     {
         Email = email;
-        Name = name;
+        Name = name.Trim();
     }
 }

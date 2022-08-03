@@ -25,4 +25,21 @@ public class Meeting : Entity
 
     [ForeignKey("LedId")]
     public virtual Employee Led { get; set; } = null!;
+
+
+    public Meeting() { }
+
+    public Meeting(Guid leaderId, Guid ledId, DateTime meetingDate, string? annotation)
+    {
+        LeaderId = leaderId;
+        LedId = ledId;
+        MeetingDate = meetingDate;
+        Annotation = annotation?.Trim();
+    }
+
+    public void Update(DateTime meetingDate, string? annotation)
+    {
+        MeetingDate = meetingDate;
+        Annotation = annotation?.Trim();
+    }
 }

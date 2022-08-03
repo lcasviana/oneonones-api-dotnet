@@ -8,8 +8,10 @@ public static class ValidatorsConfig
 {
     public static void AddValidators(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddSingleton<IValidator<EmployeeInput>, EmployeeValidator>();
-        serviceCollection.AddSingleton<IValidator<MeetingInput>, MeetingValidator>();
-        serviceCollection.AddSingleton<IValidator<OneononeInput>, OneononeValidator>();
+        serviceCollection.AddScoped<IValidator<EmployeeInput>, EmployeeValidator>();
+        serviceCollection.AddScoped<IValidator<MeetingInsert>, MeetingInsertValidator>();
+        serviceCollection.AddScoped<IValidator<MeetingUpdate>, MeetingUpdateValidator>();
+        serviceCollection.AddScoped<IValidator<OneononeInsert>, OneononeInsertValidator>();
+        serviceCollection.AddScoped<IValidator<OneononeUpdate>, OneononeUpdateValidator>();
     }
 }

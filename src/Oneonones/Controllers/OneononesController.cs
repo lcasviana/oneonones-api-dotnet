@@ -11,14 +11,17 @@ namespace Oneonones.Controllers;
 public class OneononesController : ControllerBase
 {
     private readonly IOneononeService oneononeService;
-    private readonly IValidator<OneononeInput> oneononeValidator;
+    private readonly IValidator<OneononeInsert> oneononeInsertValidator;
+    private readonly IValidator<OneononeUpdate> oneononeUpdateValidator;
 
     public OneononesController(
         IOneononeService oneononeService,
-        IValidator<OneononeInput> oneononeValidator)
+        IValidator<OneononeInsert> oneononeInsertValidator,
+        IValidator<OneononeUpdate> oneononeUpdateValidator)
     {
         this.oneononeService = oneononeService;
-        this.oneononeValidator = oneononeValidator;
+        this.oneononeInsertValidator = oneononeInsertValidator;
+        this.oneononeUpdateValidator = oneononeUpdateValidator;
     }
 
     [HttpGet]
@@ -39,9 +42,9 @@ public class OneononesController : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
-    public async Task<IActionResult> InsertAsync([FromBody] OneononeInput oneononeInput)
+    public async Task<IActionResult> InsertAsync([FromBody] OneononeInsert oneononeInput)
     {
-        var validation = oneononeValidator.Validate(oneononeInput);
+        var validation = oneononeInsertValidator.Validate(oneononeInput);
         if (!validation.IsValid) throw new InvalidException(validation.Errors);
         var guid = await oneononeService.InsertAsync(oneononeInput);
         return CreatedAtAction(nameof(InsertAsync), guid);
@@ -49,9 +52,9 @@ public class OneononesController : ControllerBase
 
     [HttpPut("{oneononeId}")]
     [ProducesResponseType(typeof(OneononeOutput), StatusCodes.Status202Accepted)]
-    public async Task<IActionResult> UpdateAsync([FromRoute] Guid oneononeId, [FromBody] OneononeInput oneononeInput)
+    public async Task<IActionResult> UpdateAsync([FromRoute] Guid oneononeId, [FromBody] OneononeUpdate oneononeInput)
     {
-        var validation = oneononeValidator.Validate(oneononeInput);
+        var validation = oneononeUpdateValidator.Validate(oneononeInput);
         if (!validation.IsValid) throw new InvalidException(validation.Errors);
         var oneonone = await oneononeService.UpdateAsync(oneononeId, oneononeInput);
         return Accepted(oneonone);

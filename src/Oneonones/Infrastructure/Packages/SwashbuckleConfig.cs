@@ -11,7 +11,7 @@ public static class SwashbuckleConfig
         {
             options.SwaggerDoc("v1", new() { Version = "v1", Title = "Oneonones API" });
             var xmlDocumentationFilePath = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
-            options.IncludeXmlComments(xmlDocumentationFilePath);
+            options.IncludeXmlComments(xmlDocumentationFilePath, true);
         });
         services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
     }

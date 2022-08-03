@@ -7,7 +7,7 @@ public interface IOneononeService
 {
     Task<IEnumerable<Oneonone>> ObtainAllAsync();
     Task<Oneonone> ObtainByIdAsync(Guid oneononeId);
-    Task<Guid> InsertAsync(OneononeInput oneononeInput);
-    Task<Oneonone> UpdateAsync(Guid oneononeId, OneononeInput oneononeInput);
+    Task<Guid> InsertAsync(OneononeInsert oneononeInput);
+    Task<Oneonone> UpdateAsync(Guid oneononeId, OneononeUpdate oneononeInput);
     Task DeleteAsync(Guid oneononeId);
 }

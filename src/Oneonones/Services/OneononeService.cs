@@ -30,7 +30,7 @@ public class OneononeService : IOneononeService
         return oneonone ?? throw new NotFoundException("Not found");
     }
 
-    public async Task<Guid> InsertAsync(OneononeInput oneononeInput)
+    public async Task<Guid> InsertAsync(OneononeInsert oneononeInput)
     {
         var oneonone = new Oneonone(oneononeInput.LeaderId!.Value, oneononeInput.LedId!.Value, oneononeInput.Frequency!.Value);
         await oneononeDbSet.AddAsync(oneonone);
@@ -38,7 +38,7 @@ public class OneononeService : IOneononeService
         return oneonone.Id;
     }
 
-    public async Task<Oneonone> UpdateAsync(Guid oneononeId, OneononeInput oneononeInput)
+    public async Task<Oneonone> UpdateAsync(Guid oneononeId, OneononeUpdate oneononeInput)
     {
         var oneonone = await oneononeDbSet.SingleOrDefaultAsync(oneonone => oneonone.Id == oneononeId);
         if (oneonone is null) throw new NotFoundException("Not found");
