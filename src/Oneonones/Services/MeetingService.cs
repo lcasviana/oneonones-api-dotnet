@@ -20,13 +20,19 @@ public class MeetingService : IMeetingService
 
     public async Task<IEnumerable<Meeting>> ObtainAllAsync()
     {
-        var meetings = await meetingDbSet.ToListAsync();
+        var meetings = await meetingDbSet
+            .Include(meeting => meeting.Leader)
+            .Include(meeting => meeting.Led)
+            .ToListAsync();
         return meetings;
     }
 
     public async Task<Meeting> ObtainByIdAsync(Guid meetingId)
     {
-        var meeting = await meetingDbSet.SingleOrDefaultAsync(employee => employee.Id == meetingId);
+        var meeting = await meetingDbSet
+            .Include(meeting => meeting.Leader)
+            .Include(meeting => meeting.Led)
+            .SingleOrDefaultAsync(employee => employee.Id == meetingId);
         return meeting ?? throw new NotFoundException("Not found");
     }
 
@@ -40,8 +46,7 @@ public class MeetingService : IMeetingService
 
     public async Task<Meeting> UpdateAsync(Guid meetingId, MeetingUpdate meetingInput)
     {
-        var meeting = await meetingDbSet.SingleOrDefaultAsync(employee => employee.Id == meetingId);
-        if (meeting is null) throw new NotFoundException("Not found");
+        var meeting = await ObtainByIdAsync(meetingId);
         meeting.Update(meetingInput.MeetingDate!.Value, meetingInput.Annotation!);
         meetingDbSet.Update(meeting);
         await dbContext.SaveChangesAsync();
@@ -50,8 +55,7 @@ public class MeetingService : IMeetingService
 
     public async Task DeleteAsync(Guid meetingId)
     {
-        var meeting = await meetingDbSet.SingleOrDefaultAsync(employee => employee.Id == meetingId);
-        if (meeting is null) throw new NotFoundException("Not found");
+        var meeting = await ObtainByIdAsync(meetingId);
         meetingDbSet.Remove(meeting);
         await dbContext.SaveChangesAsync();
     }

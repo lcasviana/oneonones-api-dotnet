@@ -20,13 +20,19 @@ public class OneononeService : IOneononeService
 
     public async Task<IEnumerable<Oneonone>> ObtainAllAsync()
     {
-        var oneonones = await oneononeDbSet.ToListAsync();
+        var oneonones = await oneononeDbSet
+            .Include(oneonone => oneonone.Leader)
+            .Include(oneonone => oneonone.Led)
+            .ToListAsync();
         return oneonones;
     }
 
     public async Task<Oneonone> ObtainByIdAsync(Guid oneononeId)
     {
-        var oneonone = await oneononeDbSet.SingleOrDefaultAsync(oneonone => oneonone.Id == oneononeId);
+        var oneonone = await oneononeDbSet
+            .Include(oneonone => oneonone.Leader)
+            .Include(oneonone => oneonone.Led)
+            .SingleOrDefaultAsync(oneonone => oneonone.Id == oneononeId);
         return oneonone ?? throw new NotFoundException("Not found");
     }
 
@@ -40,8 +46,7 @@ public class OneononeService : IOneononeService
 
     public async Task<Oneonone> UpdateAsync(Guid oneononeId, OneononeUpdate oneononeInput)
     {
-        var oneonone = await oneononeDbSet.SingleOrDefaultAsync(oneonone => oneonone.Id == oneononeId);
-        if (oneonone is null) throw new NotFoundException("Not found");
+        var oneonone = await ObtainByIdAsync(oneononeId);
         oneonone.Update(oneononeInput.Frequency!.Value);
         oneononeDbSet.Update(oneonone);
         await dbContext.SaveChangesAsync();
@@ -50,8 +55,7 @@ public class OneononeService : IOneononeService
 
     public async Task DeleteAsync(Guid oneononeId)
     {
-        var oneonone = await oneononeDbSet.SingleOrDefaultAsync(oneonone => oneonone.Id == oneononeId);
-        if (oneonone is null) throw new NotFoundException("Not found");
+        var oneonone = await ObtainByIdAsync(oneononeId);
         oneononeDbSet.Remove(oneonone);
         await dbContext.SaveChangesAsync();
     }

@@ -57,7 +57,7 @@ public class OneononesController : ControllerBase
         var validation = oneononeUpdateValidator.Validate(oneononeInput);
         if (!validation.IsValid) throw new InvalidException(validation.Errors);
         var oneonone = await oneononeService.UpdateAsync(oneononeId, oneononeInput);
-        return Accepted(oneonone);
+        return Accepted((OneononeOutput)oneonone);
     }
 
     [HttpDelete("{oneononeId}")]

@@ -40,8 +40,7 @@ public class EmployeeService : IEmployeeService
 
     public async Task<Employee> UpdateAsync(Guid employeeId, EmployeeInput employeeInput)
     {
-        var employee = await employeeDbSet.SingleOrDefaultAsync(employee => employee.Id == employeeId);
-        if (employee is null) throw new NotFoundException("Not found");
+        var employee = await ObtainByIdAsync(employeeId);
         employee.Update(employeeInput.Email!, employeeInput.Name!);
         employeeDbSet.Update(employee);
         await dbContext.SaveChangesAsync();
@@ -50,8 +49,7 @@ public class EmployeeService : IEmployeeService
 
     public async Task DeleteAsync(Guid employeeId)
     {
-        var employee = await employeeDbSet.SingleOrDefaultAsync(employee => employee.Id == employeeId);
-        if (employee is null) throw new NotFoundException("Not found");
+        var employee = await ObtainByIdAsync(employeeId);
         employeeDbSet.Remove(employee);
         await dbContext.SaveChangesAsync();
     }

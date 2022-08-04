@@ -33,13 +33,13 @@ public class Meeting : Entity
     {
         LeaderId = leaderId;
         LedId = ledId;
-        MeetingDate = meetingDate;
+        MeetingDate = meetingDate.ToUniversalTime();
         Annotation = annotation?.Trim();
     }
 
     public void Update(DateTime meetingDate, string? annotation)
     {
-        MeetingDate = meetingDate;
+        MeetingDate = meetingDate.ToUniversalTime();
         Annotation = annotation?.Trim();
     }
 }
