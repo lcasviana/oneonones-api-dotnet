@@ -13,7 +13,7 @@ public class EmployeeInput
     /// Employee's name
     /// </summary>
     /// <example>
-    /// First Middle Surname
+    /// Forename Surname
     /// </example>
     public string? Name { get; set; }
 }

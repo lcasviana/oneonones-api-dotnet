@@ -22,7 +22,7 @@ public class EmployeeOutput
     /// Employee's name
     /// </summary>
     /// <example>
-    /// First Middle Surname
+    /// Forename
     /// </example>
     public string Name { get; set; } = null!;
 

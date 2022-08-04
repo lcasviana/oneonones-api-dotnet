@@ -9,6 +9,8 @@ public class OneononeInsertValidator : AbstractValidator<OneononeInsert>
     {
         RuleFor(oneonone => oneonone.LeaderId).NotEmpty();
         RuleFor(oneonone => oneonone.LedId).NotEmpty();
+        When(oneonone => oneonone.Frequency is null, () => RuleFor(oneonone => oneonone.Frequency).NotEmpty())
+            .Otherwise(() => RuleFor(oneonone => oneonone.Frequency).IsInEnum());
     }
 }
 

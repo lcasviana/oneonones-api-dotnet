@@ -11,7 +11,13 @@ public class MeetingOutput
     /// 9d0e826c-497d-44f3-ac88-b9f6bcb9667d
     /// </example>
     public Guid Id { get; set; }
+    /// <summary>
+    /// One-on-one's leader
+    /// </summary>
     public EmployeeOutput Leader { get; set; } = null!;
+    /// <summary>
+    /// One-on-one's led
+    /// </summary>
     public EmployeeOutput Led { get; set; } = null!;
     /// <summary>
     /// Meeting's date

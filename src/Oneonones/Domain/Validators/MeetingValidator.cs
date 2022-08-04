@@ -9,6 +9,8 @@ public class MeetingInsertValidator : AbstractValidator<MeetingInsert>
     {
         RuleFor(meeting => meeting.LeaderId).NotEmpty();
         RuleFor(meeting => meeting.LedId).NotEmpty();
+        RuleFor(meeting => meeting.MeetingDate).NotEmpty();
+        RuleFor(meeting => meeting.Annotation).MaximumLength(2047);
     }
 }
 

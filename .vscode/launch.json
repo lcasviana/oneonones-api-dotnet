@@ -6,7 +6,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/Oneonones/Oneonones/bin/Debug/net6.0/Oneonones.dll",
+      "program": "${workspaceFolder}/src/Oneonones/bin/Debug/net6.0/Oneonones.dll",
       "args": [],
       "cwd": "${workspaceFolder}/Oneonones/Oneonones",
       "stopAtEntry": false,
