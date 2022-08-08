@@ -16,9 +16,9 @@ public static class SwashbuckleConfig
         services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
     }
 
-    public static void UseSwashbuckle(this IApplicationBuilder applicationBuilder)
+    public static void UseSwashbuckle(this IApplicationBuilder application)
     {
-        applicationBuilder.UseSwagger();
-        applicationBuilder.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Oneonones API"));
+        application.UseSwagger();
+        application.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Oneonones API"));
     }
 }
