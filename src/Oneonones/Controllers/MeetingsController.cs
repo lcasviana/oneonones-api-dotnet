@@ -29,7 +29,7 @@ public class MeetingsController : ControllerBase
     public async Task<IActionResult> ObtainAllAsync()
     {
         var meetings = await meetingService.ObtainAllAsync();
-        return Ok(meetings.Select(meeting => (MeetingOutput)meeting));
+        return Ok(meetings.Select(meeting => (MeetingOutput) meeting));
     }
 
     [HttpGet("{meetingId}")]
@@ -37,7 +37,7 @@ public class MeetingsController : ControllerBase
     public async Task<IActionResult> ObtainByIdAsync([FromRoute] Guid meetingId)
     {
         var meeting = await meetingService.ObtainByIdAsync(meetingId);
-        return Ok((MeetingOutput)meeting);
+        return Ok((MeetingOutput) meeting);
     }
 
     [HttpPost]
@@ -57,7 +57,7 @@ public class MeetingsController : ControllerBase
         var validation = meetingUpdateValidator.Validate(meetingInput);
         if (!validation.IsValid) throw new InvalidException(validation.Errors);
         var meeting = await meetingService.UpdateAsync(meetingId, meetingInput);
-        return Accepted((MeetingOutput)meeting);
+        return Accepted((MeetingOutput) meeting);
     }
 
     [HttpDelete("{meetingId}")]

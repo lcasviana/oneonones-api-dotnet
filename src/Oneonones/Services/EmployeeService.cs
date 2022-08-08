@@ -24,6 +24,12 @@ public class EmployeeService : IEmployeeService
         return employees;
     }
 
+    public async Task<Employee> ObtainByEmailAsync(string employeeEmail)
+    {
+        var employee = await employeeDbSet.SingleOrDefaultAsync(employee => employee.Email == employeeEmail);
+        return employee ?? throw new NotFoundException("Not found");
+    }
+
     public async Task<Employee> ObtainByIdAsync(Guid employeeId)
     {
         var employee = await employeeDbSet.SingleOrDefaultAsync(employee => employee.Id == employeeId);

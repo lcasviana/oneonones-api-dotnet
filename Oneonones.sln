@@ -6,28 +6,11 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oneonones", "src\Oneonones\Oneonones.csproj", "{6C779DBE-9A40-447B-AE04-98B7A183820D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Settings", "Settings", "{4FB94BCB-AEF1-40EB-AA99-08A135CB9DFF}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VS Code", "VS Code", "{B43AFF8E-ED76-4F49-802A-E60291A1C8A1}"
-	ProjectSection(SolutionItems) = preProject
-		.vscode\launch.json = .vscode\launch.json
-		.vscode\settings.json = .vscode\settings.json
-		.vscode\tasks.json = .vscode\tasks.json
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{95AC86E0-109C-4AE5-8136-9DAA908E4382}"
-	ProjectSection(SolutionItems) = preProject
-		docker-compose.yml = docker-compose.yml
-		Dockerfile = Dockerfile
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{D3DC1724-C0F5-4D71-ADF5-5808F2B29CF0}"
-	ProjectSection(SolutionItems) = preProject
-		.gitignore = .gitignore
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VS", "VS", "{5A7F5383-66EC-4C9F-9E83-0D19A883420A}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		docker-compose.yml = docker-compose.yml
+		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
 Global
@@ -43,12 +26,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{B43AFF8E-ED76-4F49-802A-E60291A1C8A1} = {4FB94BCB-AEF1-40EB-AA99-08A135CB9DFF}
-		{95AC86E0-109C-4AE5-8136-9DAA908E4382} = {4FB94BCB-AEF1-40EB-AA99-08A135CB9DFF}
-		{D3DC1724-C0F5-4D71-ADF5-5808F2B29CF0} = {4FB94BCB-AEF1-40EB-AA99-08A135CB9DFF}
-		{5A7F5383-66EC-4C9F-9E83-0D19A883420A} = {4FB94BCB-AEF1-40EB-AA99-08A135CB9DFF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {61CCBB14-F3E0-4F6B-8F50-D7A3AC6680AA}

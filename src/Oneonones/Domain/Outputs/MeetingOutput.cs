@@ -39,8 +39,8 @@ public class MeetingOutput
         => new()
         {
             Id = meeting.Id,
-            Leader = (EmployeeOutput)meeting.Leader,
-            Led = (EmployeeOutput)meeting.Led,
+            Leader = (EmployeeOutput) meeting.Leader,
+            Led = (EmployeeOutput) meeting.Led,
             MeetingDate = meeting.MeetingDate,
             Annotation = meeting.Annotation,
         };

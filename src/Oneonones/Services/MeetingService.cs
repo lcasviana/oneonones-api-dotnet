@@ -18,21 +18,27 @@ public class MeetingService : IMeetingService
         meetingDbSet = context.Meeting;
     }
 
+    private IQueryable<Meeting> MeetingQuery => meetingDbSet
+        .Include(meeting => meeting.Leader)
+        .Include(meeting => meeting.Led);
+
     public async Task<IEnumerable<Meeting>> ObtainAllAsync()
     {
-        var meetings = await meetingDbSet
-            .Include(meeting => meeting.Leader)
-            .Include(meeting => meeting.Led)
+        var meetings = await MeetingQuery.ToListAsync();
+        return meetings;
+    }
+
+    public async Task<IEnumerable<Meeting>> ObtainByOneononeAsync(Guid leaderId, Guid ledId)
+    {
+        var meetings = await MeetingQuery
+            .Where(meeting => meeting.LeaderId == leaderId && meeting.LedId == ledId)
             .ToListAsync();
         return meetings;
     }
 
     public async Task<Meeting> ObtainByIdAsync(Guid meetingId)
     {
-        var meeting = await meetingDbSet
-            .Include(meeting => meeting.Leader)
-            .Include(meeting => meeting.Led)
-            .SingleOrDefaultAsync(employee => employee.Id == meetingId);
+        var meeting = await MeetingQuery.SingleOrDefaultAsync(meeting => meeting.Id == meetingId);
         return meeting ?? throw new NotFoundException("Not found");
     }
 

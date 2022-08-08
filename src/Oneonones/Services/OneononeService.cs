@@ -18,21 +18,27 @@ public class OneononeService : IOneononeService
         oneononeDbSet = context.Oneonone;
     }
 
+    private IQueryable<Oneonone> OneononeQuery => oneononeDbSet
+        .Include(oneonone => oneonone.Leader)
+        .Include(oneonone => oneonone.Led);
+
     public async Task<IEnumerable<Oneonone>> ObtainAllAsync()
     {
-        var oneonones = await oneononeDbSet
-            .Include(oneonone => oneonone.Leader)
-            .Include(oneonone => oneonone.Led)
+        var oneonones = await OneononeQuery.ToListAsync();
+        return oneonones;
+    }
+
+    public async Task<IEnumerable<Oneonone>> ObtainByEmployeeAsync(Guid employeeId)
+    {
+        var oneonones = await OneononeQuery
+            .Where(oneonone => oneonone.LeaderId == employeeId || oneonone.LedId == employeeId)
             .ToListAsync();
         return oneonones;
     }
 
     public async Task<Oneonone> ObtainByIdAsync(Guid oneononeId)
     {
-        var oneonone = await oneononeDbSet
-            .Include(oneonone => oneonone.Leader)
-            .Include(oneonone => oneonone.Led)
-            .SingleOrDefaultAsync(oneonone => oneonone.Id == oneononeId);
+        var oneonone = await OneononeQuery.SingleOrDefaultAsync(oneonone => oneonone.Id == oneononeId);
         return oneonone ?? throw new NotFoundException("Not found");
     }
 

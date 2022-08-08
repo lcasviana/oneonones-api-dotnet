@@ -26,7 +26,7 @@ public class EmployeesController : ControllerBase
     public async Task<IActionResult> ObtainAsync()
     {
         var employees = await employeesService.ObtainAllAsync();
-        return Ok(employees.Select(employee => (EmployeeOutput)employee));
+        return Ok(employees.Select(employee => (EmployeeOutput) employee));
     }
 
     [HttpGet("{employeeId}")]
@@ -34,7 +34,7 @@ public class EmployeesController : ControllerBase
     public async Task<IActionResult> ObtainByIdAsync([FromRoute] Guid employeeId)
     {
         var employee = await employeesService.ObtainByIdAsync(employeeId);
-        return Ok((EmployeeOutput)employee);
+        return Ok((EmployeeOutput) employee);
     }
 
     [HttpPost]
@@ -54,7 +54,7 @@ public class EmployeesController : ControllerBase
         var validation = employeeValidator.Validate(employeeInput);
         if (!validation.IsValid) throw new InvalidException(validation.Errors);
         var employee = await employeesService.UpdateAsync(employeeId, employeeInput);
-        return Accepted((EmployeeOutput)employee);
+        return Accepted((EmployeeOutput) employee);
     }
 
     [HttpDelete("{employeeId}")]

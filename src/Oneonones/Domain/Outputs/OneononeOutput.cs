@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Oneonones.Domain.Entities;
 using Oneonones.Domain.Enumerations;
 
@@ -24,14 +25,24 @@ public class OneononeOutput
     /// One-on-one's frequency
     /// </summary>
     public Frequency Frequency { get; set; }
+    /// <summary>
+    /// One-on-one's meetings
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IEnumerable<MeetingOutput>? Meetings { get; set; }
+    /// <summary>
+    /// One-on-one's status
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public StatusOutput? Status { get; set; }
 
 
     public static explicit operator OneononeOutput(Oneonone oneonone)
         => new()
         {
             Id = oneonone.Id,
-            Leader = (EmployeeOutput)oneonone.Leader,
-            Led = (EmployeeOutput)oneonone.Led,
+            Leader = (EmployeeOutput) oneonone.Leader,
+            Led = (EmployeeOutput) oneonone.Led,
             Frequency = oneonone.Frequency,
         };
 }

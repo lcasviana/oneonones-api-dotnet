@@ -29,7 +29,7 @@ public class OneononesController : ControllerBase
     public async Task<IActionResult> ObtainAllAsync()
     {
         var oneonones = await oneononeService.ObtainAllAsync();
-        return Ok(oneonones.Select(oneonone => (OneononeOutput)oneonone));
+        return Ok(oneonones.Select(oneonone => (OneononeOutput) oneonone));
     }
 
     [HttpGet("{oneononeId}")]
@@ -37,7 +37,7 @@ public class OneononesController : ControllerBase
     public async Task<IActionResult> ObtainByIdAsync([FromRoute] Guid oneononeId)
     {
         var oneonone = await oneononeService.ObtainByIdAsync(oneononeId);
-        return Ok((OneononeOutput)oneonone);
+        return Ok((OneononeOutput) oneonone);
     }
 
     [HttpPost]
@@ -57,7 +57,7 @@ public class OneononesController : ControllerBase
         var validation = oneononeUpdateValidator.Validate(oneononeInput);
         if (!validation.IsValid) throw new InvalidException(validation.Errors);
         var oneonone = await oneononeService.UpdateAsync(oneononeId, oneononeInput);
-        return Accepted((OneononeOutput)oneonone);
+        return Accepted((OneononeOutput) oneonone);
     }
 
     [HttpDelete("{oneononeId}")]
