@@ -39,7 +39,7 @@ public class MeetingService : IMeetingService
     public async Task<Meeting> ObtainByIdAsync(Guid meetingId)
     {
         var meeting = await MeetingQuery.SingleOrDefaultAsync(meeting => meeting.Id == meetingId);
-        return meeting ?? throw new NotFoundException("Not found");
+        return meeting ?? throw new NotFoundException(NotFoundEntity.Meeting);
     }
 
     public async Task<Guid> InsertAsync(MeetingInsert meetingInput)

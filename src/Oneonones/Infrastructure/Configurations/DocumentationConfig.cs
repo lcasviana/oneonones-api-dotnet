@@ -1,7 +1,7 @@
 using System.Reflection;
 using Swashbuckle.AspNetCore.Filters;
 
-namespace Oneonones.Infrastructure.Packages;
+namespace Oneonones.Infrastructure.Configurations;
 
 public static class SwashbuckleConfig
 {

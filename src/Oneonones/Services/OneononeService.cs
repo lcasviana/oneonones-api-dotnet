@@ -39,7 +39,7 @@ public class OneononeService : IOneononeService
     public async Task<Oneonone> ObtainByIdAsync(Guid oneononeId)
     {
         var oneonone = await OneononeQuery.SingleOrDefaultAsync(oneonone => oneonone.Id == oneononeId);
-        return oneonone ?? throw new NotFoundException("Not found");
+        return oneonone ?? throw new NotFoundException(NotFoundEntity.Oneonone);
     }
 
     public async Task<Guid> InsertAsync(OneononeInsert oneononeInput)

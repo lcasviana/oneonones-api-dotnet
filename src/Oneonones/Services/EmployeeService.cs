@@ -27,13 +27,13 @@ public class EmployeeService : IEmployeeService
     public async Task<Employee> ObtainByEmailAsync(string employeeEmail)
     {
         var employee = await employeeDbSet.SingleOrDefaultAsync(employee => employee.Email == employeeEmail);
-        return employee ?? throw new NotFoundException("Not found");
+        return employee ?? throw new NotFoundException(NotFoundEntity.Employee);
     }
 
     public async Task<Employee> ObtainByIdAsync(Guid employeeId)
     {
         var employee = await employeeDbSet.SingleOrDefaultAsync(employee => employee.Id == employeeId);
-        return employee ?? throw new NotFoundException("Not found");
+        return employee ?? throw new NotFoundException(NotFoundEntity.Employee);
     }
 
     public async Task<Guid> InsertAsync(EmployeeInput employeeInput)

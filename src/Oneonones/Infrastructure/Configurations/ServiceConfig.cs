@@ -1,9 +1,9 @@
 using Oneonones.Services;
 using Oneonones.Services.Contracts;
 
-namespace Oneonones.Infrastructure;
+namespace Oneonones.Infrastructure.Configurations;
 
-public static class ServicesConfig
+public static class ServiceConfig
 {
     public static void AddServices(this IServiceCollection serviceCollection)
     {

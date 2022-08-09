@@ -2,7 +2,7 @@ using FluentValidation;
 using Oneonones.Domain.Inputs;
 using Oneonones.Domain.Validators;
 
-namespace Oneonones.Infrastructure.Packages;
+namespace Oneonones.Infrastructure.Configurations;
 
 public static class FluentValidationConfig
 {

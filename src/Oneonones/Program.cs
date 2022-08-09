@@ -1,11 +1,15 @@
-using Oneonones.Infrastructure;
-using Oneonones.Infrastructure.Packages;
+using Oneonones.Infrastructure.Configurations;
+using Oneonones.Infrastructure.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddEnvironmentVariables();
 
-builder.Services.AddControllers(options => options.SuppressAsyncSuffixInActionNames = false);
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(new DomainExceptionFilterAttribute());
+    options.SuppressAsyncSuffixInActionNames = false;
+});
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddSwashbuckle();
 builder.Services.AddValidators();

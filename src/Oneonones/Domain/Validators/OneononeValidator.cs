@@ -7,10 +7,19 @@ public class OneononeInsertValidator : AbstractValidator<OneononeInsert>
 {
     public OneononeInsertValidator()
     {
-        RuleFor(oneonone => oneonone.LeaderId).NotEmpty();
-        RuleFor(oneonone => oneonone.LedId).NotEmpty();
-        When(oneonone => oneonone.Frequency is null, () => RuleFor(oneonone => oneonone.Frequency).NotEmpty())
-            .Otherwise(() => RuleFor(oneonone => oneonone.Frequency).IsInEnum());
+        RuleFor(oneonone => oneonone.LeaderId)
+            .NotEmpty();
+
+        RuleFor(oneonone => oneonone.LedId)
+            .NotEmpty();
+
+        RuleFor(oneonone => oneonone.Frequency)
+            .NotEmpty()
+            .DependentRules(() =>
+            {
+                RuleFor(oneonone => oneonone.Frequency)
+                    .IsInEnum();
+            });
     }
 }
 
@@ -18,7 +27,12 @@ public class OneononeUpdateValidator : AbstractValidator<OneononeUpdate>
 {
     public OneononeUpdateValidator()
     {
-        When(oneonone => oneonone.Frequency is null, () => RuleFor(oneonone => oneonone.Frequency).NotEmpty())
-            .Otherwise(() => RuleFor(oneonone => oneonone.Frequency).IsInEnum());
+        RuleFor(oneonone => oneonone.Frequency)
+            .NotEmpty()
+            .DependentRules(() =>
+            {
+                RuleFor(oneonone => oneonone.Frequency)
+                    .IsInEnum();
+            });
     }
 }

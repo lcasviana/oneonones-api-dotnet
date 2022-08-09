@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Oneonones.Repositories.Context;
 
-namespace Oneonones.Infrastructure;
+namespace Oneonones.Infrastructure.Configurations;
 
 public static class DatabaseConfig
 {
