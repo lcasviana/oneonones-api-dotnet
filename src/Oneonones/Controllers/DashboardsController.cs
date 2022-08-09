@@ -22,6 +22,7 @@ public class DashboardsController : ControllerBase
     }
 
     [HttpGet("{employeeEmail}")]
+    [ProducesResponseType(typeof(DashboardOutput), StatusCodes.Status200OK)]
     public async Task<IActionResult> ObtainByEmailAsync([FromRoute] string employeeEmail)
     {
         var employee = (EmployeeOutput) await employeeService.ObtainByEmailAsync(employeeEmail);
