@@ -18,6 +18,9 @@ builder.Services.AddServices();
 
 var app = builder.Build();
 
+var appUrl = app.Environment.IsDevelopment() ? $"https://*:53623" : $"http://*:{builder.Configuration["PORT"]}";
+app.Urls.Add(appUrl);
+
 app.UseCors();
 app.UseRouting();
 app.UseAuthentication();
