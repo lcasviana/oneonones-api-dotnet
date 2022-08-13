@@ -9,10 +9,10 @@ public class DashboardOutput
     /// <summary>
     /// One-on-ones
     /// </summary>
-    public IEnumerable<OneononeOutput> Oneonones { get; set; } = null!;
+    public IList<OneononeOutput> Oneonones { get; set; } = null!;
 
 
-    public DashboardOutput(EmployeeOutput employee, IEnumerable<OneononeOutput> oneonones)
+    public DashboardOutput(EmployeeOutput employee, IList<OneononeOutput> oneonones)
     {
         Employee = employee;
         Oneonones = oneonones;

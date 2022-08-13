@@ -26,14 +26,12 @@ public class DashboardsController : ControllerBase
     public async Task<IActionResult> ObtainByEmailAsync([FromRoute] string employeeEmail)
     {
         var employee = (EmployeeOutput) await employeeService.ObtainByEmailAsync(employeeEmail);
-        var oneonones = (await oneononeService.ObtainByEmployeeAsync(employee.Id)).Select(oneonone => (OneononeOutput) oneonone);
-        var tasks = oneonones.Select(async oneonone =>
+        var oneonones = (await oneononeService.ObtainByEmployeeAsync(employee.Id)).Select(oneonone => (OneononeOutput) oneonone).ToList();
+        foreach (var oneonone in oneonones)
         {
-            oneonone.Meetings = (await meetingService.ObtainByOneononeAsync(oneonone.Leader.Id, oneonone.Led.Id)).Select(meeting => (MeetingOutput) meeting);
+            oneonone.Meetings = (await meetingService.ObtainByOneononeAsync(oneonone.Leader.Id, oneonone.Led.Id)).Select(meeting => (MeetingOutput) meeting).ToList();
             oneonone.Status = new StatusOutput(oneonone);
-            return oneonone;
-        });
-        oneonones = await Task.WhenAll(tasks);
+        }
         var dashboard = new DashboardOutput(employee, oneonones);
         return Ok(dashboard);
     }

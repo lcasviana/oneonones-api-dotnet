@@ -29,7 +29,7 @@ public class OneononeOutput
     /// One-on-one's meetings
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public IEnumerable<MeetingOutput>? Meetings { get; set; }
+    public IList<MeetingOutput>? Meetings { get; set; }
     /// <summary>
     /// One-on-one's status
     /// </summary>
