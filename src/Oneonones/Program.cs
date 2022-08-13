@@ -11,7 +11,7 @@ builder.Services.AddControllers(options =>
     options.SuppressAsyncSuffixInActionNames = false;
 });
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
-builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyMethod()));
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowCredentials().AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
 builder.Services.AddSwashbuckle();
 builder.Services.AddValidators();
 builder.Services.AddDatabase(builder.Configuration);
