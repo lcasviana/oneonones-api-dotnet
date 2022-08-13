@@ -1,3 +1,5 @@
+using Oneonones.Domain.Enumerations;
+
 namespace Oneonones.Domain.Outputs;
 
 public class StatusOutput
@@ -30,7 +32,8 @@ public class StatusOutput
         if (oneonone.Meetings?.Any() == true)
         {
             LastMeeting = oneonone.Meetings.Max(meeting => meeting.MeetingDate);
-
+            NextMeeting = oneonone.Frequency.NextMeeting(LastMeeting!.Value);
+            IsLate = NextMeeting!.Value.Date < DateTime.Now.Date;
         }
     }
 }
