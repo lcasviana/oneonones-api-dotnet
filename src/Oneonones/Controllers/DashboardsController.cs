@@ -30,7 +30,7 @@ public class DashboardsController : ControllerBase
         var tasks = oneonones.Select(async oneonone =>
         {
             oneonone.Meetings = (await meetingService.ObtainByOneononeAsync(oneonone.Leader.Id, oneonone.Led.Id)).Select(meeting => (MeetingOutput) meeting);
-            var status = new StatusOutput(oneonone);
+            oneonone.Status = new StatusOutput(oneonone);
             return oneonone;
         });
         oneonones = await Task.WhenAll(tasks);
